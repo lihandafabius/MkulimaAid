@@ -1,0 +1,102 @@
+/* Custom styling for the toggle switch */
+.form-switch .form-check-input:checked {
+    background-color: #28a745; /* green for 'on' */
+    border-color: #28a745;
+}
+
+.form-switch .form-check-input:not(:checked) {
+    background-color: #dc3545; /* red for 'off' */
+    border-color: #dc3545;
+}
+.carousel-cell {
+    width: 20%; /* Adjust as needed */
+    margin-right: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-cell img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.product-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-info h3 {
+    font-size: 16px;
+    margin: 0;
+    padding-bottom: 5px;
+}
+
+.product-info p {
+    font-size: 14px;
+    margin: 0 0 5px 0;
+}
+
+.quick-view {
+    display: none;
+    background-color: #f8c22e;
+    color: #000;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.carousel-cell:hover .product-info {
+    opacity: 1;
+}
+
+.carousel-cell:hover .quick-view {
+    display: block;
+}
+.branding {
+    display: flex; /* Ensures elements inside are in a row */
+    align-items: center; /* Vertically center the title and logo */
+}
+
+.site-logo {
+    width: 50px; /* Adjust the width of the logo as needed */
+    height: auto;
+    margin-right: 5px; /* Add some space between the logo and the title */
+    object-fit: contain; /* Ensures the image fits inside the bounds */
+    max-height: 50px; /* Ensure it doesn't stretch too tall */
+}
+.bd-mode-toggle {
+z-index: 1500;
+}
+
+.bd-mode-toggle .dropdown-menu .active .bi {
+display: block !important;
+}
+.site-title {
+    font-size: 24px; /* Adjust the font size of the title */
+    font-weight: bold;
+}
+.image_upload .wrapper {
+    text-align: center;
+    border: 2px dashed #5b8c51;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.image_upload .fa-cloud-upload-alt {
+    font-size: 3rem;
+}
+
+.preview img {
+    display: none;
+    margin-top: 10px;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Pest and Disease Recognition</title>
+    <style>
+        .prediction-image {
+            max-width: 400px;
+            height: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Crop Pest and Disease Recognition</h1>
+
+    <!-- Form to upload the image -->
+    <form action="{{ url_for('main.upload') }}" method="POST" enctype="multipart/form-data">
+        <label for="image">Upload Image:</label>
+        <input type="file" name="image" id="image" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <!-- Display the uploaded image -->
+    {% if image_filename %}
+        <h3>Uploaded Image:</h3>
+        <img src="{{ url_for('main.uploaded_file', filename=image_filename) }}" alt="Uploaded Image" class="prediction-image">
+
+        <!-- Form to submit for prediction -->
+        <form action="{{ url_for('main.predict') }}" method="POST">
+            <label for="model">Select Model:</label>
+            <select name="model" required>
+                <option value="pest">Pest Recognition</option>
+                <option value="disease">Disease Recognition</option>
+            </select>
+            <input type="hidden" name="image_filename" value="{{ image_filename }}">
+            <button type="submit">Predict</button>
+        </form>
+    {% endif %}
+
+    <!-- Display the prediction result -->
+    {% if prediction %}
+        <h3>Prediction: {{ prediction }}</h3>
+    {% endif %}
+</body>
+</html>

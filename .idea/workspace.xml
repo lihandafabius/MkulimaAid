@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/crop pests and diseases classification.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/10.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/9.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/preview.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/theme_toggle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/resnet50_0.497.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2nIMi8NhM8srBKRYWet1Ow5J1fy" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python.aap2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.routes.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run.executor&quot;: &quot;Run&quot;,
+    &quot;Python.server.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/FABIUS/Desktop/crop pests and diseases classification/mkulimaaid/static/images&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\static\images" />
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\templates" />
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification" />
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\templates" />
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid" />
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\templates" />
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\model" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-babbdf50b680-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.15989.155" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="" />
+      <created>1728656261149</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1728656261149</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
