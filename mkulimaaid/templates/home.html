@@ -1,44 +1,24 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container mt-5">
+<!-- Form to upload an image for prediction -->
+  <div class="container mt-5">
     <div class="upload-section mt-5">
-        <h3 class="text-center">Upload an Image for Pest or Disease Recognition</h3>
+        <h3 class="text-center">Upload an Image for Crop Disease Recognition</h3>
         <div class="col-lg">
             <!-- File upload form -->
             <form enctype="multipart/form-data" method="POST" action="{{ url_for('main.upload') }}">
-                {% if form %}
-                    {{ form.hidden_tag() }}  <!-- This will include the csrf_token -->
-                {% endif %}
+                {{ form.hidden_tag() }}
 
                 <!-- File upload area with image preview -->
                 <div class="row g-3">
                     <center>
                         <div class="image_upload">
                             <div class="wrapper">
-                                <header></header>
                                 <span>
-                                    <input
-                                        class="file-input"
-                                        type="file"
-                                        accept="image/*"
-                                        name="image"
-                                        id="original_image"
-                                        required
-                                        onchange="showPreview(event);"
-                                        style="display: none"
-                                    />
-                                    <label
-                                        style="color: #5b8c51; cursor: pointer;"
-                                        class="fa fa-cloud-upload-alt fa-3x"
-                                        for="original_image"
-                                    ></label>
+                                    <input class="file-input" type="file" accept="image/*" name="image" id="original_image" required onchange="showPreview(event);" style="display: none">
+                                    <label style="color: #5b8c51; cursor: pointer;" class="fa fa-cloud-upload-alt fa-3x" for="original_image"></label>
                                 </span>
                                 <p>Browse File to Upload</p>
-                                <section class="progress-area"></section>
-                                <section class="uploaded-area"></section>
-
-                                <!-- Image Preview -->
                                 <div class="preview col-6 pb-3">
                                     <img id="file-ip-1-preview" class="img-fluid rounded" width="330" />
                                 </div>
@@ -53,27 +33,17 @@
                 </div>
             </form>
 
-            <!-- Display prediction form after image upload -->
+            <!-- Display uploaded image and Disease Recognition button -->
             {% if image_filename %}
                 <div class="uploaded-image mt-4 text-center">
                     <h4>Uploaded Image:</h4>
                     <img src="{{ url_for('main.uploaded_file', filename=image_filename) }}" alt="Uploaded Image" class="img-thumbnail prediction-image">
                 </div>
 
-                <!-- Prediction form -->
-                <form action="{{ url_for('main.predict') }}" method="POST" class="mt-3 text-center">
-                    {{ form.csrf_token }}  <!-- Include csrf_token explicitly -->
-
-                    <div class="mb-3">
-                        <label for="model" class="form-label">Select Model</label>
-                        <select class="form-select" name="model" required>
-                            <option value="pest">Pest Recognition</option>
-                            <option value="disease">Disease Recognition</option>
-                        </select>
-                    </div>
-                    <input type="hidden" name="image_filename" value="{{ image_filename }}">
-                    <button type="submit" class="btn btn-success">Predict</button>
-                </form>
+                <!-- Disease Recognition Button -->
+                <div class="mt-3 text-center">
+                    <button class="btn btn-outline-warning mx-2" onclick="selectModel('disease', '{{ image_filename }}')">Disease Recognition</button>
+                </div>
             {% endif %}
 
             <!-- Display prediction result -->
@@ -84,10 +54,13 @@
             {% endif %}
         </div>
     </div>
-</div>
+  </div>
+
+
+<!-- Trending Pests and Diseases Section -->
 <div class="container mt-5">
     <!-- Trending Crop Pests and Diseases Title -->
-    <h2 class="text-center carousel-title">Trending Crop Pests and Diseases</h2>
+    <h2 class="text-center carousel-title">Trending Crop Diseases</h2>
 
     <!-- Flickity Carousel for trending pests and diseases -->
     <div class="carousel" data-flickity='{ "wrapAround": true, "autoPlay": 3000, "contain": true }'>
@@ -95,7 +68,7 @@
             <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
             <div class="product-info">
                 <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of Pest 1</p>
+                <p class="product-description">Description of disease 1</p>
                 <button class="quick-view">Learn More</button>
             </div>
         </div>
@@ -103,7 +76,7 @@
             <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
             <div class="product-info">
                 <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of Pest 1</p>
+                <p class="product-description">Description of disease 1</p>
                 <button class="quick-view">Learn More</button>
             </div>
         </div>
@@ -111,7 +84,7 @@
             <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
             <div class="product-info">
                 <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of Pest 1</p>
+                <p class="product-description">Description of disease 1</p>
                 <button class="quick-view">Learn More</button>
             </div>
         </div>
@@ -119,7 +92,7 @@
             <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
             <div class="product-info">
                 <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of Pest 1</p>
+                <p class="product-description">Description of disease 1</p>
                 <button class="quick-view">Learn More</button>
             </div>
         </div>
@@ -134,5 +107,43 @@
         <!-- Repeat similar div blocks for other pests/diseases -->
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/preview.js') }}"></script>
+<script>
+    // JavaScript function to submit the form for disease recognition
+    function selectModel(model, imageFilename) {
+        console.log("Disease recognition button clicked"); // Debugging statement
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ url_for('main.predict') }}";
+
+        const modelInput = document.createElement('input');
+        modelInput.type = 'hidden';
+        modelInput.name = 'model';
+        modelInput.value = model;
+        form.appendChild(modelInput);
+
+        const imageInput = document.createElement('input');
+        imageInput.type = 'hidden';
+        imageInput.name = 'image_filename';
+        imageInput.value = imageFilename;
+        form.appendChild(imageInput);
+
+        // Add CSRF token
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrf_token';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+
+        console.log("Submitting form to", form.action); // Debugging statement
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+
+
 
 {% endblock %}

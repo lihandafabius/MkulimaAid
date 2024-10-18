@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">MkulimaAid</a>
+
+  <ul class="navbar-nav flex-row d-md-none">
+    <li class="nav-item text-nowrap">
+      <button class="nav-link px-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search">
+        <svg class="bi"><use xlink:href="#search"></use></svg>
+      </button>
+    </li>
+    <li class="nav-item text-nowrap">
+      <button class="nav-link px-3 text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <svg class="bi"><use xlink:href="#list"></use></svg>
+      </button>
+    </li>
+  </ul>
+
+  <div id="navbarSearch" class="navbar-search w-100 collapse">
+    <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
+  </div>
+</header>
+<div class="container-fluid">
+  <div class="row">
+
+      <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+      <symbol id="house-fill" viewBox="0 0 16 16">
+        <path d="M8 3.293l6 6V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4.707l6-6zM7 13.5v-5h2v5H7zM13 8l-5-5-5 5V13a1 1 0 0 0 1 1h2v-4h2v4h2a1 1 0 0 0 1-1V8z"/>
+      </symbol>
+      <symbol id="file-earmark" viewBox="0 0 16 16">
+        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3-.5a1 1 0 0 1-1-1V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5h-2z"/>
+      </symbol>
+      <symbol id="cart" viewBox="0 0 16 16">
+        <path d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 6H14a.5.5 0 0 1 .49.598l-1.5 8A.5.5 0 0 1 12.5 15H4.11a.5.5 0 0 1-.491-.408L1.01 3H.5a.5.5 0 0 1-.5-.5zm3.01 5l1.4 7h7.18l1.4-7H3.01zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+      </symbol>
+      <symbol id="people" viewBox="0 0 16 16">
+        <path d="M13 7a3 3 0 1 0-2.8-1.995 3 3 0 0 0 2.8 1.995zM8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5 6a4.978 4.978 0 0 0-3.499-4.793A4.978 4.978 0 0 0 8 9a4.978 4.978 0 0 0-3.499 1.207A4.978 4.978 0 0 0 1 15a.5.5 0 0 0 1 0 4.978 4.978 0 0 1 3.499-1.793A4.978 4.978 0 0 1 8 10a4.978 4.978 0 0 1 3.499 1.207A4.978 4.978 0 0 1 13 15a.5.5 0 0 0 1 0z"/>
+      </symbol>
+      <symbol id="graph-up" viewBox="0 0 16 16">
+        <path d="M0 0h1v15h15v1H0V0zm10.293 6.707l1.5 1.5 4-4V12h1V3.5a.5.5 0 0 0-.5-.5H9v1h5.293l-3.5 3.5-1.5-1.5L6 11.293l-3-3-3 3V9.293l3-3L8.707 8.5z"/>
+      </symbol>
+      <symbol id="puzzle" viewBox="0 0 16 16">
+        <path d="M10.483 1.288a1.5 1.5 0 0 0-2.415 0l-.001.001c-.267.297-.523.611-.775.946a2 2 0 0 0-.362-.044H5.75A1.75 1.75 0 0 0 4 3.94v.725c0 .133-.009.264-.026.392A2 2 0 0 0 1.5 7a1.5 1.5 0 0 0 0 3c.71 0 1.302-.416 1.587-1.016.25.09.514.139.79.139h.725A1.75 1.75 0 0 1 7.75 9h.034c.069 0 .136.007.203.02l-.001.002c.146.292.293.58.443.863a2 2 0 0 0-.175.823v.725a1.75 1.75 0 0 1-1.75 1.75h-.725a2 2 0 0 0-.363-.044c.25.336.507.649.775.946a1.5 1.5 0 0 0 2.416-.001c.266-.297.523-.61.775-.946.119.008.24.03.363.043v.726a1.75 1.75 0 0 1-1.75 1.75h-.725a2 2 0 0 0-.362-.044c.253.335.508.648.775.946a1.5 1.5 0 0 0 2.415 0l.001-.001c.267-.297.523-.61.775-.946.12.013.24.034.362.044v-.726a1.75 1.75 0 0 1 1.75-1.75h.725a2 2 0 0 0 .362.044c-.253-.335-.508-.649-.775-.946a1.5 1.5 0 0 0-2.416.001c-.266.297-.523.61-.775.946-.119-.008-.24-.03-.363-.043v-.726a1.75 1.75 0 0 1 1.75-1.75h.725a2 2 0 0 0 .362-.044c-.25-.335-.507-.648-.775-.946a1.5 1.5 0 0 0-2.416 0c-.266.297-.523.61-.775.946a2 2 0 0 0-.362-.044h-.725A1.75 1.75 0 0 1 7.75 5h-.034a2 2 0 0 0-.204-.02l.001-.002a1.5 1.5 0 0 0 0-2.416 1.5 1.5 0 0 0-2.416 0L1.75 7.25a2 2 0 0 0 .362.044v.725a1.75 1.75 0 0 1-1.75-1.75v-.725A2 2 0 0 0 .5 8a1.5 1.5 0 0 0 1.5 1.5A2 2 0 0 0 7.75 9h.725a1.75 1.75 0 0 1 1.75 1.75v.725A2 2 0 0 0 10 12v-.725A1.75 1.75 0 0 1 8.5 10v-.725A2 2 0 0 0 7.75 8H7.5c.253-.335.508-.648.775-.946a1.5 1.5 0 0 0 2.416 0z"/>
+      </symbol>
+      <symbol id="plus-circle" viewBox="0 0 16 16">
+        <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm3-6.5a.5.5 0 0 1-.5.5H9.5v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1h1.5V5.5a.5.5 0 0 1 1 0V7h1.5a.5.5 0 0 1 .5.5z"/>
+      </symbol>
+      <symbol id="gear-wide-connected" viewBox="0 0 16 16">
+        <path d="M8 0a.5.5 0 0 1 .5.5v2.027a5.992 5.992 0 0 1 1.074.244l1.897-1.096a.5.5 0 0 1 .58.163l1.658 2.872a.5.5 0 0 1-.058.64l-1.59 1.59c.084.252.14.514.164.779h2.05a.5.5 0 0 1 .5.5v3.246a.5.5 0 0 1-.5.5h-2.05a5.992 5.992 0 0 1-.164.779l1.59 1.59a.5.5 0 0 1 .058.64l-1.658 2.872a.5.5 0 0 1-.58.163l-1.897-1.096a5.992 5.992 0 0 1-1.074.244v2.027a.5.5 0 0 1-.5.5h-3.246a.5.5 0 0 1-.5-.5v-2.027a5.992 5.992 0 0 1-1.074-.244l-1.897 1.096a.5.5 0 0 1-.58-.163l-1.658-2.872a.5.5 0 0 1 .058-.64l1.59-1.59a5.992 5.992 0 0 1-.164-.779H.5a.5.5 0 0 1-.5-.5V7.027a.5.5 0 0 1 .5-.5h2.05c.084-.265.14-.527.164-.779L1.124 4.158a.5.5 0 0 1-.058-.64l1.658-2.872a.5.5 0 0 1 .58-.163l1.897 1.096A5.992 5.992 0 0 1 7.5 2.527V.5a.5.5 0 0 1 .5-.5zm-5.313 4.165a6.964 6.964 0 0 0 2.282-2.282L3.876 2.32 1.124 4.742l2.188.423-1.625 1.625-2.872-1.658L3.16 1.124l1.658 2.872L3.55 5.313a7.014 7.014 0 0 0 1.312.947l1.097-1.897-1.586-.827 1.068-.464 1.068-.464-2.58.895zm-.693 3.693c.185-.08.377-.145.57-.193V7H2.077a6.988 6.988 0 0 0 .937-.79l1.598 1.598-.462-1.068.464-1.068 2.58-.895 1.068.464 1.068-.464-2.58.895c.146-.158.303-.302.474-.437L7.5 6.43v.142a7.003 7.003 0 0 0-.473-.437l1.715 2.96-.895-2.58-.464-1.068-1.68 1.68zm5.312-.5h2.025a6.988 6.988 0 0 0 .99-.105v2.746a6.988 6.988 0 0 0-.79.937l-2.582-1.312 1.598 1.598a7.014 7.014 0 0 0-.463-.579L7.273 9.43zm-3.748 1.25c.265-.084.527-.14.79-.164v2.05h-3.246v-2.05c.084-.265.14-.527.164-.79zm.737-.277c.158.158.302.302.437.474l1.715-2.96-.895 2.58-.464 1.068-2.58-.895c.146.158.303.302.474.437L7.5 7.143v.142l.473.473z"/>
+      </symbol>
+      <symbol id="door-closed" viewBox="0 0 16 16">
+        <path d="M8.5 14a1.5 1.5 0 0 1-1.5-1.5h-2a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h2V2h4v2.5h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2a1.5 1.5 0 0 1-1.5 1.5z"/>
+      </symbol>
+    </svg>
+
+    <!-- Sidebar -->
+    <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+      <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="sidebarMenuLabel">MkulimaAid</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="{{ url_for('main.dashboard') }}">
+                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#house-fill"></use></svg>
+                Dashboard
+              </a>
+            </li>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.customers') }}">
+                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#people"></use></svg>
+                farmers
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.reports') }}">
+                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#graph-up"></use></svg>
+                Reports
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.integrations') }}">
+                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#puzzle"></use></svg>
+                Integrations
+              </a>
+            </li>
+          </ul>
+
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
+            <span>Saved reports</span>
+            <a class="link-secondary" href="#" aria-label="Add a new report">
+              <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#plus-circle"></use></svg>
+            </a>
+          </h6>
+          <hr class="my-3">
+
+          <ul class="nav flex-column mb-auto">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.settings') }}">
+                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#gear-wide-connected"></use></svg>
+                Settings
+              </a>
+            </li>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="#">
+                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#door-closed"></use></svg>
+                Sign out
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Main content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <i class="bi bi-calendar3"></i> This week
+          </button>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+
+      <!-- Table Section -->
+      <h2>Section title</h2>
+      <div class="table-responsive small">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Header</th>
+              <th>Header</th>
+              <th>Header</th>
+              <th>Header</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1,001</td>
+              <td>random</td>
+              <td>data</td>
+              <td>placeholder</td>
+              <td>text</td>
+            </tr>
+            <tr>
+              <td>1,002</td>
+              <td>placeholder</td>
+              <td>irrelevant</td>
+              <td>visual</td>
+              <td>layout</td>
+            </tr>
+            <!-- More rows as needed -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+{% endblock %}

@@ -74,23 +74,6 @@
     object-fit: contain; /* Ensures the image fits inside the bounds */
     max-height: 50px; /* Ensure it doesn't stretch too tall */
 }
-.btn-bd-primary {
---bd-violet-bg: #712cf9;
---bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-
---bs-btn-font-weight: 600;
---bs-btn-color: var(--bs-white);
---bs-btn-bg: var(--bd-violet-bg);
---bs-btn-border-color: var(--bd-violet-bg);
---bs-btn-hover-color: var(--bs-white);
---bs-btn-hover-bg: #6528e0;
---bs-btn-hover-border-color: #6528e0;
---bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
---bs-btn-active-color: var(--bs-btn-hover-color);
---bs-btn-active-bg: #5a23c8;
---bs-btn-active-border-color: #5a23c8;
-}
-
 .bd-mode-toggle {
 z-index: 1500;
 }
@@ -98,10 +81,6 @@ z-index: 1500;
 .bd-mode-toggle .dropdown-menu .active .bi {
 display: block !important;
 }
-.btn-danger {
-  margin-left: 15px; /* Adjust this as needed */
-}
-
 .site-title {
     font-size: 24px; /* Adjust the font size of the title */
     font-weight: bold;
@@ -120,73 +99,4 @@ display: block !important;
 .preview img {
     display: none;
     margin-top: 10px;
-}
-sign-in-page{
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--bs-body-bg);
-}
-
-main.form-signin {
-    width: 100%; /* Ensure the form can expand */
-    max-width: 400px; /* Increase width as desired */
-    padding: 30px; /* Add more padding for space */
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    margin: auto;
-    background-color: white;
-}
-.dropdown-menu {
-    right: 0;
-    left: auto;
-}
-/* Centering the form */
-body.login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #f5f5f5;
-    margin: 0;
-}
-
-/* Styles for register.html specifically */
-body.register-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #f5f5f5;
-    margin: 0;
-}
-
-.form-register {
-    max-width: 400px; /* Increase the width for a wider form */
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-register form {
-    width: 100%;
-}
-
-/* Custom CSS to enhance profile image */
-.dropdown .rounded-circle {
-width: 60px;
-height: 60px;
-border: 3px solid #f8f9fa;
-}
-
-/* Custom CSS for dropdown items */
-.dropdown-item {
-padding: 10px 20px;
-font-size: 1rem;
-}
-
-.dropdown-item:hover {
-background-color: #f1f1f1;
 }

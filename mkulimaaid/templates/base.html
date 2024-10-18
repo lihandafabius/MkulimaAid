@@ -17,6 +17,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
   </head>
   <body>
     <div class="container">
@@ -68,19 +70,47 @@
               </li>
 
             </ul>
-            <form class="d-flex" role="search">
-              <ul
-                class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
-              >
-                <li><a href="#" class="nav-link px-2 link-body-emphasis">About</a></li>
-                <li><a href="#" class="nav-link px-2 link-body-emphasis">Contact</a></li>
-                <li class="nav-item">
-                  <a class="btn btn-danger" href="#">Dashboard</a>
-                </li>
-                <a href="/logout" class="btn btn-secondary ms-3">Log Out</a>
-                <a href="/login" class="btn btn-primary ms-3">Sign In</a>
+            <form class="d-flex align-items-center" role="search">
+            <!-- About and Contact links -->
+            <ul class="nav">
+              <li><a href="#" class="nav-link px-2 link-body-emphasis">About</a></li>
+              <li><a href="#" class="nav-link px-2 link-body-emphasis">Contact</a></li>
+            </ul>
+
+            <!-- Profile dropdown -->
+            <div class="dropdown text-end ms-3">
+              <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://github.com/mdo.png" alt="Profile" width="50" height="50" class="rounded-circle border border-3">
+              </a>
+              <ul class="dropdown-menu text-small">
+                {% if current_user.is_authenticated %}
+                  {% if current_user.is_admin %}
+                    <li>
+                      <a class="dropdown-item text-danger fw-bold" href="/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                      </a>
+                    </li>
+                  {% endif %}
+                  <li>
+                    <a class="dropdown-item text-primary" href="#">
+                      <i class="bi bi-gear"></i> Settings
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-success" href="#">
+                      <i class="bi bi-person"></i> Profile
+                    </a>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item text-danger" href="/logout">
+                      <i class="bi bi-box-arrow-right"></i> Log Out
+                    </a>
+                  </li>
+                {% endif %}
               </ul>
-            </form>
+            </div>
+          </form>
           </div>
         </div>
       </nav>
@@ -211,7 +241,7 @@
             <div class="col-md-5 offset-md-1 mb-3">
               <form method="POST" action="/subscribe">
                 <h5>Subscribe to Our Newsletter</h5>
-                <p>Get to know the latest trends on crop pests and diseases.</p>
+                <p>Get to know the latest trends on crop diseases.</p>
                 <div class="d-flex flex-column flex-sm-row w-100 gap-2">
                   <label for="newsletter1" class="visually-hidden">Email address</label>
                   <input
@@ -267,12 +297,10 @@
       <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
       <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
       <script src="//cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-      <script src="{{ url_for('static', filename='js/preview.js') }}"></script>
       <script>
           CKEDITOR.replace('newsletter_content');
       </script>
       <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
-
 
     </div>
   </body>
