@@ -40,10 +40,11 @@
                     <tr>
                         <td>{{ admin.email }}</td>
                         <td>
-                            <!-- Button to remove admin privileges -->
-                            <form method="POST" action="{{ url_for('main.remove_admin', admin_id=admin.id) }}" style="display:inline;">
+                            <form method="POST" action="{{ url_for('main.remove_admin', admin_id=admin.id) }}">
+                                {{ form.hidden_tag() }} <!-- This adds the CSRF token -->
                                 <button type="submit" class="btn btn-danger">Remove Admin</button>
                             </form>
+
                         </td>
                     </tr>
                     {% endfor %}

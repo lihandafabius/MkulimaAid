@@ -190,3 +190,26 @@ font-size: 1rem;
 .dropdown-item:hover {
 background-color: #f1f1f1;
 }
+#alert-message {
+    position: fixed;
+    top: -50px;  /* Initially hide off the screen */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #f5c6cb;
+    transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+#alert-message.show {
+    top: 20px;  /* Position the alert at the top of the screen */
+    opacity: 1;
+}
+
+#alert-message.fade-out {
+    top: -50px; /* Slide back up */
+    opacity: 0; /* Fade out */
+}

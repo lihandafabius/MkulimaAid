@@ -21,6 +21,16 @@
 
   </head>
   <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div id="alert-message" class="alert alert-{{ category }}" role="alert" style="display:none;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     <div class="container">
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
@@ -293,7 +303,6 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"
       ></script>
-      <script src="{{ url_for('static', filename='js/rate.js') }}"></script>
       <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
       <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
       <script src="//cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>

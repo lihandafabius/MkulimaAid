@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g
 from werkzeug.utils import secure_filename
 from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm
 from config import Config
@@ -115,6 +115,7 @@ def predict():
 @main.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
+        flash('You are already logged in!', 'info')
         return redirect(url_for('main.upload'))
 
     form = LoginForm()
@@ -122,6 +123,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
+            flash('Login successful!', 'success')  # Flash message for successful login
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.upload'))
         else:
@@ -137,14 +139,26 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(fullname=form.fullname.data, username=form.username.data, email=form.email.data,
-                    phone=form.phone.data, password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
-        flash('Account created! You can now log in.', 'success')
-        return redirect(url_for('main.login'))
+        # Check if the email or username already exists
+        existing_user_email = User.query.filter_by(email=form.email.data).first()
+        existing_user_username = User.query.filter_by(username=form.username.data).first()
+
+        if existing_user_email:
+            flash('Email already taken. Please choose a different one.', 'danger')
+        elif existing_user_username:
+            flash('Username already exists. Please choose a different one.', 'danger')
+        else:
+            # Proceed with creating the user
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            user = User(fullname=form.fullname.data, username=form.username.data, email=form.email.data,
+                        phone=form.phone.data, password=hashed_password)
+            db.session.add(user)
+            db.session.commit()
+            flash('Account created! You can now log in.', 'success')
+            return redirect(url_for('main.login'))
+
     return render_template('register.html', form=form)
+
 
 
 # Dashboard route
@@ -152,7 +166,6 @@ def register():
 @login_required
 def dashboard():
     users = User.query.all()  # Fetch all users
-    # messages = ContactMessage.query.all()  # Fetch all contact form messages
     # Only admins can access this route
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
@@ -168,16 +181,19 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('main.login'))
 
+
 @main.route('/farmers')
 @login_required
 def customers():
     return render_template('farmers.html')
+
 
 @main.route('/reports')
 @login_required
 def reports():
     # Logic for displaying reports
     return render_template('reports.html')
+
 
 @main.route('/integrations')
 @login_required
@@ -186,10 +202,24 @@ def integrations():
     return render_template('integrations.html')
 
 
+# Helper function to get or create settings
+def get_settings():
+    settings = Settings.query.first()
+    if not settings:
+        # If settings do not exist, create default settings
+        settings = Settings(maintenance_mode=False)
+        db.session.add(settings)
+        db.session.commit()
+    return settings
+
+
 @main.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
     form = AdminForm()
+
+    # Set the settings into the global `g` object
+    g.settings = get_settings()
 
     # Handle the form submission to add an admin
     if form.validate_on_submit():
@@ -210,6 +240,7 @@ def settings():
 
     return render_template('settings.html', form=form, admins=admins)
 
+
 # Route to remove admin privileges
 @main.route('/remove_admin/<int:admin_id>', methods=['POST'])
 @login_required
@@ -223,8 +254,19 @@ def remove_admin(admin_id):
     else:
         flash(f'{user.email} is not an admin.', 'warning')
 
-    return redirect(url_for('settings'))
+    return redirect(url_for('main.settings'))
 
+@main.before_request
+def check_maintenance_mode():
+    # Get current settings from the database
+    settings = Settings.get_settings()
+
+    # Store settings globally for access in templates
+    g.settings = settings
+
+    # If maintenance mode is enabled and the user is not an admin, show the maintenance page
+    if settings.maintenance_mode and (not current_user.is_authenticated or not current_user.is_admin):
+        return render_template('maintenance.html'), 503  # 503 Service Unavailable
 
 @main.route('/toggle_maintenance', methods=['POST'])
 @login_required
@@ -232,7 +274,7 @@ def toggle_maintenance():
     maintenance_mode = 'maintenance_mode' in request.form
 
     # Get the current settings
-    settings = Settings.get_settings()
+    settings = get_settings()
 
     # Update the maintenance mode in the database
     settings.maintenance_mode = maintenance_mode
@@ -244,4 +286,4 @@ def toggle_maintenance():
         db.session.rollback()
         flash(f'Error updating maintenance mode: {str(e)}', 'danger')
 
-    return redirect(url_for('settings'))
+    return redirect(url_for('main.settings'))
