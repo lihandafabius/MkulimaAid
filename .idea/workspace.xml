@@ -5,51 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/MkulimaAid.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/farmers.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/integrations.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/maintenance.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/register.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/reports.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/settings.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/10.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/9.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/custom.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/preview.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/theme_toggle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/10.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/12.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/3.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/4.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/5.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/6.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/7.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/8.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/9.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/uploads/download.jfif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/js/preview.js" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/js/preview.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/uploads/13.jfif" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/13.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/settings.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,19 +39,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Python.aap2.executor": "Run",
-    "Python.app.executor": "Run",
-    "Python.routes.executor": "Run",
-    "Python.run.executor": "Run",
-    "Python.server.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/FABIUS/Desktop/crop pests and diseases classification/mkulimaaid/templates"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python.aap2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.routes.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run.executor&quot;: &quot;Run&quot;,
+    &quot;Python.server.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/FABIUS/Desktop/crop pests and diseases classification/mkulimaaid/templates&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\templates" />
@@ -126,7 +89,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>227</line>
+          <line>248</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

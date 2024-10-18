@@ -20,9 +20,9 @@ class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
         return check_password_hash(self.password, password)
 class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    site_title = db.Column(db.String(100), nullable=False, default="Bitbanta store")
+    site_title = db.Column(db.String(100), nullable=False, default="MkulimaAid")
     site_logo = db.Column(db.String(100), nullable=True)  # Store logo file path
-    contact_email = db.Column(db.String(100), nullable=False, default="info@bitbanta.com")
+    contact_email = db.Column(db.String(100), nullable=False, default="info@mkulimaaid.com")
     contact_phone = db.Column(db.String(20), nullable=False, default="123-456-7890")
     address = db.Column(db.Text, nullable=True, default="123 Main St, City, Country")
     maintenance_mode = db.Column(db.Boolean, default=False)

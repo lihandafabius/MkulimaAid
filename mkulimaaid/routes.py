@@ -139,26 +139,16 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Check if the email or username already exists
-        existing_user_email = User.query.filter_by(email=form.email.data).first()
-        existing_user_username = User.query.filter_by(username=form.username.data).first()
-
-        if existing_user_email:
-            flash('Email already taken. Please choose a different one.', 'danger')
-        elif existing_user_username:
-            flash('Username already exists. Please choose a different one.', 'danger')
-        else:
-            # Proceed with creating the user
-            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user = User(fullname=form.fullname.data, username=form.username.data, email=form.email.data,
-                        phone=form.phone.data, password=hashed_password)
-            db.session.add(user)
-            db.session.commit()
-            flash('Account created! You can now log in.', 'success')
-            return redirect(url_for('main.login'))
+        # Proceed with creating the user
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(fullname=form.fullname.data, username=form.username.data, email=form.email.data,
+                    phone=form.phone.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Account created! You can now log in.', 'success')
+        return redirect(url_for('main.login'))
 
     return render_template('register.html', form=form)
-
 
 
 # Dashboard route
@@ -285,5 +275,32 @@ def toggle_maintenance():
     except Exception as e:
         db.session.rollback()
         flash(f'Error updating maintenance mode: {str(e)}', 'danger')
+
+    return redirect(url_for('main.settings'))
+@main.route('/update_contact_info', methods=['POST'])
+@login_required
+def update_contact_info():
+    contact_email = request.form.get('contact_email')
+    contact_phone = request.form.get('contact_phone')
+    address = request.form.get('address')
+
+    # Get the current settings (singleton pattern)
+    settings = Settings.get_settings()
+
+    # Update the contact information if provided
+    if contact_email:
+        settings.contact_email = contact_email
+    if contact_phone:
+        settings.contact_phone = contact_phone
+    if address:
+        settings.address = address
+
+    # Commit changes to the database
+    try:
+        db.session.commit()
+        flash('Contact information updated successfully', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating contact information: {str(e)}', 'danger')
 
     return redirect(url_for('main.settings'))

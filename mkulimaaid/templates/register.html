@@ -39,34 +39,82 @@
         <img class="mb-4" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="72" height="72">
         <h1 class="h3 mb-3 fw-normal">Create an account</h1>
 
+        <!-- Full Name Field -->
         <div class="form-floating mb-2">
             {{ form.fullname(class="form-control", placeholder="Full Name") }}
             <label for="fullname">Full Name</label>
+            {% if form.fullname.errors %}
+                <div class="text-danger">
+                    {% for error in form.fullname.errors %}
+                        <small>{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
+        <!-- Email Field -->
         <div class="form-floating mb-2">
             {{ form.email(class="form-control", placeholder="Email") }}
             <label for="email">Email address</label>
+            {% if form.email.errors %}
+                <div class="text-danger">
+                    {% for error in form.email.errors %}
+                        <small>{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
+        <!-- Username Field -->
         <div class="form-floating mb-2">
             {{ form.username(class="form-control", placeholder="Username") }}
             <label for="username">Username</label>
+            {% if form.username.errors %}
+                <div class="text-danger">
+                    {% for error in form.username.errors %}
+                        <small>{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
+        <!-- Password Field -->
         <div class="form-floating mb-2">
             {{ form.password(class="form-control", placeholder="Password") }}
             <label for="password">Password</label>
+            {% if form.password.errors %}
+                <div class="text-danger">
+                    {% for error in form.password.errors %}
+                        <small>{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
+        <!-- Confirm Password Field -->
         <div class="form-floating mb-2">
             {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
             <label for="confirm_password">Confirm Password</label>
+            {% if form.confirm_password.errors %}
+                <div class="text-danger">
+                    {% for error in form.confirm_password.errors %}
+                        <small>{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
+        <!-- Phone Field -->
         <div class="form-floating mb-2">
             {{ form.phone(class="form-control", placeholder="Phone") }}
             <label for="phone">Phone Number</label>
+            {% if form.phone.errors %}
+                <div class="text-danger">
+                    {% for error in form.phone.errors %}
+                        <small>{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
         <button class="btn btn-primary w-100 py-2" type="submit">Register</button>
@@ -78,6 +126,7 @@
 <!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 
 <!-- SVG Icons -->
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">

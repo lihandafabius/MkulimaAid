@@ -228,24 +228,24 @@
             </div>
 
             <div class="col-6 col-md-2 mb-3">
-              <h5>Contact Us</h5>
-              <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                  <a href="mailto:contact@example.com" class="nav-link p-0 text-body-secondary">
-                    Email: contact@example.com
-                  </a>
-                </li>
-                <li class="nav-item mb-2">
-                  <a href="tel:+1234567890" class="nav-link p-0 text-body-secondary">
-                    Phone: +1234567890
-                  </a>
-                </li>
-                <li class="nav-item mb-2">
-                  <span class="nav-link p-0 text-body-secondary">
-                    Address: 123 Example St.
-                  </span>
-                </li>
-              </ul>
+                <h5>Contact Us</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a href="mailto:{{ g.settings.contact_email }}" class="nav-link p-0 text-body-secondary">
+                            Email: {{ g.settings.contact_email }}
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="tel:{{ g.settings.contact_phone }}" class="nav-link p-0 text-body-secondary">
+                            Phone: {{ g.settings.contact_phone }}
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <span class="nav-link p-0 text-body-secondary">
+                            Address: {{ g.settings.address }}
+                        </span>
+                    </li>
+                </ul>
             </div>
 
             <div class="col-md-5 offset-md-1 mb-3">
