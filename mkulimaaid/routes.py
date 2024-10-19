@@ -228,7 +228,8 @@ def settings():
     # Retrieve all admins from the database
     admins = User.query.filter_by(is_admin=True).all()
 
-    return render_template('settings.html', form=form, admins=admins)
+    settings = get_settings()  # Fetch settings for template rendering
+    return render_template('settings.html', form=form, admins=admins, settings=settings)
 
 
 # Route to remove admin privileges
@@ -249,7 +250,7 @@ def remove_admin(admin_id):
 @main.before_request
 def check_maintenance_mode():
     # Get current settings from the database
-    settings = Settings.get_settings()
+    settings = get_settings()
 
     # Store settings globally for access in templates
     g.settings = settings
@@ -302,5 +303,44 @@ def update_contact_info():
     except Exception as e:
         db.session.rollback()
         flash(f'Error updating contact information: {str(e)}', 'danger')
+
+    return redirect(url_for('main.settings'))
+
+
+@main.route('/update_branding', methods=['POST'])
+@login_required
+def update_branding():
+    if not current_user.is_admin:
+        flash("You do not have the required permissions to perform this action.", 'danger')
+        return redirect(url_for('main.settings'))
+
+    site_title = request.form.get('site_title')
+    logo = request.files.get('site_logo')
+
+    # Get the current settings (singleton pattern)
+    settings = Settings.get_settings()
+
+    # Update the site title if provided
+    if site_title:
+        settings.site_title = site_title
+
+    # Handle file upload and save logic for the logo
+    if logo and allowed_file(logo.filename):
+        filename = secure_filename(logo.filename)
+        logo_path = os.path.join(Config.UPLOAD_FOLDER, filename)
+
+        # Save the logo to the upload folder
+        logo.save(logo_path)
+
+        # Store the relative path or filename in the database
+        settings.site_logo = filename
+
+    # Commit changes to the database
+    try:
+        db.session.commit()
+        flash('Branding updated successfully', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating branding: {str(e)}', 'danger')
 
     return redirect(url_for('main.settings'))

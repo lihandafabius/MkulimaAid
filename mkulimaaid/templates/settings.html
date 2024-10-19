@@ -56,14 +56,6 @@
         </div>
     </div>
 
-    <!-- Additional Settings --><!-- Change Contact Information Section -->
-    <!-- Change Site Title and Branding Section -->
-    <div class="card mt-4">
-        <div class="card-body">
-            <h4>Site Title & Branding</h4>
-        </div>
-    </div>
-
  <!-- Change Contact Information Section -->
     <div class="card mt-4">
         <div class="card-body">
@@ -86,6 +78,33 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary mt-2">Update Contact Info</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Change Site Title and Branding Section -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>Site Title & Branding</h4>
+            <form method="POST" action="{{ url_for('main.update_branding') }}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}  <!-- CSRF token -->
+
+                <div class="form-group">
+                    <label for="site_title">Site Title</label>
+                    <input type="text" class="form-control" id="site_title" name="site_title" value="{{ settings.site_title }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="site_logo">Upload Site Logo</label>
+                    <input type="file" class="form-control-file" id="site_logo" name="site_logo">
+                    {% if settings.site_logo %}
+                        <img src="{{ url_for('static', filename='uploads/' + settings.site_logo) }}" alt="Site Logo" class="img-thumbnail mt-2" width="150">
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-2">Update Branding</button>
             </form>
         </div>
     </div>

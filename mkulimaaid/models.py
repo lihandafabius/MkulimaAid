@@ -39,6 +39,23 @@ class Settings(db.Model):
         return settings
 
 
+class Disease(db.Model):
+    __tablename__ = 'diseases'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)  # Disease name
+    scientific_name = db.Column(db.String(150), nullable=True)  # Scientific name
+    symptoms = db.Column(db.Text, nullable=False)
+    causes = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    organic_control = db.Column(db.Text, nullable=True)
+    chemical_control = db.Column(db.Text, nullable=True)
+    preventive_measures = db.Column(db.Text, nullable=True)
+    image = db.Column(db.String(100), nullable=True)  # Filepath for the image
+
+    def __repr__(self):
+        return f'<Disease {self.name}>'
+
+
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), nullable=False, unique=True)

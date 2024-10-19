@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MkulimaAid</title>
+    <title>{{ g.settings.site_title or "MkulimaAid" }}</title>
     <script src="//cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <link rel="stylesheet" href="static/css/styles.css" />
     <link
@@ -36,8 +36,10 @@
         <div class="container-fluid">
           <a class="navbar-brand" href="#">
             <div class="branding">
-              <img src="static/images/logo.png" alt="Site Logo" class="site-logo" />
-              <span class="site-title">MkulimaAid</span>
+              <!-- Dynamically display the site logo -->
+              <img src="{{ url_for('static', filename='uploads/' + g.settings.site_logo) if g.settings.site_logo else url_for('static', filename='logo.png') }}" alt="Site Logo" class="site-logo" />
+              <!-- Dynamically display the site title -->
+              <span class="site-title">{{ g.settings.site_title or "MkulimaAid" }}</span>
             </div>
           </a>
           <button
