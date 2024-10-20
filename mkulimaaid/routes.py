@@ -1,13 +1,16 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings
+from mkulimaaid.models import User, Subscriber, Settings, Diseases
 from mkulimaaid import db, bcrypt, login_manager
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+import bleach
 
 main = Blueprint('main', __name__)
 
@@ -155,12 +158,19 @@ def register():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    users = User.query.all()  # Fetch all users
-    # Only admins can access this route
+    # Check if the user is an admin
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.upload'))
-    return render_template('dashboard.html')
+
+    # Instantiate the form
+    form = AdminForm()
+
+    diseases = Diseases.query.all()  # Get all diseases
+    users = User.query.all()  # Get all users
+
+    # Pass the form, diseases, and users to the template
+    return render_template('dashboard.html', form=form, diseases=diseases, users=users)
 
 
 # Logout route
@@ -344,3 +354,150 @@ def update_branding():
         flash(f'Error updating branding: {str(e)}', 'danger')
 
     return redirect(url_for('main.settings'))
+
+@main.route('/subscribe', methods=['POST'])
+def subscribe():
+    email = request.form.get('email')
+    if email:
+        # Check if already subscribed
+        if Subscriber.query.filter_by(email=email).first():
+            flash('You are already subscribed.', 'info')
+        else:
+            subscriber = Subscriber(email=email)
+            db.session.add(subscriber)
+            db.session.commit()
+            flash('You have successfully subscribed!', 'success')
+    else:
+        flash('Please provide a valid email.', 'danger')
+    return redirect(url_for('main.upload'))
+
+
+
+
+
+@main.route('/send_newsletter', methods=['POST'])
+@login_required
+def send_newsletter():
+    content = request.form.get('content')
+    subscribers = Subscriber.query.all()
+
+    for subscriber in subscribers:
+        message = Mail(
+            from_email='your-email@example.com',
+            to_emails=subscriber.email,
+            subject='New Trending Crop Disease Detected!',
+            plain_text_content=content
+        )
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+        except Exception as e:
+            print(f"Error: {e}")
+
+    flash('Notification sent to subscribers successfully!', 'success')
+    return redirect(url_for('main.diseases'))
+
+
+# Routes related to Disease Management
+# Route to add a new crop disease
+@main.route("/add_disease", methods=["GET", "POST"])
+@login_required
+def add_disease():
+    form = DiseaseForm()
+
+    if form.validate_on_submit():
+        disease_name = form.name.data
+        scientific_name = form.scientific_name.data
+        symptoms = form.symptoms.data
+        causes = form.causes.data
+        description = bleach.clean(form.description.data, tags=[], strip=True)  # Sanitize the description
+        organic_control = form.organic_control.data
+        chemical_control = form.chemical_control.data
+        preventive_measures = form.preventive_measures.data
+
+        # Handle image upload
+        image_file = 'default.jpg'  # Default image if none uploaded
+        if form.image.data:
+            image_file = secure_filename(form.image.data.filename)
+            form.image.data.save(os.path.join(Config.UPLOAD_FOLDER, image_file))
+
+        # Add the disease to the database
+        new_disease = Diseases(
+            name=disease_name,
+            scientific_name=scientific_name,
+            symptoms=symptoms,
+            causes=causes,
+            description=description,
+            organic_control=organic_control,
+            chemical_control=chemical_control,
+            preventive_measures=preventive_measures,
+            image=image_file
+        )
+
+        db.session.add(new_disease)
+        db.session.commit()
+
+        flash(f'Disease "{disease_name}" added successfully!', 'success')
+        return redirect(url_for('main.diseases'))
+
+    return render_template('add_disease.html', form=form)
+
+# Route to edit an existing crop disease
+@main.route("/disease/edit/<int:disease_id>", methods=["GET", "POST"])
+@login_required
+def edit_disease(disease_id):
+    disease = Diseases.query.get_or_404(disease_id)
+    form = DiseaseForm()
+
+    if form.validate_on_submit():
+        # Update disease details
+        disease.name = form.name.data
+        disease.scientific_name = form.scientific_name.data
+        disease.symptoms = form.symptoms.data
+        disease.causes = form.causes.data
+        disease.description = bleach.clean(form.description.data, tags=[], strip=True)  # Sanitize description
+        disease.organic_control = form.organic_control.data
+        disease.chemical_control = form.chemical_control.data
+        disease.preventive_measures = form.preventive_measures.data
+
+        # Handle new image upload if there is a new file
+        if form.image.data:
+            image_file = secure_filename(form.image.data.filename)
+            form.image.data.save(os.path.join(Config.UPLOAD_FOLDER, image_file))
+            disease.image = image_file
+
+        db.session.commit()
+        flash(f'Disease "{disease.name}" updated successfully!', 'success')
+        return redirect(url_for('main.diseases'))
+
+    # Pre-fill the form with existing disease data
+    elif request.method == 'GET':
+        form.name.data = disease.name
+        form.scientific_name.data = disease.scientific_name
+        form.symptoms.data = disease.symptoms
+        form.causes.data = disease.causes
+        form.description.data = disease.description
+        form.organic_control.data = disease.organic_control
+        form.chemical_control.data = disease.chemical_control
+        form.preventive_measures.data = disease.preventive_measures
+
+    return render_template('edit_disease.html', form=form, disease=disease)
+
+# Route to delete a disease
+@main.route("/disease/delete/<int:disease_id>", methods=["POST"])
+@login_required
+def delete_disease(disease_id):
+    disease = Diseases.query.get_or_404(disease_id)
+    db.session.delete(disease)
+    db.session.commit()
+
+    flash(f'Disease "{disease.name}" deleted successfully!', 'success')
+    return redirect(url_for('main.diseases'))
+
+@main.route('/diseases')
+@login_required
+def diseases():
+    diseases = Diseases.query.all()
+    form = AdminForm()  # or any form that you want to use
+    return render_template('diseases.html', diseases=diseases, form=form)

@@ -1,8 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Regexp
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Regexp, Optional
 from mkulimaaid.models import User
-from wtforms import StringField, PasswordField, SubmitField, BooleanField,FileField
 import re
+from wtforms import StringField, PasswordField, SubmitField, DecimalField, FileField, BooleanField, TextAreaField
+from flask_wtf.file import FileAllowed
+from wtforms import IntegerField
+from config import Config
 
 class UploadForm(FlaskForm):
     image = FileField('Upload Image', validators=[DataRequired()])
@@ -46,3 +49,15 @@ class RegistrationForm(FlaskForm):
 class AdminForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Add Admin')
+
+
+class DiseaseForm(FlaskForm):
+    name = StringField('Disease Name', validators=[DataRequired()])
+    scientific_name = StringField('Scientific Name', validators=[Optional()])
+    symptoms = TextAreaField('Symptoms', validators=[DataRequired()])
+    causes = TextAreaField('Causes', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[Optional()])
+    organic_control = TextAreaField('Organic Control Methods', validators=[Optional()])
+    chemical_control = TextAreaField('Chemical Control Methods', validators=[Optional()])
+    preventive_measures = TextAreaField('Preventive Measures', validators=[Optional()])
+    image = FileField('Disease Image', validators=[Optional(), FileAllowed(Config.ALLOWED_EXTENSIONS, 'Images only!')])

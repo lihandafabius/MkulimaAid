@@ -16,3 +16,5 @@ class Config:
     # Load disease model (Plant Disease Identification)
     disease_processor = AutoImageProcessor.from_pretrained(DISEASE_MODEL_PATH)
     disease_model = AutoModelForImageClassification.from_pretrained(DISEASE_MODEL_PATH)
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+

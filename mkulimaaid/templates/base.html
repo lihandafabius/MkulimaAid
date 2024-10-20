@@ -251,7 +251,8 @@
             </div>
 
             <div class="col-md-5 offset-md-1 mb-3">
-              <form method="POST" action="/subscribe">
+              <form method="POST" action="{{ url_for('main.subscribe') }}">
+                {{ form.hidden_tag() }} <!-- This adds the CSRF token -->
                 <h5>Subscribe to Our Newsletter</h5>
                 <p>Get to know the latest trends on crop diseases.</p>
                 <div class="d-flex flex-column flex-sm-row w-100 gap-2">

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h1>Diseases</h1>
+      <p>Manage and update Trending diseases here.</p>
+
+      <!-- Add Post Product Button -->
+      <a href="{{ url_for('main.add_disease') }}" class="btn btn-success mb-3">Post Disease</a>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Disease Name</th>
+            <th>Scientific Name</th>
+            <th>Symptoms</th>
+            <th>Causes</th>
+            <th>Organic Control Measures</th>
+            <th>Chemical Control Measures</th>
+            <th>Preventive Measures</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for disease in diseases %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ disease.name }}</td>
+            <td>{{ disease.scientific_name }}</td>
+            <td>{{ disease.symptoms }}</td>
+            <td>{{ disease.causes }}</td>
+            <td>{{ disease.organic_control }}</td>
+            <td>{{ disease.chemical_control }}</td>
+            <td>{{ disease.preventive_measures }}</td>
+            <td>{{ disease.description }}</td>
+
+            <td>
+              <a href="{{ url_for('main.edit_disease', disease_id=disease.id) }}" class="btn btn-sm btn-primary">Edit</a>
+              <form action="{{ url_for('main.delete_disease', disease_id=disease.id) }}" method="POST" style="display:inline-block;">
+                <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- Subscriber Notification Section -->
+  <div class="row mt-5">
+    <div class="col">
+      <h3>Notify Subscribers About Trending Crop Diseases</h3>
+      <p>Use this form to send an update to your subscribers whenever new Trending Crop Diseases are added.</p>
+      <form method="POST" action="{{ url_for('main.send_newsletter') }}">
+        <div class="form-group">
+          <label for="newsletter_content">Message to Subscribers</label>
+          <textarea class="form-control ckeditor" id="newsletter_content" name="content" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Send Notification</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
