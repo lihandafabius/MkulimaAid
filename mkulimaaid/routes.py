@@ -25,6 +25,12 @@ def allowed_file(filename):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@main.before_request
+def load_settings():
+    # Assuming Settings is a model that stores the title and logo
+    g.settings = Settings.query.first()
+
+
 
 # Home page and file upload handling
 @main.route('/', methods=['GET', 'POST'])

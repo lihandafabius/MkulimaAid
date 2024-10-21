@@ -38,6 +38,7 @@
             <div class="branding">
               <!-- Dynamically display the site logo -->
               <img src="{{ url_for('static', filename='uploads/' + g.settings.site_logo) if g.settings.site_logo else url_for('static', filename='logo.png') }}" alt="Site Logo" class="site-logo" />
+
               <!-- Dynamically display the site title -->
               <span class="site-title">{{ g.settings.site_title or "MkulimaAid" }}</span>
             </div>

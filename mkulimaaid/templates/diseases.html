@@ -4,68 +4,72 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col">
-      <h1>Diseases</h1>
-      <p>Manage and update Trending diseases here.</p>
+      <h1 class="mb-4">Manage Trending Crop Diseases</h1>
+      <p class="lead">Add, edit, or delete information on trending crop diseases below.</p>
 
-      <!-- Add Post Product Button -->
-      <a href="{{ url_for('main.add_disease') }}" class="btn btn-success mb-3">Post Disease</a>
+      <!-- Add Post Disease Button -->
+      <a href="{{ url_for('main.add_disease') }}" class="btn btn-success mb-4">Add New Disease</a>
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Disease Name</th>
-            <th>Scientific Name</th>
-            <th>Symptoms</th>
-            <th>Causes</th>
-            <th>Organic Control Measures</th>
-            <th>Chemical Control Measures</th>
-            <th>Preventive Measures</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for disease in diseases %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ disease.name }}</td>
-            <td>{{ disease.scientific_name }}</td>
-            <td>{{ disease.symptoms }}</td>
-            <td>{{ disease.causes }}</td>
-            <td>{{ disease.organic_control }}</td>
-            <td>{{ disease.chemical_control }}</td>
-            <td>{{ disease.preventive_measures }}</td>
-            <td>{{ disease.description }}</td>
+      <!-- Diseases Table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>Disease Name</th>
+              <th>Scientific Name</th>
+              <th>Symptoms</th>
+              <th>Causes</th>
+              <th>Organic Control</th>
+              <th>Chemical Control</th>
+              <th>Preventive Measures</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for disease in diseases %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ disease.name }}</td>
+              <td>{{ disease.scientific_name }}</td>
+              <td>{{ disease.symptoms }}</td>
+              <td>{{ disease.causes }}</td>
+              <td>{{ disease.organic_control }}</td>
+              <td>{{ disease.chemical_control }}</td>
+              <td>{{ disease.preventive_measures }}</td>
+              <td>{{ disease.description }}</td>
+              <td class="text-center">
+                <a href="{{ url_for('main.edit_disease', disease_id=disease.id) }}" class="btn btn-sm btn-primary mb-1">Edit</a>
 
-            <td>
-              <a href="{{ url_for('main.edit_disease', disease_id=disease.id) }}" class="btn btn-sm btn-primary">Edit</a>
-              <form action="{{ url_for('main.delete_disease', disease_id=disease.id) }}" method="POST" style="display:inline-block;">
-                <button class="btn btn-sm btn-danger" type="submit">Delete</button>
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                <!-- Delete form with CSRF protection -->
+                <form action="{{ url_for('main.delete_disease', disease_id=disease.id) }}" method="POST" style="display:inline-block;">
+                  {{ form.hidden_tag() }}
+                  <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this disease?');">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-
 
   <!-- Subscriber Notification Section -->
   <div class="row mt-5">
     <div class="col">
-      <h3>Notify Subscribers About Trending Crop Diseases</h3>
-      <p>Use this form to send an update to your subscribers whenever new Trending Crop Diseases are added.</p>
+      <h3 class="mb-3">Notify Subscribers About Trending Crop Diseases</h3>
+      <p>Send updates to your subscribers whenever new trending crop diseases are added.</p>
       <form method="POST" action="{{ url_for('main.send_newsletter') }}">
+        {{ form.hidden_tag() }}  <!-- CSRF protection for the newsletter form -->
         <div class="form-group">
           <label for="newsletter_content">Message to Subscribers</label>
           <textarea class="form-control ckeditor" id="newsletter_content" name="content" rows="5"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Send Notification</button>
+        <button type="submit" class="btn btn-primary mt-3">Send Notification</button>
       </form>
     </div>
   </div>
 </div>
-
 {% endblock %}
