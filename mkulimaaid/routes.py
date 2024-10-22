@@ -39,6 +39,7 @@ def upload():
     form = UploadForm()
     image_filename = None
     prediction = None
+    trending_diseases = Diseases.query.filter_by(is_trending=True).all()
 
     if form.validate_on_submit():
         if form.image.data and allowed_file(form.image.data.filename):
@@ -74,7 +75,7 @@ def upload():
         else:
             flash("Invalid file type. Please upload a valid image (jpg, jpeg, png, jfif).", 'warning')
 
-    return render_template('home.html', form=form, image_filename=image_filename, prediction=prediction)
+    return render_template('home.html', form=form, image_filename=image_filename, prediction=prediction, diseases=trending_diseases)
 
 
 # Serve the uploaded files
@@ -507,3 +508,31 @@ def diseases():
     diseases = Diseases.query.all()
     form = AdminForm()  # or any form that you want to use
     return render_template('diseases.html', diseases=diseases, form=form)
+
+# Route to post disease to homepage
+@main.route('/post_disease/<int:disease_id>', methods=['POST'])
+def post_disease_to_homepage(disease_id):
+    disease = Diseases.query.get_or_404(disease_id)
+
+    # Mark the disease as trending (posted to homepage)
+    disease.is_trending = True
+    db.session.commit()
+
+    flash(f'{disease.name} has been posted to the homepage.', 'success')
+    return redirect(url_for('main.diseases'))
+
+# Route to toggle "is_trending" status
+@main.route('/toggle_trending/<int:disease_id>', methods=['POST'])
+def toggle_trending(disease_id):
+    disease = Diseases.query.get_or_404(disease_id)
+
+    # Toggle the "is_trending" status
+    disease.is_trending = not disease.is_trending
+    db.session.commit()
+
+    if disease.is_trending:
+        flash(f'{disease.name} is now marked as trending.', 'success')
+    else:
+        flash(f'{disease.name} is no longer marked as trending.', 'info')
+
+    return redirect(url_for('main.diseases'))

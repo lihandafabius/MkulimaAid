@@ -51,6 +51,7 @@ class Diseases(db.Model):
     chemical_control = db.Column(db.Text, nullable=True)
     preventive_measures = db.Column(db.Text, nullable=True)
     image = db.Column(db.String(100), nullable=True)  # Filepath for the image
+    is_trending = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f'<Disease {self.name}>'

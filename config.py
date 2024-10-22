@@ -3,7 +3,8 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 class Config:
     SECRET_KEY = "supersecretkey"
-    UPLOAD_FOLDER = './static/uploads'
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'mkulimaaid', 'static', 'uploads')
+
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif'}
 
     # Database configuration

@@ -61,89 +61,29 @@
 <div class="container mt-5">
     <!-- Trending Crop Pests and Diseases Title -->
     <h2 class="text-center carousel-title">Trending Crop Diseases</h2>
-
     <!-- Flickity Carousel for trending pests and diseases -->
     <div class="carousel" data-flickity='{ "wrapAround": true, "autoPlay": 3000, "contain": true }'>
+        {% for disease in diseases %}
         <div class="carousel-cell">
-            <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
+            <img src="{{ url_for('static', filename='uploads/' + disease.image) }}"
+                 class="carousel-image"
+                 alt="{{ disease.name }}">
             <div class="product-info">
-                <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of disease 1</p>
+                <h3 class="product-name">{{ disease.name }}</h3>
+                <p class="product-description">{{ disease.description }}</p>
                 <button class="quick-view">Learn More</button>
             </div>
         </div>
-        <div class="carousel-cell">
-            <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
-            <div class="product-info">
-                <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of disease 1</p>
-                <button class="quick-view">Learn More</button>
-            </div>
-        </div>
-        <div class="carousel-cell">
-            <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
-            <div class="product-info">
-                <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of disease 1</p>
-                <button class="quick-view">Learn More</button>
-            </div>
-        </div>
-        <div class="carousel-cell">
-            <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
-            <div class="product-info">
-                <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of disease 1</p>
-                <button class="quick-view">Learn More</button>
-            </div>
-        </div>
-        <div class="carousel-cell">
-            <img src="{{ url_for('static', filename='images/1.jpg') }}" class="carousel-image" alt="Pest 1">
-            <div class="product-info">
-                <h3 class="product-name">Pest 1</h3>
-                <p class="product-description">Description of Pest 1</p>
-                <button class="quick-view">Learn More</button>
-            </div>
-        </div>
-        <!-- Repeat similar div blocks for other pests/diseases -->
+        {% endfor %}
     </div>
 </div>
 
+
+
+
 <script src="{{ url_for('static', filename='js/preview.js') }}"></script>
-<script>
-    // JavaScript function to submit the form for disease recognition
-    function selectModel(model, imageFilename) {
-        console.log("Disease recognition button clicked"); // Debugging statement
 
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = "{{ url_for('main.predict') }}";
-
-        const modelInput = document.createElement('input');
-        modelInput.type = 'hidden';
-        modelInput.name = 'model';
-        modelInput.value = model;
-        form.appendChild(modelInput);
-
-        const imageInput = document.createElement('input');
-        imageInput.type = 'hidden';
-        imageInput.name = 'image_filename';
-        imageInput.value = imageFilename;
-        form.appendChild(imageInput);
-
-        // Add CSRF token
-        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrf_token';
-        csrfInput.value = csrfToken;
-        form.appendChild(csrfInput);
-
-        console.log("Submitting form to", form.action); // Debugging statement
-        document.body.appendChild(form);
-        form.submit();
-    }
-</script>
-
+<script src="{{ url_for('static', filename='js/submit_image_disease.js') }}"></script>
 
 
 {% endblock %}

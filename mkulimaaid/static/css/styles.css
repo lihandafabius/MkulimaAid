@@ -213,3 +213,19 @@ background-color: #f1f1f1;
     top: -50px; /* Slide back up */
     opacity: 0; /* Fade out */
 }
+
+
+.carousel-cell {
+    width: 300px;  /* Set the width for each carousel cell */
+    height: 300px; /* Set a fixed height for all cells */
+    overflow: hidden; /* Hide any overflow from images */
+    border-radius: 8px; /* Optional: Rounded corners for styling */
+}
+
+.carousel-image {
+    width: 100%;    /* Make the image fill the cell width */
+    height: 100%;   /* Make the image fill the cell height */
+    object-fit: cover; /* Ensure the image covers the specified dimensions, cropping if needed */
+    display: block; /* Ensures no extra space around the image */
+    border-radius: 8px;
+}
