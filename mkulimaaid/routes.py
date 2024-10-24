@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm
 from config import Config
 from PIL import Image
 import torch
@@ -536,3 +536,41 @@ def toggle_trending(disease_id):
         flash(f'{disease.name} is no longer marked as trending.', 'info')
 
     return redirect(url_for('main.diseases'))
+
+
+@main.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    form = ProfileForm()
+
+    if form.validate_on_submit():
+        current_user.fullname = form.fullname.data
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.phone = form.phone.data
+        db.session.commit()
+        flash('Your profile has been updated!', 'success')
+        return redirect(url_for('main.profile'))
+
+    elif request.method == "GET":
+        form.fullname.data = current_user.fullname
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.phone.data = current_user.phone
+
+    return render_template('profile.html', form=form)
+
+@main.route("/change_password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+
+    if form.validate_on_submit():
+        # Update the user's password
+        hashed_password = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
+        current_user.password = hashed_password
+        db.session.commit()
+        flash('Your password has been updated!', 'success')
+        return redirect(url_for('main.profile'))
+
+    return render_template('change_password.html', form=form)

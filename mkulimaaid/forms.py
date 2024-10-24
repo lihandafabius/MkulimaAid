@@ -6,6 +6,9 @@ from wtforms import StringField, PasswordField, SubmitField, DecimalField, FileF
 from flask_wtf.file import FileAllowed
 from wtforms import IntegerField
 from config import Config
+from flask_login import current_user
+from mkulimaaid import bcrypt
+
 
 class UploadForm(FlaskForm):
     image = FileField('Upload Image', validators=[DataRequired()])
@@ -61,3 +64,35 @@ class DiseaseForm(FlaskForm):
     chemical_control = TextAreaField('Chemical Control Methods', validators=[Optional()])
     preventive_measures = TextAreaField('Preventive Measures', validators=[Optional()])
     image = FileField('Disease Image', validators=[Optional(), FileAllowed(Config.ALLOWED_EXTENSIONS, 'Images only!')])
+
+
+# Profile update form
+class ProfileForm(FlaskForm):
+    fullname = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Phone Number', validators=[Length(max=15)])
+    submit = SubmitField('Update Profile')
+
+    def validate_username(self, username):
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError('That username is already taken. Please choose a different one.')
+
+    def validate_email(self, email):
+        if email.data != current_user.email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('That email is already in use. Please choose a different one.')
+
+# Password change form
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
+
+    def validate_current_password(self, current_password):
+        if not bcrypt.check_password_hash(current_user.password, current_password.data):
+            raise ValidationError('Current password is incorrect.')

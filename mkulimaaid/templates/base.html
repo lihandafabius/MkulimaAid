@@ -110,7 +110,7 @@
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item text-success" href="#">
+                    <a class="dropdown-item text-success" href="/profile">
                       <i class="bi bi-person"></i> Profile
                     </a>
                   </li>
@@ -314,6 +314,11 @@
           CKEDITOR.replace('newsletter_content');
       </script>
       <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+      <script src="{{ url_for('static', filename='js/show_password.js') }}"></script>
+
+      <!-- Block for page-specific scripts -->
+      {% block scripts %}{% endblock %}
+
 
     </div>
   </body>

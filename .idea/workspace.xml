@@ -5,39 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/submit_image_disease.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/show_password.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/toggle_password_visibility.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/change_password.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/profile2.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/diseases.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/diseases.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/styles.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/custom.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/preview.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/theme_toggle.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/11.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/12.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/13.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/3.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/4.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/5.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/6.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/7.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/8.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/download.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/uploads/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
