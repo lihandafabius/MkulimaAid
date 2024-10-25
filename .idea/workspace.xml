@@ -5,17 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/show_password.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/toggle_password_visibility.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/change_password.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/profile2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -94,7 +90,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>266</line>
+          <line>269</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

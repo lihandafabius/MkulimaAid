@@ -73,6 +73,7 @@ class ProfileForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone = StringField('Phone Number', validators=[Length(max=15)])
     submit = SubmitField('Update Profile')
+    avatar = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'jfif'], 'Images only!')])
 
     def validate_username(self, username):
         if username.data != current_user.username:
@@ -96,3 +97,8 @@ class ChangePasswordForm(FlaskForm):
     def validate_current_password(self, current_password):
         if not bcrypt.check_password_hash(current_user.password, current_password.data):
             raise ValidationError('Current password is incorrect.')
+
+
+class CommentForm(FlaskForm):
+    comment = TextAreaField('Your Comment', validators=[DataRequired(), Length(max=500)])
+    submit = SubmitField('Submit Comment')

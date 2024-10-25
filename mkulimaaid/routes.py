@@ -1,16 +1,19 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import bleach
+from datetime import datetime
+from mkulimaaid.utils import save_avatar
+
 
 main = Blueprint('main', __name__)
 
@@ -542,23 +545,33 @@ def toggle_trending(disease_id):
 @login_required
 def profile():
     form = ProfileForm()
+    comment_form = CommentForm()
+    comments = Comments.query.filter_by(user_id=current_user.id).order_by(Comments.timestamp.desc()).all()
 
     if form.validate_on_submit():
+        # Update profile information
         current_user.fullname = form.fullname.data
         current_user.username = form.username.data
-        current_user.email = form.email.data
         current_user.phone = form.phone.data
+
+        # Handle avatar upload using save_avatar
+        if form.avatar.data:
+            avatar_filename = save_avatar(form.avatar.data)
+            current_user.avatar = avatar_filename
+
         db.session.commit()
         flash('Your profile has been updated!', 'success')
         return redirect(url_for('main.profile'))
 
     elif request.method == "GET":
+        # Populate form fields with current user data
         form.fullname.data = current_user.fullname
         form.username.data = current_user.username
         form.email.data = current_user.email
         form.phone.data = current_user.phone
 
-    return render_template('profile.html', form=form)
+    return render_template('profile.html', form=form, comment_form=comment_form, comments=comments)
+
 
 @main.route("/change_password", methods=["GET", "POST"])
 @login_required
@@ -574,3 +587,22 @@ def change_password():
         return redirect(url_for('main.profile'))
 
     return render_template('change_password.html', form=form)
+
+
+@main.route("/add_comment", methods=["POST"])
+@login_required
+def add_comment():
+    comment_form = CommentForm()
+    if comment_form.validate_on_submit():
+        comment = Comments(
+            comment=comment_form.comment.data,
+            user_id=current_user.id,
+            timestamp=datetime.utcnow()
+        )
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been added!', 'success')
+    else:
+        flash('Failed to add comment. Please try again.', 'danger')
+
+    return redirect(url_for('main.profile'))

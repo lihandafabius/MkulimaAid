@@ -9,8 +9,33 @@
                     <h3 class="mb-0">Your Profile</h3>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('main.profile') }}">
+                    <!-- Profile Picture Section -->
+                    <div class="text-center">
+                        {% if current_user.avatar %}
+                            <img class="rounded-circle mt-3 shadow-lg border border-3 border-success"
+                                 width="170px" height="170px"
+                                 src="{{ url_for('static', filename='uploads/' + current_user.avatar) }}"
+                                 alt="Profile Picture">
+                        {% else %}
+                            <img class="rounded-circle mt-3 shadow-lg border border-3 border-secondary"
+                                 width="150px" height="150px"
+                                 src="{{ url_for('static', filename='img/default.png') }}"
+                                 alt="Default Avatar">
+                        {% endif %}
+                    </div>
+
+                    <!-- Profile Form -->
+                    <form method="POST" action="{{ url_for('main.profile') }}" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
+
+                        <div class="form-group mt-4">
+                            <label for="avatar">Profile Picture</label>
+                            {{ form.avatar(class="form-control") }}
+                            {% if form.avatar.errors %}
+                                <div class="text-danger small">{{ form.avatar.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+
                         <div class="form-group">
                             <label for="fullname">Full Name</label>
                             {{ form.fullname(class="form-control", placeholder="Enter your full name") }}
@@ -18,6 +43,7 @@
                                 <div class="text-danger small">{{ form.fullname.errors[0] }}</div>
                             {% endif %}
                         </div>
+
                         <div class="form-group">
                             <label for="username">Username</label>
                             {{ form.username(class="form-control", placeholder="Enter your username") }}
@@ -25,10 +51,12 @@
                                 <div class="text-danger small">{{ form.username.errors[0] }}</div>
                             {% endif %}
                         </div>
+
                         <div class="form-group">
                             <label for="email">Email</label>
                             {{ form.email(class="form-control", readonly=True) }}
                         </div>
+
                         <div class="form-group">
                             <label for="phone">Phone</label>
                             {{ form.phone(class="form-control", placeholder="Enter your phone number") }}
@@ -36,11 +64,47 @@
                                 <div class="text-danger small">{{ form.phone.errors[0] }}</div>
                             {% endif %}
                         </div>
+
                         <div class="text-center mt-4">
                             <button type="submit" class="btn btn-success px-4">Update Profile</button>
                             <a href="{{ url_for('main.change_password') }}" class="btn btn-warning px-4">Change Password</a>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Section -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white">
+                    <h4>Share Your Experience With MkulimaAid</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Comment Form -->
+                    <form method="POST" action="{{ url_for('main.add_comment') }}">
+                        {{ comment_form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ comment_form.comment(class="form-control", rows=3, placeholder="Enter your comment") }}
+                            {% if comment_form.comment.errors %}
+                                <div class="text-danger small">{{ comment_form.comment.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
+                    </form>
+
+                    <!-- Display Comments -->
+                    <div class="mt-4">
+                        <h5>Comments</h5>
+                        {% for comment in comments %}
+                            <div class="border p-3 my-2">
+                                <strong>{{ comment.user.username }}</strong> on {{ comment.timestamp.strftime('%Y-%m-%d') }}
+                                <p>{{ comment.comment }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

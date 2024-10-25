@@ -2,6 +2,7 @@
 from mkulimaaid import db  # Import db from mkulimaaid where it is initialized
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
     __tablename__ = 'users'
@@ -12,6 +13,7 @@ class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
     phone = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(60), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    avatar = db.Column(db.String(100), nullable=True)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -63,3 +65,13 @@ class Subscriber(db.Model):
 
     def __repr__(self):
         return f'<Subscriber {self.email}>'
+
+
+class Comments(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    comment = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('comments', lazy=True))

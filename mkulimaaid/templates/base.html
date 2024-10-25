@@ -92,8 +92,9 @@
 
             <!-- Profile dropdown -->
             <div class="dropdown text-end ms-3">
-              <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://github.com/mdo.png" alt="Profile" width="50" height="50" class="rounded-circle border border-3">
+             <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="{{ url_for('static', filename='uploads/' + current_user.avatar) if current_user.avatar else url_for('static', filename='default-avatar.png') }}"
+                   alt="Profile" width="50" height="50" class="rounded-circle border border-3">
               </a>
               <ul class="dropdown-menu text-small">
                 {% if current_user.is_authenticated %}
