@@ -19,7 +19,7 @@
                         {% else %}
                             <img class="rounded-circle mt-3 shadow-lg border border-3 border-secondary"
                                  width="150px" height="150px"
-                                 src="{{ url_for('static', filename='img/default.png') }}"
+                                 src="{{ url_for('static', filename='images/default.png') }}"
                                  alt="Default Avatar">
                         {% endif %}
                     </div>
@@ -75,39 +75,50 @@
         </div>
     </div>
 
-    <!-- Comment Section -->
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
-            <div class="card shadow-lg">
-                <div class="card-header bg-info text-white">
-                    <h4>Share Your Experience With MkulimaAid</h4>
-                </div>
-                <div class="card-body">
-                    <!-- Comment Form -->
-                    <form method="POST" action="{{ url_for('main.add_comment') }}">
-                        {{ comment_form.hidden_tag() }}
-                        <div class="form-group">
-                            {{ comment_form.comment(class="form-control", rows=3, placeholder="Enter your comment") }}
-                            {% if comment_form.comment.errors %}
-                                <div class="text-danger small">{{ comment_form.comment.errors[0] }}</div>
-                            {% endif %}
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
-                    </form>
-
-                    <!-- Display Comments -->
-                    <div class="mt-4">
-                        <h5>Comments</h5>
-                        {% for comment in comments %}
-                            <div class="border p-3 my-2">
-                                <strong>{{ comment.user.username }}</strong> on {{ comment.timestamp.strftime('%Y-%m-%d') }}
-                                <p>{{ comment.comment }}</p>
-                            </div>
-                        {% endfor %}
+<!-- Comment Section -->
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-info text-white">
+                <h4>Share Your Experience With MkulimaAid</h4>
+            </div>
+            <div class="card-body">
+                <!-- Comment Form -->
+                <form method="POST" action="{{ url_for('main.add_comment') }}">
+                    {{ comment_form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ comment_form.comment(class="form-control", rows=3, placeholder="Enter your comment") }}
+                        {% if comment_form.comment.errors %}
+                            <div class="text-danger small">{{ comment_form.comment.errors[0] }}</div>
+                        {% endif %}
                     </div>
+                    <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
+                </form>
+
+                <!-- Display Comments -->
+                <div class="mt-4">
+                    <h5>Community Comments</h5>
+                    {% if comments %}
+                    {% for comment in comments %}
+                        <div class="d-flex align-items-start border p-3 my-2 rounded">
+                            <!-- User avatar -->
+                            <img class="rounded-circle me-3" src="{{ url_for('static', filename='uploads/' + comment.user.avatar) if comment.user.avatar else url_for('static', filename='img/default.png') }}" alt="User Avatar" width="50" height="50">
+
+                            <!-- Comment content -->
+                            <div>
+                                <strong>{{ comment.user.username }}</strong>
+                                <small class="text-muted ms-2">{{ comment.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                                <p class="mt-2 mb-0">{{ comment.comment }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No comments yet. Be the first to share your experience!</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

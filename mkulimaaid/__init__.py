@@ -23,6 +23,7 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)  # Initialize login_manager with the app
+    login_manager.login_message = "Please log in to access MkulimaAid."
     migrate.init_app(app, db)
 
     # Set the login view (this is where users will be redirected if not authenticated)

@@ -43,7 +43,11 @@
         <div class="form-floating mb-3">
             {{ form.email(class="form-control", placeholder="Email") }}
             <label for="email">Email address</label>
+            {% if form.email.errors %}
+                <div class="text-danger small">{{ form.email.errors[0] }}</div>
+            {% endif %}
         </div>
+
 
         <div class="form-floating mb-3 position-relative">
             {{ form.password(class="form-control", id="password", placeholder="Password", type="password") }}

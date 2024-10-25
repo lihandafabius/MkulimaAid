@@ -5,14 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/default.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/js/show_password.js" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/js/show_password.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/register.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,24 +42,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Python.aap2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.routes.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;Python.server.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/FABIUS/Desktop/crop pests and diseases classification/mkulimaaid/templates&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Python.aap2.executor": "Run",
+    "Python.app.executor": "Run",
+    "Python.routes.executor": "Run",
+    "Python.run.executor": "Run",
+    "Python.server.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/FABIUS/Desktop/crop pests and diseases classification/mkulimaaid/static/images"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\templates" />
       <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\static\images" />
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\templates" />
       <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification" />
     </key>
     <key name="MoveFile.RECENT_KEYS">

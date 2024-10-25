@@ -546,7 +546,7 @@ def toggle_trending(disease_id):
 def profile():
     form = ProfileForm()
     comment_form = CommentForm()
-    comments = Comments.query.filter_by(user_id=current_user.id).order_by(Comments.timestamp.desc()).all()
+    comments = Comments.query.order_by(Comments.timestamp.desc()).all()  # Fetch all comments
 
     if form.validate_on_submit():
         # Update profile information
@@ -554,9 +554,11 @@ def profile():
         current_user.username = form.username.data
         current_user.phone = form.phone.data
 
-        # Handle avatar upload using save_avatar
+        # Handle avatar upload
         if form.avatar.data:
-            avatar_filename = save_avatar(form.avatar.data)
+            avatar_filename = secure_filename(form.avatar.data.filename)
+            avatar_path = os.path.join(current_app.config['UPLOAD_FOLDER'], avatar_filename)
+            form.avatar.data.save(avatar_path)
             current_user.avatar = avatar_filename
 
         db.session.commit()
@@ -571,6 +573,7 @@ def profile():
         form.phone.data = current_user.phone
 
     return render_template('profile.html', form=form, comment_form=comment_form, comments=comments)
+
 
 
 @main.route("/change_password", methods=["GET", "POST"])

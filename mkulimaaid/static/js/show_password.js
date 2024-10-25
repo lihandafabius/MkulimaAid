@@ -1,5 +1,6 @@
 function togglePasswordVisibility() {
     const passwordField = document.getElementById('password');
+    const passwordField = document.getElementById('confirm_password');
     const passwordIcon = document.getElementById('togglePasswordIcon');
 
     if (passwordField.type === 'password') {
