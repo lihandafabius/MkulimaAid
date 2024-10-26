@@ -609,3 +609,21 @@ def add_comment():
         flash('Failed to add comment. Please try again.', 'danger')
 
     return redirect(url_for('main.profile'))
+
+
+@main.route("/remove_avatar", methods=["POST"])
+@login_required
+def remove_avatar():
+    # Check if the user has an avatar to remove
+    if current_user.avatar:
+        avatar_path = os.path.join(current_app.config['UPLOAD_FOLDER'], current_user.avatar)
+        if os.path.exists(avatar_path):
+            os.remove(avatar_path)  # Delete the existing avatar file
+
+        current_user.avatar = None  # Set avatar to None to use the default
+        db.session.commit()
+        flash('Your profile picture has been removed.', 'success')
+
+    return redirect(url_for('main.profile'))
+
+

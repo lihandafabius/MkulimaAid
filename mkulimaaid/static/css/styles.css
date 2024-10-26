@@ -229,3 +229,13 @@ background-color: #f1f1f1;
     display: block; /* Ensures no extra space around the image */
     border-radius: 8px;
 }
+/* Styles for the sidebar icons */
+.nav-link svg {
+    width: 20px;
+    height: 20px;
+    fill: #6c757d; /* Neutral gray */
+    transition: fill 0.2s ease-in-out;
+}
+.nav-link:hover svg, .nav-link.active svg {
+    fill: #0d6efd; /* Bootstrap primary color */
+}
