@@ -84,6 +84,7 @@ class Video(db.Model):
     description = db.Column(db.Text, nullable=True)
     url = db.Column(db.String(200), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    published = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"<Video '{self.title}'>"

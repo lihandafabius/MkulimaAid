@@ -632,15 +632,14 @@ def remove_avatar():
 @main.route("/videos")
 def videos():
     page = request.args.get('page', 1, type=int)
-    videos = Video.query.order_by(Video.date_posted.desc()).paginate(page=page, per_page=6)
+    # Only fetch videos that are marked as published
+    videos = Video.query.filter_by(published=True).order_by(Video.date_posted.desc()).paginate(page=page, per_page=6)
 
     # Extract YouTube ID from each video URL
     for video in videos.items:
         video.youtube_id = video.url.split("v=")[-1]
 
     return render_template("videos.html", videos=videos)
-
-
 
 # Route to manage videos in the dashboard
 @main.route('/dashboard/videos', methods=['GET', 'POST'])
@@ -671,12 +670,16 @@ def add_video():
             flash("Invalid YouTube URL.", 'danger')
             return redirect(url_for('main.add_video'))
 
+        # Determine if the video should be published
+        is_published = 'published' in request.form
+
         # Create new video entry
         new_video = Video(
             title=form.title.data,
             description=form.description.data,
             url=form.url.data,
-            date_posted=datetime.utcnow()
+            date_posted=datetime.utcnow(),
+            published=is_published
         )
         db.session.add(new_video)
         db.session.commit()
@@ -703,10 +706,11 @@ def edit_video(video_id):
             flash("Invalid YouTube URL.", 'danger')
             return redirect(url_for('main.edit_video', video_id=video_id))
 
-        # Update video details
+        # Update video details and published status
         video.title = form.title.data
         video.description = form.description.data
         video.url = form.url.data
+        video.published = 'published' in request.form
         db.session.commit()
         flash(f'Video "{video.title}" updated successfully!', 'success')
         return redirect(url_for('main.dashboard_videos'))
@@ -725,4 +729,23 @@ def delete_video(video_id):
     db.session.delete(video)
     db.session.commit()
     flash(f'Video "{video.title}" deleted successfully!', 'success')
+    return redirect(url_for('main.dashboard_videos'))
+
+
+@main.route('/dashboard/videos/post/<int:video_id>', methods=['POST'])
+@login_required
+def post_video_to_homepage(video_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard_videos'))
+
+    video = Video.query.get_or_404(video_id)
+    video.published = not video.published  # Toggle published status
+    db.session.commit()
+
+    if video.published:
+        flash(f'Video "{video.title}" is now published on the homepage.', 'success')
+    else:
+        flash(f'Video "{video.title}" has been removed from the homepage.', 'warning')
+
     return redirect(url_for('main.dashboard_videos'))

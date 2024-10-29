@@ -30,8 +30,14 @@
             {% endif %}
         </div>
 
+        <!-- Publish to Homepage Checkbox -->
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="published" name="published" {% if video.published %}checked{% endif %}>
+            <label class="form-check-label" for="published">Publish to Homepage</label>
+        </div>
+
         <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a href="{{ url_for('main.videos') }}" class="btn btn-secondary">Back to Videos</a>
+        <a href="{{ url_for('main.dashboard_videos') }}" class="btn btn-secondary">Back to Videos</a>
     </form>
 </div>
 {% endblock %}

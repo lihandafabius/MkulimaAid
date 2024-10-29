@@ -83,7 +83,7 @@
             {{ form.password(class="form-control", placeholder="Password") }}
             <label for="password">Password</label>
             <!-- Eye icon for toggling password visibility -->
-            <span class="position-absolute  top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password')" style="cursor: pointer;">
+            <span class="position-absolute  top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password')" style="cursor: pointer;" data-bs-toggle="tooltip" title="Show Password">
                 <svg id="toggleCurrentPasswordIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16" >
                     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
                     <path d="M8 5a3 3 0 0 0-3 3 3 0 0 0 6 0 3 3 0 0 0-3-3z"/>
@@ -104,7 +104,7 @@
             <label for="confirm_password">Confirm Password</label>
             <!-- Eye Icon for Password Visibility -->
 
-            <span class="position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('confirm_password')" style="cursor: pointer;">
+            <span class="position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('confirm_password')" style="cursor: pointer;" data-bs-toggle="tooltip" title="Show Password">
                 <svg id="toggleConfirmPasswordIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
                     <path d="M8 5a3 3 0 0 0-3 3 3 0 0 0 6 0 3 3 0 0 0-3-3z"/>
@@ -144,6 +144,8 @@
 <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 <!-- Toggle Password Visibility Script -->
 <script src="{{ url_for('static', filename='js/toggle_password_visibility.js') }}"></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+<script src="{{ url_for('static', filename='js/show_password_notification.js') }}"></script>
 
 <!-- SVG Icons -->
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">

@@ -108,10 +108,11 @@ class VideoForm(FlaskForm):
     title = StringField('Video Title', validators=[DataRequired(), Length(max=100)])
     description = TextAreaField('Description', validators=[Optional(), Length(max=500)])
     url = StringField('YouTube Video URL', validators=[DataRequired(), Length(max=200)])
+    published = BooleanField('Published')
     submit = SubmitField('Submit')
 
     def validate_url(self, url):
-        # Basic check to ensure URL matches the YouTube pattern
-        youtube_regex = r'^(https?://)?(www\.)?(youtube\.com|youtu\.?be)/.+$'
+        # Enhanced regex to match YouTube URL formats including query parameters
+        youtube_regex = r'^(https?://)?(www\.)?(youtube\.com|youtu\.be)/(watch\?v=|embed/|v/|.+)?([a-zA-Z0-9_-]{11})(\S+)?$'
         if not re.match(youtube_regex, url.data):
             raise ValidationError('Please enter a valid YouTube URL.')
