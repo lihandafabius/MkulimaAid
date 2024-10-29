@@ -1,18 +1,19 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import bleach
 from datetime import datetime
 from mkulimaaid.utils import save_avatar
+import re
 
 
 main = Blueprint('main', __name__)
@@ -627,3 +628,101 @@ def remove_avatar():
     return redirect(url_for('main.profile'))
 
 
+
+@main.route("/videos")
+def videos():
+    page = request.args.get('page', 1, type=int)
+    videos = Video.query.order_by(Video.date_posted.desc()).paginate(page=page, per_page=6)
+
+    # Extract YouTube ID from each video URL
+    for video in videos.items:
+        video.youtube_id = video.url.split("v=")[-1]
+
+    return render_template("videos.html", videos=videos)
+
+
+
+# Route to manage videos in the dashboard
+@main.route('/dashboard/videos', methods=['GET', 'POST'])
+@login_required
+def dashboard_videos():
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    videos = Video.query.order_by(Video.date_posted.desc()).all()
+    return render_template('dashboard_videos.html', videos=videos)
+
+# Route to add a new video
+@main.route('/dashboard/videos/add', methods=['GET', 'POST'])
+@login_required
+def add_video():
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    form = VideoForm()
+    if form.validate_on_submit():
+        # Extract YouTube ID from the URL
+        youtube_id = re.search(r'v=([^&]+)', form.url.data)
+        if youtube_id:
+            youtube_id = youtube_id.group(1)
+        else:
+            flash("Invalid YouTube URL.", 'danger')
+            return redirect(url_for('main.add_video'))
+
+        # Create new video entry
+        new_video = Video(
+            title=form.title.data,
+            description=form.description.data,
+            url=form.url.data,
+            date_posted=datetime.utcnow()
+        )
+        db.session.add(new_video)
+        db.session.commit()
+        flash('Video added successfully!', 'success')
+        return redirect(url_for('main.dashboard_videos'))
+
+    return render_template('add_video.html', form=form)
+
+# Route to edit an existing video
+@main.route('/dashboard/videos/edit/<int:video_id>', methods=['GET', 'POST'])
+@login_required
+def edit_video(video_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    video = Video.query.get_or_404(video_id)
+    form = VideoForm(obj=video)
+    if form.validate_on_submit():
+        youtube_id = re.search(r'v=([^&]+)', form.url.data)
+        if youtube_id:
+            youtube_id = youtube_id.group(1)
+        else:
+            flash("Invalid YouTube URL.", 'danger')
+            return redirect(url_for('main.edit_video', video_id=video_id))
+
+        # Update video details
+        video.title = form.title.data
+        video.description = form.description.data
+        video.url = form.url.data
+        db.session.commit()
+        flash(f'Video "{video.title}" updated successfully!', 'success')
+        return redirect(url_for('main.dashboard_videos'))
+
+    return render_template('edit_video.html', form=form, video=video)
+
+# Route to delete a video
+@main.route('/dashboard/videos/delete/<int:video_id>', methods=['POST'])
+@login_required
+def delete_video(video_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    video = Video.query.get_or_404(video_id)
+    db.session.delete(video)
+    db.session.commit()
+    flash(f'Video "{video.title}" deleted successfully!', 'success')
+    return redirect(url_for('main.dashboard_videos'))

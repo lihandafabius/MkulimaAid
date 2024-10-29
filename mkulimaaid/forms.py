@@ -102,3 +102,16 @@ class ChangePasswordForm(FlaskForm):
 class CommentForm(FlaskForm):
     comment = TextAreaField('Your Comment', validators=[DataRequired(), Length(max=500)])
     submit = SubmitField('Submit Comment')
+
+
+class VideoForm(FlaskForm):
+    title = StringField('Video Title', validators=[DataRequired(), Length(max=100)])
+    description = TextAreaField('Description', validators=[Optional(), Length(max=500)])
+    url = StringField('YouTube Video URL', validators=[DataRequired(), Length(max=200)])
+    submit = SubmitField('Submit')
+
+    def validate_url(self, url):
+        # Basic check to ensure URL matches the YouTube pattern
+        youtube_regex = r'^(https?://)?(www\.)?(youtube\.com|youtu\.?be)/.+$'
+        if not re.match(youtube_regex, url.data):
+            raise ValidationError('Please enter a valid YouTube URL.')

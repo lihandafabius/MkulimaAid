@@ -239,3 +239,14 @@ background-color: #f1f1f1;
 .nav-link:hover svg, .nav-link.active svg {
     fill: #0d6efd; /* Bootstrap primary color */
 }
+
+/* Custom styles for fade-in effect */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+}
