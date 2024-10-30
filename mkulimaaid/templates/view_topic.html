@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2>{{ topic.title }}</h2>
+    <p class="text-muted">Posted by {{ topic.author.username }} on {{ topic.date_posted.strftime('%B %d, %Y') }}</p>
+    <p>{{ topic.content }}</p>
+
+    <h4>Comments</h4>
+    <div class="comments-section mb-4">
+        {% if topic.comments %}
+            {% for comment in topic.comments %}
+                <div class="comment mb-2">
+                    <p><strong>{{ comment.author.username }}</strong> on {{ comment.date_posted.strftime('%B %d, %Y') }}</p>
+                    <p>{{ comment.content }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+
+    <form method="POST" action="{{ url_for('main.add_topic_comment', topic_id=topic.id) }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.content.label(class="form-label") }}
+            {{ form.content(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">{{ form.submit.label }}</button>
+    </form>
+</div>
+{% endblock %}

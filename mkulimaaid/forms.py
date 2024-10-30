@@ -100,8 +100,8 @@ class ChangePasswordForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Your Comment', validators=[DataRequired(), Length(max=500)])
-    submit = SubmitField('Submit Comment')
+    comment = TextAreaField('Add a Comment', validators=[DataRequired(), Length(max=500)])
+    submit = SubmitField('Post Comment')
 
 
 class VideoForm(FlaskForm):
@@ -116,3 +116,11 @@ class VideoForm(FlaskForm):
         youtube_regex = r'^(https?://)?(www\.)?(youtube\.com|youtu\.be)/(watch\?v=|embed/|v/|.+)?([a-zA-Z0-9_-]{11})(\S+)?$'
         if not re.match(youtube_regex, url.data):
             raise ValidationError('Please enter a valid YouTube URL.')
+
+
+class TopicForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(), Length(max=200)])
+    content = TextAreaField('Content', validators=[DataRequired()])
+    is_trending = BooleanField('Trending')
+    submit = SubmitField('Submit')
+

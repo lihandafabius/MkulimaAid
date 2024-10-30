@@ -1,12 +1,12 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -749,3 +749,104 @@ def post_video_to_homepage(video_id):
         flash(f'Video "{video.title}" has been removed from the homepage.', 'warning')
 
     return redirect(url_for('main.dashboard_videos'))
+
+
+@main.route('/topics')
+@login_required
+def topics():
+    topics = Topic.query.order_by(Topic.date_posted.desc()).all()
+    return render_template('topics.html', topics=topics)
+
+# Route to view details of a single topic
+@main.route('/topics/view/<int:topic_id>')
+@login_required
+def view_topic(topic_id):
+    topic = Topic.query.get_or_404(topic_id)
+    return render_template('view_topic.html', topic=topic)
+
+
+@main.route('/topics/<int:topic_id>/comment', methods=['POST'])
+@login_required
+def add_topic_comment(topic_id):
+    form = CommentForm()
+    if form.validate_on_submit():
+        new_comment = TopicComment(
+            content=form.content.data,
+            topic_id=topic_id,
+            author_id=current_user.id,
+            date_posted=datetime.utcnow()
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        flash('Your comment has been posted!', 'success')
+    return redirect(url_for('main.view_topic', topic_id=topic_id))
+
+
+# Dashboard route for topics management
+@main.route('/dashboard/topics')
+@login_required
+def dashboard_topics():
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    topics = Topic.query.order_by(Topic.date_posted.desc()).all()
+    return render_template('dashboard_topics.html', topics=topics)
+
+# Route to add a new topic
+@main.route('/dashboard/topics/add', methods=['GET', 'POST'])
+@login_required
+def add_topic():
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    form = TopicForm()
+    if form.validate_on_submit():
+        new_topic = Topic(
+            title=form.title.data,
+            content=form.content.data,
+            date_posted=datetime.utcnow(),
+            is_trending=form.is_trending.data,
+            author_id = current_user.id
+        )
+        db.session.add(new_topic)
+        db.session.commit()
+        flash('Topic added successfully!', 'success')
+        return redirect(url_for('main.dashboard_topics'))
+
+    return render_template('add_topic.html', form=form)
+
+# Route to edit an existing topic
+@main.route('/dashboard/topics/edit/<int:topic_id>', methods=['GET', 'POST'])
+@login_required
+def edit_topic(topic_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    topic = Topic.query.get_or_404(topic_id)
+    form = TopicForm(obj=topic)
+    if form.validate_on_submit():
+        topic.title = form.title.data
+        topic.content = form.content.data
+        topic.is_trending = form.is_trending.data
+        db.session.commit()
+        flash('Topic updated successfully!', 'success')
+        return redirect(url_for('main.dashboard_topics'))
+
+    return render_template('edit_topic.html', form=form, topic=topic)
+
+# Route to delete a topic
+@main.route('/dashboard/topics/delete/<int:topic_id>', methods=['POST'])
+@login_required
+def delete_topic(topic_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    topic = Topic.query.get_or_404(topic_id)
+    db.session.delete(topic)
+    db.session.commit()
+    flash('Topic deleted successfully!', 'success')
+    return redirect(url_for('main.dashboard_topics'))

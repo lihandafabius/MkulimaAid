@@ -88,3 +88,30 @@ class Video(db.Model):
 
     def __repr__(self):
         return f"<Video '{self.title}'>"
+
+
+class Topic(db.Model):
+    __tablename__ = 'topics'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    is_trending = db.Column(db.Boolean, default=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    author = db.relationship('User', backref=db.backref('topics', lazy=True))
+
+    def __repr__(self):
+        return f'<Topic {self.title}>'
+
+
+class TopicComment(db.Model):
+    __tablename__ = 'topic_comments'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    topic = db.relationship('Topic', backref=db.backref('comments', lazy=True, cascade="all, delete-orphan"))
+    author = db.relationship('User', backref=db.backref('topic_comments', lazy=True))

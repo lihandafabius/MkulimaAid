@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Trending Topics on Crop Diseases</h2>
+    <div class="row">
+        {% if topics %}
+            {% for topic in topics %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ topic.title }}</h5>
+                        <p class="card-text">{{ topic.content | truncate(100) }}</p>
+                        <small class="text-muted">Posted by {{ topic.author.username }} on {{ topic.date_posted.strftime('%B %d, %Y') }}</small>
+                        <a href="{{ url_for('main.view_topic', topic_id=topic.id) }}" class="btn btn-primary btn-sm mt-3 mt-auto">
+                            Read More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No trending topics available at the moment.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
