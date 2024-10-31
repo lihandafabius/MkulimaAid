@@ -124,3 +124,16 @@ class TopicForm(FlaskForm):
     is_trending = BooleanField('Trending')
     submit = SubmitField('Submit')
 
+
+class DeleteForm(FlaskForm):
+    pass
+
+
+class QuestionForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(), Length(max=255)])
+    content = TextAreaField('Question Details', validators=[DataRequired()])
+    submit = SubmitField('Post Question')
+
+class AnswerForm(FlaskForm):
+    content = TextAreaField('Your Answer', validators=[DataRequired()])
+    submit = SubmitField('Post Answer')

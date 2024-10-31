@@ -1,12 +1,12 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -762,7 +762,8 @@ def topics():
 @login_required
 def view_topic(topic_id):
     topic = Topic.query.get_or_404(topic_id)
-    return render_template('view_topic.html', topic=topic)
+    form = CommentForm()
+    return render_template('view_topic.html', topic=topic, form=form)
 
 
 @main.route('/topics/<int:topic_id>/comment', methods=['POST'])
@@ -771,7 +772,7 @@ def add_topic_comment(topic_id):
     form = CommentForm()
     if form.validate_on_submit():
         new_comment = TopicComment(
-            content=form.content.data,
+            content=form.comment.data,
             topic_id=topic_id,
             author_id=current_user.id,
             date_posted=datetime.utcnow()
@@ -789,9 +790,10 @@ def dashboard_topics():
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.dashboard'))
+    form = DeleteForm()
 
     topics = Topic.query.order_by(Topic.date_posted.desc()).all()
-    return render_template('dashboard_topics.html', topics=topics)
+    return render_template('dashboard_topics.html', topics=topics, form=form)
 
 # Route to add a new topic
 @main.route('/dashboard/topics/add', methods=['GET', 'POST'])
@@ -850,3 +852,37 @@ def delete_topic(topic_id):
     db.session.commit()
     flash('Topic deleted successfully!', 'success')
     return redirect(url_for('main.dashboard_topics'))
+
+
+@main.route('/forum')
+def forum():
+    questions = Question.query.order_by(Question.timestamp.desc()).all()
+    return render_template('forum.html', questions=questions)
+
+@main.route('/forum/question/<int:question_id>', methods=['GET', 'POST'])
+def view_question(question_id):
+    question = Question.query.get_or_404(question_id)
+    answers = Answer.query.filter_by(question_id=question_id).order_by(Answer.timestamp.desc()).all()
+    answer_form = AnswerForm()
+
+    if answer_form.validate_on_submit():
+        answer = Answer(content=answer_form.content.data, author_id=current_user.id, question_id=question_id)
+        db.session.add(answer)
+        db.session.commit()
+        flash("Your answer has been posted!", "success")
+        return redirect(url_for('main.view_question', question_id=question_id))
+
+    return render_template('view_question.html', question=question, answers=answers, answer_form=answer_form)
+
+@main.route('/forum/new_question', methods=['GET', 'POST'])
+@login_required
+def new_question():
+    form = QuestionForm()
+    if form.validate_on_submit():
+        question = Question(title=form.title.data, content=form.content.data, author_id=current_user.id)
+        db.session.add(question)
+        db.session.commit()
+        flash("Your question has been posted!", "success")
+        return redirect(url_for('main.forum'))
+
+    return render_template('new_question.html', form=form)

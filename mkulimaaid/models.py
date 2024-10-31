@@ -115,3 +115,31 @@ class TopicComment(db.Model):
 
     topic = db.relationship('Topic', backref=db.backref('comments', lazy=True, cascade="all, delete-orphan"))
     author = db.relationship('User', backref=db.backref('topic_comments', lazy=True))
+
+
+class Question(db.Model):
+    __tablename__ = 'questions'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)  # Question title
+    content = db.Column(db.Text, nullable=False)  # Question content
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # Time of posting
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Author of the question
+
+    author = db.relationship('User', backref=db.backref('questions', lazy=True))  # Relationship with User
+
+    def __repr__(self):
+        return f'<Question {self.title}>'
+
+class Answer(db.Model):
+    __tablename__ = 'answers'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)  # Answer content
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # Time of posting
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)  # Related question
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Author of the answer
+
+    question = db.relationship('Question', backref=db.backref('answers', lazy=True, cascade="all, delete-orphan"))  # Link answer to question
+    author = db.relationship('User', backref=db.backref('answers', lazy=True))  # Link answer to user
+
+    def __repr__(self):
+        return f'<Answer by {self.author.username}>'

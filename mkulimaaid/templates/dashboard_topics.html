@@ -23,6 +23,7 @@
                 <td>
                     <a href="{{ url_for('main.edit_topic', topic_id=topic.id) }}" class="btn btn-sm btn-warning">Edit</a>
                     <form action="{{ url_for('main.delete_topic', topic_id=topic.id) }}" method="POST" style="display:inline;">
+                         {{ form.hidden_tag() }}
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
                 </td>

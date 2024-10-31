@@ -250,3 +250,10 @@ background-color: #f1f1f1;
     opacity: 1;
     transform: translateY(0);
 }
+.card.shadow-lg {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.text-info {
+    color: #17a2b8 !important;
+}

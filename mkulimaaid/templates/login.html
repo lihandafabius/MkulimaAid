@@ -52,10 +52,20 @@
                 {{ form.password(class="form-control", id="password", placeholder="Password", type="password") }}
                 <label for="password">Password</label>
                 <!-- Eye icon for toggling password visibility with tooltip -->
-                <span class="position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password')" style="cursor: pointer;" data-bs-toggle="tooltip" title="Show Password">
-                    <svg id="toggleCurrentPasswordIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16" >
+                <span id="toggle-password-icon" class="position-absolute top-50 end-0 translate-middle-y me-3"
+                      onclick="togglePasswordVisibility('password')"
+                      style="cursor: pointer;" data-bs-toggle="tooltip" title="Show Password">
+                    <!-- Show Password Icon (Eye) -->
+                    <svg id="show-eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-eye" viewBox="0 0 16 16">
                         <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
-                        <path d="M8 5a3 3 0 0 0-3 3 3 3 0 0 0 6 0 3 3 0 0 0-3-3z"/>
+                        <path d="M8 5a3 3 0 0 0-3 3 3 0 0 0 6 0 3 3 0 0 0-3-3z"/>
+                    </svg>
+                    <!-- Hide Password Icon (Eye with Slash) -->
+                    <svg id="hide-eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16" style="display: none;">
+                        <path d="M13.359 11.238l2.387 2.387a.5.5 0 0 1-.708.707l-2.387-2.387A7.052 7.052 0 0 1 8 13.5c-3.314 0-6-3.5-6-3.5a7.05 7.05 0 0 1 1.918-2.042l-.942-.942a.5.5 0 1 1 .708-.707l2.387 2.387a5.002 5.002 0 0 0 6.888 6.888l.942.942a.5.5 0 0 1-.707.708l-2.387-2.387a7.054 7.054 0 0 0 2.052-1.918zm-.81.81a5.053 5.053 0 0 1-2.048 1.125l1.093 1.093a7.052 7.052 0 0 0 1.09-1.093l-1.093-1.093z"/>
+                        <path d="M8 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm0 1a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/>
+                        <path d="M1.146 1.854a.5.5 0 1 1 .708-.708l13 13a.5.5 0 0 1-.708.708L1.146 1.854z"/>
                     </svg>
                 </span>
             </div>
