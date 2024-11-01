@@ -79,24 +79,33 @@
         </div>
 
         <!-- Password Field -->
-        <div class="form-floating mb-2">
-            {{ form.password(class="form-control", placeholder="Password") }}
+        <div class="form-floating mb-2 position-relative">
+            {{ form.password(class="form-control", placeholder="Password", id="password") }}
             <label for="password">Password</label>
+
             <!-- Eye icon for toggling password visibility -->
-            <span class="position-absolute  top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password')" style="cursor: pointer;" data-bs-toggle="tooltip" title="Show Password">
-                <svg id="toggleCurrentPasswordIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16" >
+            <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                  onclick="togglePasswordVisibility('password')"
+                  style="cursor: pointer;"
+                  data-bs-toggle="tooltip"
+                  title="Show Password">
+                <svg id="toggleCurrentPasswordIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
                     <path d="M8 5a3 3 0 0 0-3 3 3 0 0 0 6 0 3 3 0 0 0-3-3z"/>
                 </svg>
             </span>
-            {% if form.password.errors %}
-                <div class="text-danger">
-                    {% for error in form.password.errors %}
-                        <small>{{ error }}</small><br>
-                    {% endfor %}
-                </div>
-            {% endif %}
         </div>
+
+        <!-- Error Messages (Bootstrap's invalid-feedback) -->
+        {% if form.password.errors %}
+            <div class="invalid-feedback d-block mt-1">
+                {% for error in form.password.errors %}
+                    <small>{{ error }}</small><br>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
 
         <!-- Confirm Password Field -->
         <div class="form-floating mb-2">

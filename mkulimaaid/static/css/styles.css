@@ -257,3 +257,54 @@ background-color: #f1f1f1;
 .text-info {
     color: #17a2b8 !important;
 }
+
+.about-hero {
+    background-image: url('../images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+}
+.feature-box {
+    background-color: var(--feature-bg); /* Uses a variable to switch with the theme */
+    color: var(--feature-text); /* Uses a variable for text color according to the theme */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern feel */
+}
+
+.feature-box:hover {
+    background-color: var(--feature-bg-hover); /* Slightly darker on hover */
+}
+
+.feature-icon {
+    color: var(--icon-color); /* Adjustable color for icons */
+}
+
+blockquote {
+    font-style: italic;
+    color: #666;
+    border-left: 5px solid #007bff;
+    padding-left: 10px;
+}
+
+blockquote p {
+    font-size: 1rem;
+}
+
+blockquote footer {
+    font-size: 0.875rem;
+    color: #999;
+}
+/* Light and Dark Theme Variables */
+body.light-theme {
+    --feature-bg: #f9f9f9;
+    --feature-bg-hover: #eaeaea;
+    --feature-text: #333;
+    --icon-color: #007bff;
+}
+
+body.dark-theme {
+    --feature-bg: #2b2b2b;
+    --feature-bg-hover: #3a3a3a;
+    --feature-text: #eee;
+    --icon-color: #6fbf73;
+}

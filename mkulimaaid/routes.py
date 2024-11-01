@@ -153,7 +153,7 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Proceed with creating the user
+        # Password validation handled by form validator
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(fullname=form.fullname.data, username=form.username.data, email=form.email.data,
                     phone=form.phone.data, password=hashed_password)
@@ -162,6 +162,7 @@ def register():
         flash('Account created! You can now log in.', 'success')
         return redirect(url_for('main.login'))
 
+    # Render registration with error messages
     return render_template('register.html', form=form)
 
 
@@ -886,3 +887,8 @@ def new_question():
         return redirect(url_for('main.forum'))
 
     return render_template('new_question.html', form=form)
+
+
+@main.route("/about")
+def about():
+    return render_template("about.html")

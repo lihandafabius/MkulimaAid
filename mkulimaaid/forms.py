@@ -49,6 +49,36 @@ class RegistrationForm(FlaskForm):
     def validate_phone(self, phone):
         if not re.match(r'^\d{10}$', phone.data):
             raise ValidationError('Phone number must contain exactly 10 digits and only numbers.')
+
+        # Custom password validation
+
+    def validate_password(self, password):
+        # List to store any unmet requirements
+        errors = []
+
+        # Check each requirement and add any that aren't met to the errors list
+        if len(password.data) < 8:
+            errors.append("at least 8 characters")
+        if not re.search(r"[A-Z]", password.data):
+            errors.append("an uppercase letter")
+        if not re.search(r"[a-z]", password.data):
+            errors.append("a lowercase letter")
+        if not re.search(r"\d", password.data):
+            errors.append("a number")
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password.data):
+            errors.append("a special character")
+
+        # Check for identifiable information
+        if (password.data.lower() in self.username.data.lower() or
+                password.data.lower() in self.fullname.data.lower() or
+                password.data.lower() in self.phone.data):
+            errors.append("no parts of your username, full name, or phone number")
+
+        # If any requirements weren't met, raise a combined error
+        if errors:
+            raise ValidationError(f"Password must contain: {', '.join(errors)}.")
+
+
 class AdminForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Add Admin')
@@ -90,13 +120,42 @@ class ProfileForm(FlaskForm):
 # Password change form
 class ChangePasswordForm(FlaskForm):
     current_password = PasswordField('Current Password', validators=[DataRequired()])
-    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=6)])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
     submit = SubmitField('Change Password')
 
     def validate_current_password(self, current_password):
+        # Verify current password is correct
         if not bcrypt.check_password_hash(current_user.password, current_password.data):
             raise ValidationError('Current password is incorrect.')
+
+    def validate_new_password(self, new_password):
+        # List to store any unmet requirements
+        errors = []
+
+        # Check each requirement and add any that aren't met to the errors list
+        if len(new_password.data) < 8:
+            errors.append("at least 8 characters")
+        if not re.search(r"[A-Z]", new_password.data):
+            errors.append("an uppercase letter")
+        if not re.search(r"[a-z]", new_password.data):
+            errors.append("a lowercase letter")
+        if not re.search(r"\d", new_password.data):
+            errors.append("a number")
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", new_password.data):
+            errors.append("a special character")
+
+        # If any requirements weren't met, raise a combined error
+        if errors:
+            raise ValidationError(f"Password must contain: {', '.join(errors)}.")
+
+        # Additional checks
+        if bcrypt.check_password_hash(current_user.password, new_password.data):
+            raise ValidationError("New password cannot be the same as the current password.")
+        if (current_user.username in new_password.data or
+                current_user.fullname in new_password.data or
+                current_user.phone in new_password.data):
+            raise ValidationError("Password cannot contain parts of your username, fullname, or phone number.")
 
 
 class CommentForm(FlaskForm):
