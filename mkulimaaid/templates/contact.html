@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Contact Us</h2>
+
+    <!-- Contact Info Section -->
+    <div class="row justify-content-center text-center">
+        <div class="col-md-4 mb-4">
+            <div class="p-4 shadow-lg rounded bg-light-theme border border-primary" style="min-height: 200px;">
+                <i class="bi bi-envelope display-5 text-primary"></i>
+                <h5>Email Us</h5>
+                <p class="text-muted">Have questions? Reach us at:</p>
+                <p><strong>support@mkulimaaid.com</strong></p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 shadow-lg rounded bg-light-theme border border-success" style="min-height: 200px;">
+                <i class="bi bi-telephone display-5 text-success"></i>
+                <h5>Call Us</h5>
+                <p class="text-muted">Speak with a representative:</p>
+                <p><strong>+254 712 345 678</strong></p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 shadow-lg rounded bg-light-theme border border-danger" style="min-height: 200px;">
+                <i class="bi bi-geo-alt display-5 text-danger"></i>
+                <h5>Visit Us</h5>
+                <p class="text-muted">Find us at:</p>
+                <p><strong>123 Agriculture Rd, Nairobi, Kenya</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Form Section -->
+    <div class="row justify-content-center my-5">
+        <div class="col-md-8">
+            <h3 class="text-center mb-4">Send Us a Message</h3>
+            <form method="POST" action="{{ url_for('main.contact') }}">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control", placeholder="Your Full Name") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", placeholder="Your Email Address") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.subject.label(class="form-label") }}
+                    {{ form.subject(class="form-control", placeholder="Subject") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.message.label(class="form-label") }}
+                    {{ form.message(class="form-control", placeholder="Your Message", rows="5") }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="row justify-content-center my-5">
+        <div class="col-md-10">
+            <h3 class="text-center mb-4">Our Location</h3>
+            <div class="map-responsive shadow-lg rounded">
+                <iframe src="https://www.google.com/maps/embed?pb=12345" width="100%" height="400" frameborder="0" style="border:0;" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

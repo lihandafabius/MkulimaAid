@@ -1,12 +1,12 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -892,3 +892,52 @@ def new_question():
 @main.route("/about")
 def about():
     return render_template("about.html")
+
+@main.route("/contact", methods=["GET", "POST"])
+def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        message = ContactMessage(
+            name=form.name.data,
+            email=form.email.data,
+            subject=form.subject.data,
+            message=form.message.data,
+        )
+        db.session.add(message)
+        db.session.commit()
+        flash('Your message has been sent successfully. We will get back to you soon!', 'success')
+        return redirect(url_for('main.contact'))
+    return render_template("contact.html", form=form)
+
+
+
+@main.route('/dashboard/messages', methods=['GET'])
+@login_required
+def view_messages():
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    # Retrieve all messages from the ContactMessage table, ordered by date sent
+    messages = ContactMessage.query.order_by(ContactMessage.date_sent.desc()).all()
+
+    return render_template('messages.html', messages=messages)
+
+
+@main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])
+@login_required
+def delete_message(message_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    # Find the message by ID
+    message = ContactMessage.query.get_or_404(message_id)
+
+    # Delete the message from the database
+    db.session.delete(message)
+    db.session.commit()
+
+    flash('Message deleted successfully!', 'success')
+    return redirect(url_for('main.view_messages'))
+

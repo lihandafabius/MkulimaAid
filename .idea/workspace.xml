@@ -5,18 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/pic.jfif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/pic2.avif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/pic3.avif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/pic4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/about.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/contact.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/messages.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/5ade3b22670c_add_description_column_to_diseases_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/versions/5ade3b22670c_add_description_column_to_diseases_table.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

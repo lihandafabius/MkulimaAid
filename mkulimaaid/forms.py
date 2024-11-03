@@ -196,3 +196,12 @@ class QuestionForm(FlaskForm):
 class AnswerForm(FlaskForm):
     content = TextAreaField('Your Answer', validators=[DataRequired()])
     submit = SubmitField('Post Answer')
+
+
+
+class ContactForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(max=50)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    subject = StringField('Subject', validators=[DataRequired(), Length(max=100)])
+    message = TextAreaField('Message', validators=[DataRequired(), Length(max=500)])
+    submit = SubmitField('Send Message')
