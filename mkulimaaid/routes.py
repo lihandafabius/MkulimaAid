@@ -920,8 +920,9 @@ def view_messages():
 
     # Retrieve all messages from the ContactMessage table, ordered by date sent
     messages = ContactMessage.query.order_by(ContactMessage.date_sent.desc()).all()
+    form = DeleteForm()
 
-    return render_template('messages.html', messages=messages)
+    return render_template('messages.html', messages=messages, form=form)
 
 
 @main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])
@@ -941,3 +942,21 @@ def delete_message(message_id):
     flash('Message deleted successfully!', 'success')
     return redirect(url_for('main.view_messages'))
 
+
+
+# Route to render the privacy policy page
+@main.route('/privacy-policy')
+@login_required
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+
+@main.route("/donate")
+@login_required
+def donate():
+    return render_template("donate.html")
+
+@main.route("/faqs")
+@login_required
+def faqs():
+    return render_template("faqs.html")

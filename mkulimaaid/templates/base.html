@@ -79,7 +79,7 @@
                   <li><a class="dropdown-item" href="/videos">Video Library</a></li>
                   <li><a class="dropdown-item" href="#">Reports</a></li>
                   <li><a class="dropdown-item" href="/forum">QA</a></li>
-                  <li><a class="dropdown-item" href="#">Donate</a></li>
+                  <li><a class="dropdown-item" href="/donate">Donate</a></li>
                   <li><a class="dropdown-item" href="#">Events and Blog</a></li>
                 </ul>
               </li>
@@ -207,13 +207,13 @@
               <h5>MkulimaAid</h5>
               <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-muted">About</a>
+                  <a href="/about" class="nav-link p-0 text-muted">About</a>
                 </li>
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-muted">Donate</a>
+                  <a href="/donate" class="nav-link p-0 text-muted">Donate</a>
                 </li>
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-muted">Privacy Policy</a>
+                  <a href="/privacy-policy" class="nav-link p-0 text-muted">Privacy Policy</a>
                 </li>
               </ul>
             </div>
@@ -222,7 +222,7 @@
               <h5>For Farmer</h5>
               <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary">FAQS</a>
+                  <a href="/faqs" class="nav-link p-0 text-body-secondary">FAQS</a>
                 </li>
                 <li class="nav-item mb-2">
                     <a href="{{ url_for('main.videos') }}" class="nav-link p-0 text-body-secondary">Video Library</a>
@@ -262,6 +262,7 @@
                 <h5>Subscribe to Our Newsletter</h5>
                 <p>Get to know the latest trends on crop diseases.</p>
                 <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+
                   <label for="newsletter1" class="visually-hidden">Email address</label>
                   <input
                     id="newsletter1"
