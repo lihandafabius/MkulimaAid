@@ -156,3 +156,21 @@ class ContactMessage(db.Model):
 
     def __repr__(self):
         return f"ContactMessage('{self.name}', '{self.email}', '{self.subject}')"
+
+
+class TeamMember(db.Model):
+    __tablename__ = 'team_members'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(100), nullable=False)
+    bio = db.Column(db.Text, nullable=True)
+    photo = db.Column(db.String(100), nullable=True)  # Photo file name
+    contact_info = db.Column(db.String(200), nullable=True)
+    date_joined = db.Column(db.DateTime, default=datetime.utcnow)
+    published = db.Column(db.Boolean, default=False)
+
+
+    def __repr__(self):
+        return f'<TeamMember {self.name}>'
+

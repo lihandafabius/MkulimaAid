@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Meet Our Team</h1>
+    <div class="row">
+        {% for member in members.items %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg">
+                <img src="{{ url_for('static', filename='uploads/' + member.photo) if member.photo else url_for('static', filename='default-avatar.jpg') }}" class="card-img-top" alt="{{ member.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ member.name }}</h5>
+                    <p class="card-text text-muted">{{ member.role }}</p>
+                    <p class="card-text">{{ member.bio }}</p>
+                    <p class="card-text"><strong>Contact: </strong>{{ member.contact_info }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination justify-content-center mt-4">
+        {% if members.has_prev %}
+            <a href="{{ url_for('main.team', page=members.prev_num) }}" class="btn btn-primary">&laquo; Previous</a>
+        {% endif %}
+
+        <span class="mx-2">Page {{ members.page }} of {{ members.pages }}</span>
+
+        {% if members.has_next %}
+            <a href="{{ url_for('main.team', page=members.next_num) }}" class="btn btn-primary">Next &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

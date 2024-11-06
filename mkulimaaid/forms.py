@@ -205,3 +205,18 @@ class ContactForm(FlaskForm):
     subject = StringField('Subject', validators=[DataRequired(), Length(max=100)])
     message = TextAreaField('Message', validators=[DataRequired(), Length(max=500)])
     submit = SubmitField('Send Message')
+
+
+
+class TeamForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(max=100)])
+    role = StringField('Role', validators=[DataRequired(), Length(max=100)])
+    bio = TextAreaField('Bio', validators=[Length(max=500)])
+    photo = FileField('Profile Photo')  # Uploading a profile photo
+    contact_info = StringField('Contact Information', validators=[Length(max=200)])
+    publish = BooleanField('Publish Profile')
+    submit = SubmitField('Save')
+
+
+class EmptyForm(FlaskForm):
+    pass

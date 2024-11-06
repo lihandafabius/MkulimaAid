@@ -5,15 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/donate.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/faqs.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/privacy_policy.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/images/team/fab.jfif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/add_member.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_team.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/edit_member.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/team.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/messages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/faqs.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/faqs.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,11 +56,12 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/FABIUS/Desktop/crop pests and diseases classification/mkulimaaid/static/images&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/FABIUS/Desktop/crop pests and diseases classification/mkulimaaid/static/images/team&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\static\images\team" />
       <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\static\images" />
       <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification\mkulimaaid\templates" />
       <recent name="C:\Users\FABIUS\Desktop\crop pests and diseases classification" />

@@ -1,12 +1,12 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -960,3 +960,127 @@ def donate():
 @login_required
 def faqs():
     return render_template("faqs.html")
+
+
+# Display all published team members on the main team page
+@main.route("/team")
+def team():
+    page = request.args.get('page', 1, type=int)
+    members = TeamMember.query.filter_by(published=True).order_by(TeamMember.date_joined.desc()).paginate(page=page, per_page=6)
+    return render_template("team.html", members=members)
+
+
+
+@main.route('/dashboard/team', methods=['GET', 'POST'])
+@login_required
+def dashboard_team():
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    form = EmptyForm()
+    members = TeamMember.query.order_by(TeamMember.date_joined.desc()).all()
+    return render_template('dashboard_team.html', members=members, form=form)
+
+
+# Route to add a new team member
+@main.route('/dashboard/team/add', methods=['GET', 'POST'])
+@login_required
+def add_member():
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    form = TeamForm()
+
+    if form.validate_on_submit():
+        # Get file from form and save it
+        photo = form.photo.data
+        if photo:
+            # Secure the filename and save the file
+            filename = secure_filename(photo.filename)
+            photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            photo.save(photo_path)
+
+        # Create the new team member instance with the filename saved in the 'photo' field
+        new_member = TeamMember(
+            name=form.name.data,
+            role=form.role.data,
+            bio=form.bio.data,
+            photo=filename,  # Save only the filename in the database
+            contact_info=form.contact_info.data,
+            date_joined=datetime.now(),
+            published=form.publish.data
+        )
+
+        db.session.add(new_member)
+        db.session.commit()
+        flash('Team member added successfully!', 'success')
+        return redirect(url_for('main.dashboard_team'))
+
+    return render_template('add_member.html', form=form)
+
+# Route to edit an existing team member
+@main.route('/dashboard/team/edit/<int:member_id>', methods=['GET', 'POST'])
+@login_required
+def edit_member(member_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    member = TeamMember.query.get_or_404(member_id)
+    form = TeamForm(obj=member)
+
+    if form.validate_on_submit():
+        member.name = form.name.data
+        member.role = form.role.data
+        member.bio = form.bio.data
+        member.published = 'published' in request.form
+
+        # Handle file upload if a new photo is provided
+        photo = form.photo.data
+        if photo:
+            filename = secure_filename(photo.filename)
+            photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            photo.save(photo_path)
+            member.photo = filename  # Update only the filename in the database
+
+        db.session.commit()
+        flash(f'Team member "{member.name}" updated successfully!', 'success')
+        return redirect(url_for('main.dashboard_team'))
+
+    return render_template('edit_member.html', form=form, member=member)
+
+
+# Route to delete a team member
+@main.route('/dashboard/team/delete/<int:member_id>', methods=['POST'])
+@login_required
+def delete_member(member_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.upload'))
+
+    member = TeamMember.query.get_or_404(member_id)
+    db.session.delete(member)
+    db.session.commit()
+    flash(f'Team member "{member.name}" deleted successfully!', 'success')
+    return redirect(url_for('main.dashboard_team'))
+
+# Route to publish/unpublish a team member
+@main.route('/dashboard/team/publish/<int:member_id>', methods=['POST'])
+@login_required
+def publish_member(member_id):
+    if not current_user.is_admin:
+        flash("You do not have access to this page.", 'danger')
+        return redirect(url_for('main.dashboard_team'))
+
+    member = TeamMember.query.get_or_404(member_id)
+    member.published = not member.published  # Toggle published status
+    db.session.commit()
+
+    if member.published:
+        flash(f'Team member "{member.name}" is now published on the team page.', 'success')
+    else:
+        flash(f'Team member "{member.name}" has been unpublished.', 'warning')
+
+    return redirect(url_for('main.dashboard_team'))

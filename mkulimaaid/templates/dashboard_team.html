@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Manage Team Members</h1>
+    <a href="{{ url_for('main.add_member') }}" class="btn btn-primary mb-3">Add New Member</a>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Contact Info</th>
+                <th>Published</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td>{{ member.name }}</td>
+                <td>{{ member.role }}</td>
+                <td>{{ member.contact_info }}</td>
+                <td>{{ 'Yes' if member.published else 'No' }}</td>
+                <td>
+                    <a href="{{ url_for('main.edit_member', member_id=member.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('main.delete_member', member_id=member.id) }}" method="POST" style="display:inline;">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                    <form action="{{ url_for('main.publish_member', member_id=member.id) }}" method="POST" style="display:inline;">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="btn btn-sm btn-secondary">
+                            {{ 'Unpublish' if member.published else 'Publish' }}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

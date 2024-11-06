@@ -309,3 +309,17 @@ body.dark-theme {
     --icon-color: #6fbf73;
 }
 
+/* Add to your CSS, within each theme’s respective styles */
+:root {
+    --faq-bg: #f8f9fa;
+    --faq-text: #333;
+    --faq-body-bg: #ffffff;
+    --faq-body-text: #000000;
+}
+
+.dark-theme {
+    --faq-bg: #333;
+    --faq-text: #fff;
+    --faq-body-bg: #444;
+    --faq-body-text: #ddd;
+}
