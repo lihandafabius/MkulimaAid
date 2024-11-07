@@ -323,3 +323,216 @@ body.dark-theme {
     --faq-body-bg: #444;
     --faq-body-text: #ddd;
 }
+
+/* Define color variables for team cards based on theme */
+body.light-theme {
+    --card-bg: #ffffff;
+    --card-border: #e0e0e0;
+    --card-title-color: #333;
+    --card-role-color: #007bff;
+    --card-bio-color: #555;
+    --social-icon-color: #007bff;
+    --social-icon-hover: #0056b3;
+}
+
+body.dark-theme {
+    --card-bg: #2b2b2b;
+    --card-border: #444;
+    --card-title-color: #f8f9fa;
+    --card-role-color: #6fbf73;
+    --card-bio-color: #ddd;
+    --social-icon-color: #6fbf73;
+    --social-icon-hover: #49a65e;
+}
+
+/* Apply the theme variables */
+.card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.card-title {
+    color: var(--card-title-color);
+}
+
+.card-text.text-primary {
+    color: var(--card-role-color);
+}
+
+.card-text.small.text-muted {
+    color: var(--card-bio-color);
+}
+
+.social-icons i {
+    color: var(--social-icon-color);
+    transition: color 0.3s;
+}
+
+.social-icons a:hover i {
+    color: var(--social-icon-hover);
+}
+
+
+<!-- Styling for the footer -->
+/* Footer Styling */
+.footer {
+    background-color: #f5f5f5;
+}
+
+.footer-title {
+    color: #2b7a2b;
+    font-weight: 700; /* Increased boldness */
+}
+
+.footer-link {
+    color: #387939; /* Darker green for better contrast */
+    text-decoration: none;
+    font-weight: 600; /* Slightly bolder for readability */
+}
+
+.footer-link:hover {
+    color: #255d25; /* Darker green on hover */
+}
+
+.footer-subtext {
+    color: #4caf50;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.social-link {
+    color: #387939;
+    font-size: 1.5rem;
+}
+
+.social-link:hover {
+    color: #255d25;
+}
+
+.footer-rights {
+    color: #2b7a2b;
+    font-size: 0.9rem;
+}
+/* Header Styling */
+.navbar {
+    background-color: #f5f5f5; /* Light background for consistency */
+    padding: 1rem;
+}
+
+.navbar-brand .site-title {
+    color: #2b7a2b; /* Primary theme green */
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: #387939; /* Green accent */
+    font-weight: 600;
+}
+
+.nav-link:hover {
+    color: #255d25; /* Darker green on hover */
+}
+
+.navbar-toggler-icon {
+    background-color: #387939; /* Match green theme */
+}
+
+.dropdown-item {
+    font-weight: 500;
+    color: #2b7a2b;
+}
+
+.dropdown-item:hover {
+    background-color: #e0f2e9;
+    color: #255d25;
+}
+
+.bd-mode-toggle .dropdown-toggle {
+    background-color: #4caf50;
+    border-color: #4caf50;
+    color: #fff;
+}
+
+.bd-mode-toggle .dropdown-item:hover {
+    background-color: #4caf50;
+    color: #fff;
+}
+/* Green theme for header and footer */
+.bg-green {
+    background-color: #2a7a2a; /* Adjust the green shade as needed */
+}
+
+/* Site title styling */
+.site-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.05rem;
+    transition: color 0.3s ease-in-out;
+}
+
+.site-title:hover {
+    color: #d4e157; /* Lighter green for hover effect */
+}
+
+/* Navbar brand logo */
+.site-logo {
+    height: 50px;
+    width: auto;
+    margin-right: 8px;
+}
+
+/* Navbar link styles */
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    border-radius: 10px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #d4e157; /* Lighter green for hover */
+}
+
+/* Dropdown styles */
+.navbar-nav .dropdown-menu {
+    background-color: #2a7a2a;
+    border: none;
+    border-radius: 5px;
+}
+
+.navbar-nav .dropdown-item {
+    color: #ffffff;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navbar-nav .dropdown-item:hover {
+    background-color: #d4e157;
+    color: #2a7a2a;
+}
+
+/* Profile picture in header */
+.dropdown .rounded-circle {
+    border: 2px solid #d4e157;
+    transition: transform 0.3s;
+}
+
+.dropdown .rounded-circle:hover {
+    transform: scale(1.1);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .site-title {
+        font-size: 1.3rem;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 0.9rem;
+    }
+}
+
