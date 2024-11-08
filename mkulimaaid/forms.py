@@ -172,7 +172,8 @@ class VideoForm(FlaskForm):
 
     def validate_url(self, url):
         # Enhanced regex to match YouTube URL formats including query parameters
-        youtube_regex = r'^(https?://)?(www\.)?(youtube\.com|youtu\.be)/(watch\?v=|embed/|v/|.+)?([a-zA-Z0-9_-]{11})(\S+)?$'
+        youtube_regex = (r'^(https?://)?(www\.)?(youtube\.com|youtu\.be)/(watch\?v=|embed/|v/|.+/)?([a-zA-Z0-9_-]{11})'
+                         r'(\S+)?$')
         if not re.match(youtube_regex, url.data):
             raise ValidationError('Please enter a valid YouTube URL.')
 

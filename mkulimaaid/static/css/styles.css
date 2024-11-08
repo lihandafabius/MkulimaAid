@@ -536,3 +536,64 @@ body.dark-theme {
     }
 }
 
+
+/* Sidebar Background */
+.sidebar {
+    background-color: #2a7a2a; /* Green theme */
+    color: #ffffff;
+}
+
+/* Sidebar Header */
+.sidebar .offcanvas-title {
+    color: #ffffff;
+}
+
+/* Sidebar Links */
+.sidebar .nav-link {
+    color: #ffffff;
+    padding: 10px 16px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 4px;
+}
+
+/* Sidebar Link Hover and Active State */
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #256625; /* Darker shade for hover and active links */
+    color: #ffffff;
+}
+
+/* Sidebar Icons */
+.sidebar .nav-link svg {
+    width: 20px;
+    height: 20px;
+    fill: #ffffff; /* White for consistency with green theme */
+    transition: fill 0.2s ease-in-out;
+}
+
+.sidebar .nav-link:hover svg,
+.sidebar .nav-link.active svg {
+    fill: #e0e0e0; /* Light gray on hover or active */
+}
+
+/* Badge for Message Notifications */
+.sidebar .badge {
+    background-color: #d9534f; /* Red for notification badge */
+    color: #ffffff;
+}
+
+/* Sidebar Divider */
+.sidebar hr {
+    border-color: rgba(255, 255, 255, 0.2); /* Light white divider */
+}
+
+/* Sidebar Heading */
+.sidebar-heading {
+    color: rgba(255, 255, 255, 0.8); /* Slightly transparent white for headings */
+    font-weight: bold;
+}
+
+/* Adjust link icons for accessibility */
+.sidebar .nav-link svg {
+    transition: fill 0.2s;
+}

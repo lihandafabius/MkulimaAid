@@ -23,9 +23,10 @@
 <div class="container-fluid">
   <div class="row">
 
-      <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+
+      <svg xmlns="http://www.w3.org/2000/svg" style="display: none;width='16' height='16' fill='currentColor' class='bi bi-house-door ">
       <symbol id="house-fill" viewBox="0 0 16 16">
-        <path d="M8 3.293l6 6V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4.707l6-6zM7 13.5v-5h2v5H7zM13 8l-5-5-5 5V13a1 1 0 0 0 1 1h2v-4h2v4h2a1 1 0 0 0 1-1V8z"/>
+        <path d="M6.5 14.5v-5h3v5a1.5 1.5 0 0 0 3 0v-5.586l1.707 1.707a1 1 0 0 0 1.414-1.414l-8-8a1 1 0 0 0-1.414 0l-8 8a1 1 0 0 0 1.414 1.414L6.5 8.914v5.586a1.5 1.5 0 0 0 3 0z"/>
       </symbol>
       <symbol id="file-earmark" viewBox="0 0 16 16">
         <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3-.5a1 1 0 0 1-1-1V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5h-2z"/>
@@ -53,9 +54,9 @@
       </symbol>
     </svg>
 
-    <!-- Sidebar -->
-    <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-      <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+   <!-- Sidebar -->
+    <div class="sidebar border border-right col-md-3 col-lg-2 p-0">
+      <div class="offcanvas-md offcanvas-end" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
         <div class="offcanvas-header">
           <h5 class="offcanvas-title" id="sidebarMenuLabel">MkulimaAid</h5>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
@@ -65,14 +66,13 @@
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="{{ url_for('main.dashboard') }}">
                 <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#house-fill"></use></svg>
-              Dashboard
+                Dashboard
               </a>
-            </li>
             </li>
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.customers') }}">
                 <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#people"></use></svg>
-                farmers
+                Farmers
               </a>
             </li>
             <li class="nav-item">
@@ -112,27 +112,25 @@
               </a>
             </li>
             <li class="nav-item position-relative">
-                <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.view_messages') }}">
-                    <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#envelope"></use></svg>
-                    Messages
-                    {% if messages|length > 0 %}
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            {{ messages|length }}
-                        </span>
-                    {% endif %}
-                </a>
+              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.view_messages') }}">
+                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#envelope"></use></svg>
+                Messages
+                {% if messages|length > 0 %}
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+                    {{ messages|length }}
+                  </span>
+                {% endif %}
+              </a>
             </li>
           </ul>
 
-
-
-          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
             <span>Saved reports</span>
             <a class="link-secondary" href="#" aria-label="Add a new report">
               <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#plus-circle"></use></svg>
             </a>
           </h6>
-                    <ul class="nav flex-column mb-auto">
+          <ul class="nav flex-column mb-auto">
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2" href="#">
                 <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#file-earmark-text"></use></svg>
@@ -167,7 +165,6 @@
                 Settings
               </a>
             </li>
-            </li>
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2" href="/logout">
                 <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#door-closed"></use></svg>
@@ -178,7 +175,6 @@
         </div>
       </div>
     </div>
-
 
     <!-- Main content -->
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">

@@ -631,16 +631,20 @@ def remove_avatar():
 
 
 @main.route("/videos")
+@login_required
 def videos():
     page = request.args.get('page', 1, type=int)
     # Only fetch videos that are marked as published
     videos = Video.query.filter_by(published=True).order_by(Video.date_posted.desc()).paginate(page=page, per_page=6)
 
-    # Extract YouTube ID from each video URL
+    # Extract YouTube ID for each video and build the embed URL
     for video in videos.items:
-        video.youtube_id = video.url.split("v=")[-1]
+        match = re.search(r'(?:v=|/|embed/|youtu\.be/)([a-zA-Z0-9_-]{11})', video.url)
+        video.youtube_id = match.group(1) if match else None
+        video.embed_url = f"https://www.youtube.com/embed/{video.youtube_id}" if video.youtube_id else None
 
     return render_template("videos.html", videos=videos)
+
 
 # Route to manage videos in the dashboard
 @main.route('/dashboard/videos', methods=['GET', 'POST'])
@@ -663,18 +667,14 @@ def add_video():
 
     form = VideoForm()
     if form.validate_on_submit():
-        # Extract YouTube ID from the URL
-        youtube_id = re.search(r'v=([^&]+)', form.url.data)
-        if youtube_id:
-            youtube_id = youtube_id.group(1)
-        else:
+        match = re.search(r'(?:v=|/|embed/|youtu\.be/)([a-zA-Z0-9_-]{11})', form.url.data)
+        youtube_id = match.group(0) if match else None
+        if not youtube_id:
             flash("Invalid YouTube URL.", 'danger')
             return redirect(url_for('main.add_video'))
 
-        # Determine if the video should be published
         is_published = 'published' in request.form
 
-        # Create new video entry
         new_video = Video(
             title=form.title.data,
             description=form.description.data,
@@ -700,14 +700,12 @@ def edit_video(video_id):
     video = Video.query.get_or_404(video_id)
     form = VideoForm(obj=video)
     if form.validate_on_submit():
-        youtube_id = re.search(r'v=([^&]+)', form.url.data)
-        if youtube_id:
-            youtube_id = youtube_id.group(1)
-        else:
+        match = re.search(r'(?:v=|/|embed/|youtu\.be/)([a-zA-Z0-9_-]{11})', form.url.data)
+        youtube_id = match.group(0) if match else None
+        if not youtube_id:
             flash("Invalid YouTube URL.", 'danger')
             return redirect(url_for('main.edit_video', video_id=video_id))
 
-        # Update video details and published status
         video.title = form.title.data
         video.description = form.description.data
         video.url = form.url.data
@@ -733,6 +731,7 @@ def delete_video(video_id):
     return redirect(url_for('main.dashboard_videos'))
 
 
+
 @main.route('/dashboard/videos/post/<int:video_id>', methods=['POST'])
 @login_required
 def post_video_to_homepage(video_id):
@@ -741,7 +740,7 @@ def post_video_to_homepage(video_id):
         return redirect(url_for('main.dashboard_videos'))
 
     video = Video.query.get_or_404(video_id)
-    video.published = not video.published  # Toggle published status
+    video.published = not video.published
     db.session.commit()
 
     if video.published:
