@@ -36,13 +36,37 @@
     <!-- Pagination Controls -->
     <div class="pagination justify-content-center mt-4">
         {% if members.has_prev %}
-            <a href="{{ url_for('main.team', page=members.prev_num) }}" class="btn btn-outline-primary">&laquo; Previous</a>
+            <a href="{{ url_for('main.team', page=members.prev_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Previous
+            </a>
         {% endif %}
 
-        <span class="mx-2">Page {{ members.page }} of {{ members.pages }}</span>
+        {% for page_num in members.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == members.page %}
+                    <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                        {{ page_num }}
+                    </span>
+                {% else %}
+                    <a href="{{ url_for('main.team', page=page_num) }}"
+                       style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                       onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                       {{ page_num }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <span class="mx-1">…</span>
+            {% endif %}
+        {% endfor %}
 
         {% if members.has_next %}
-            <a href="{{ url_for('main.team', page=members.next_num) }}" class="btn btn-outline-primary">Next &raquo;</a>
+            <a href="{{ url_for('main.team', page=members.next_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Next
+            </a>
         {% endif %}
     </div>
 </div>

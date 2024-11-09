@@ -595,5 +595,70 @@ body.dark-theme {
 
 /* Adjust link icons for accessibility */
 .sidebar .nav-link svg {
-    transition: fill 0.2s;
+    transition: fill 0.1s;
+}
+/* Wrapper for moving text */
+.moving-text-wrapper {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Scrolling text */
+.moving-text {
+    display: inline-block;
+    font-size: 2em;
+    padding-right: 100%;
+    animation: scroll-text 15s linear infinite;
+}
+
+/* Keyframes for scroll animation */
+@keyframes scroll-text {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Theme-based colors for info section */
+.light-info {
+    background-color: #d8f0d8; /* Deeper green for light mode */
+}
+
+.dark-info {
+    background-color: #2f4f2f; /* Deeper green for dark mode */
+}
+.blockquote {
+    border-left: 5px solid #28a745; /* Green border */
+    color: #28a745; /* Green text */
+}
+
+.blockquote p {
+    font-style: italic; /* Optional: if you want to emphasize the quote */
+}
+
+.blockquote-footer {
+    color: #155724; /* Darker green for the footer text */
+}
+.feature-box {
+    background-color: #e2f9e1; /* Light green background */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for depth */
+}
+
+.feature-box h4 {
+    color: #28a745; /* Green text for the headings */
+}
+
+.feature-box p {
+    color: #666; /* Dark grey text for description */
+}
+/* Default (Light Mode) */
+.feature-icon {
+    color: #28a745; /* Green icon color for light mode */
+}
+
+/* Dark Mode */
+body.dark-mode .feature-icon {
+    color: #ffffff; /* White icon color for dark mode */
 }

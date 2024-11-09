@@ -1,5 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
+
+<!-- Introductory Section for New Users -->
+<div class="container mt-5">
+    <div class="info-section p-4 mb-4 {{ 'dark-info' if is_dark_theme else 'light-info' }} rounded">
+
+        <!-- Dynamic Moving Welcome Text -->
+        <div class="moving-text-wrapper text-center">
+            <h2 class="moving-text" style="color: {{ '#a8dba8' if is_dark_theme else '#2a7a2a' }};">
+                Welcome to MkulimaAid's Crop Disease Recognition!
+            </h2>
+        </div>
+
+        <p class="text-center" style="font-size: 1.2em; color: {{ '#e0e0e0' if is_dark_theme else '#4c4c4c' }};">
+            Not sure how to recognize diseases affecting your crops? Our tool can help! Just follow these simple steps to get started.
+        </p>
+
+        <div class="row mt-4">
+            <div class="col-md-4 text-center">
+                <i class="fas fa-camera fa-3x" style="color: {{ '#a8dba8' if is_dark_theme else '#5b8c51' }};"></i>
+                <h5 class="mt-3" style="color: {{ '#a8dba8' if is_dark_theme else '#2a7a2a' }};">Step 1: Take a Clear Photo</h5>
+                <p class="small" style="color: {{ '#cccccc' if is_dark_theme else '#6c757d' }};">
+                    Capture a close-up, clear image of the affected crop area. Ensure it shows visible symptoms.
+                </p>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-upload fa-3x" style="color: {{ '#a8dba8' if is_dark_theme else '#5b8c51' }};"></i>
+                <h5 class="mt-3" style="color: {{ '#a8dba8' if is_dark_theme else '#2a7a2a' }};">Step 2: Upload the Image</h5>
+                <p class="small" style="color: {{ '#cccccc' if is_dark_theme else '#6c757d' }};">
+                    Use the upload form below to add your photo. Click on the cloud icon to select your image file.
+                </p>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-search fa-3x" style="color: {{ '#a8dba8' if is_dark_theme else '#5b8c51' }};"></i>
+                <h5 class="mt-3" style="color: {{ '#a8dba8' if is_dark_theme else '#2a7a2a' }};">Step 3: Analyze</h5>
+                <p class="small" style="color: {{ '#cccccc' if is_dark_theme else '#6c757d' }};">
+                    Click on "Disease Recognition" to identify possible diseases affecting your crop.
+                </p>
+            </div>
+        </div>
+
+        <p class="text-center mt-3" style="color: {{ '#e0e0e0' if is_dark_theme else '#4c4c4c' }};">
+            Start by uploading a photo below and let MkulimaAid assist you in keeping your crops healthy!
+        </p>
+    </div>
+</div>
+
+
 <!-- Form to upload an image for prediction -->
   <div class="container mt-5">
     <div class="upload-section mt-5">
@@ -29,7 +76,7 @@
 
                 <!-- Submit button -->
                 <div class="mt-3 text-center">
-                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button type="submit" class="btn btn-success">Upload</button>
                 </div>
             </form>
 
