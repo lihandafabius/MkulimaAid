@@ -680,3 +680,67 @@ body.dark-mode .feature-icon {
     transform: translate(-50%, -50%);
     padding: 0.2em 0.4em;
 }
+.disease-detail {
+    background-color: #fff;
+    color: #333;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.disease-title {
+    font-size: 2em;
+    color: #4CAF50;
+}
+
+.nav-tabs .nav-link {
+    color: #666;
+}
+
+.nav-tabs .nav-link.active {
+    color: #4CAF50;
+    border-color: #4CAF50;
+    background-color: #f9f9f9;
+}
+
+.tab-content {
+    padding: 15px;
+}
+
+.disease-description {
+    font-size: 1.2em;
+    color: #555;
+}
+/* Style for the tab links */
+.nav-tabs .nav-link {
+    color: #2a7a2a; /* Dark green for inactive tabs */
+    border-color: #a8dba8; /* Light green border */
+    font-weight: bold;
+}
+
+/* Style for the active tab */
+.nav-tabs .nav-link.active {
+    background-color: #a8dba8; /* Light green for active tab */
+    color: #ffffff; /* White text on active tab */
+    border-color: #2a7a2a; /* Dark green border for active tab */
+}
+
+/* Hover effect for tabs */
+.nav-tabs .nav-link:hover {
+    color: #2a7a2a; /* Dark green text on hover */
+    background-color: #e6f4e6; /* Slightly lighter green on hover */
+}
+
+/* Tab content styling */
+.tab-content .tab-pane {
+    color: #4c4c4c; /* Dark gray text for better readability */
+    background-color: #f5fdf5; /* Very light green background for the tab content */
+    padding: 15px;
+    border: 1px solid #a8dba8; /* Light green border around the content */
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+}
+
+/* Optional styling for headings inside tabs */
+.tab-content h5 {
+    color: #2a7a2a; /* Dark green headings */
+}

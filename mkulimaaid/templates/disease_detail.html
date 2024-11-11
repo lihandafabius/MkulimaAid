@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Back button -->
+    <div>
+        <a href="{{ url_for('main.upload') }}" class="btn btn-success mb-4">
+            <i class="fas fa-arrow-left"></i> Back to Homepage
+        </a>
+    </div>
+
+    <!-- Disease Information Section -->
+    <div class="disease-detail p-4 rounded shadow-lg">
+        <div class="row align-items-center">
+            <!-- Disease Image -->
+            <div class="col-md-5 text-center">
+                <img src="{{ url_for('static', filename='uploads/' + disease.image) }}" class="img-fluid rounded" alt="{{ disease.name }}">
+            </div>
+            <!-- Disease Details -->
+            <div class="col-md-7">
+                <h2 class="disease-title">{{ disease.name }}</h2>
+                <h5 class="text-muted">{{ disease.scientific_name }}</h5>
+                <p class="disease-description mt-3">{{ disease.description }}</p>
+            </div>
+        </div>
+
+        <!-- Additional Information Tabs -->
+        <div class="mt-4">
+            <ul class="nav nav-tabs" id="diseaseInfoTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="symptoms-tab" data-bs-toggle="tab" href="#symptoms" role="tab">Symptoms</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="causes-tab" data-bs-toggle="tab" href="#causes" role="tab">Causes</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="control-tab" data-bs-toggle="tab" href="#control" role="tab">Control Measures</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="prevention-tab" data-bs-toggle="tab" href="#prevention" role="tab">Preventive Measures</a>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-3" id="diseaseInfoTabsContent">
+                <!-- Symptoms Tab -->
+                <div class="tab-pane fade show active" id="symptoms" role="tabpanel">
+                    <p>{{ disease.symptoms }}</p>
+                </div>
+                <!-- Causes Tab -->
+                <div class="tab-pane fade" id="causes" role="tabpanel">
+                    <p>{{ disease.causes }}</p>
+                </div>
+                <!-- Control Measures Tab -->
+                <div class="tab-pane fade" id="control" role="tabpanel">
+                    <h5>Organic Control</h5>
+                    <p>{{ disease.organic_control }}</p>
+                    <h5>Chemical Control</h5>
+                    <p>{{ disease.chemical_control }}</p>
+                </div>
+                <!-- Preventive Measures Tab -->
+                <div class="tab-pane fade" id="prevention" role="tabpanel">
+                    <p>{{ disease.preventive_measures }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

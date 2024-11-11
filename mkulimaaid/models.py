@@ -98,6 +98,7 @@ class Topic(db.Model):
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
     is_trending = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    image = db.Column(db.String(120), nullable=True)
 
     author = db.relationship('User', backref=db.backref('topics', lazy=True))
 

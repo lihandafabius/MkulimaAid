@@ -118,7 +118,7 @@
             <div class="product-info">
                 <h3 class="product-name">{{ disease.name }}</h3>
                 <p class="product-description">{{ disease.description }}</p>
-                <button class="quick-view">Learn More</button>
+                <button class="quick-view" onclick="window.location.href='{{ url_for('main.disease_detail', disease_id=disease.id) }}'">Learn More</button>
             </div>
         </div>
         {% endfor %}

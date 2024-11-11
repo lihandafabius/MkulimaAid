@@ -148,6 +148,12 @@ def predict():
 
     return redirect(url_for('main.upload'))
 
+@main.route('/disease/<int:disease_id>')
+@login_required
+def disease_detail(disease_id):
+    disease = Diseases.query.get_or_404(disease_id)
+    return render_template('disease_detail.html', disease=disease)
+
 
 # Login route
 @main.route("/login", methods=["GET", "POST"])
@@ -837,12 +843,20 @@ def add_topic():
 
     form = TopicForm()
     if form.validate_on_submit():
+        image_filename = None
+        if form.image.data and hasattr(form.image.data, 'filename'):
+            image_file = form.image.data
+            image_filename = secure_filename(image_file.filename)
+            image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
+            image_file.save(image_path)
+
         new_topic = Topic(
             title=form.title.data,
             content=form.content.data,
             date_posted=datetime.utcnow(),
             is_trending=form.is_trending.data,
-            author_id = current_user.id
+            image=image_filename,
+            author_id=current_user.id
         )
         db.session.add(new_topic)
         db.session.commit()
@@ -851,7 +865,6 @@ def add_topic():
 
     return render_template('add_topic.html', form=form)
 
-# Route to edit an existing topic
 @main.route('/dashboard/topics/edit/<int:topic_id>', methods=['GET', 'POST'])
 @login_required
 def edit_topic(topic_id):
@@ -862,6 +875,13 @@ def edit_topic(topic_id):
     topic = Topic.query.get_or_404(topic_id)
     form = TopicForm(obj=topic)
     if form.validate_on_submit():
+        if form.image.data and hasattr(form.image.data, 'filename'):
+            image_file = form.image.data
+            image_filename = secure_filename(image_file.filename)
+            image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
+            image_file.save(image_path)
+            topic.image = image_filename
+
         topic.title = form.title.data
         topic.content = form.content.data
         topic.is_trending = form.is_trending.data
@@ -870,8 +890,6 @@ def edit_topic(topic_id):
         return redirect(url_for('main.dashboard_topics'))
 
     return render_template('edit_topic.html', form=form, topic=topic)
-
-# Route to delete a topic
 @main.route('/dashboard/topics/delete/<int:topic_id>', methods=['POST'])
 @login_required
 def delete_topic(topic_id):

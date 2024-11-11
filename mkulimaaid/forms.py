@@ -182,6 +182,7 @@ class TopicForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=200)])
     content = TextAreaField('Content', validators=[DataRequired()])
     is_trending = BooleanField('Trending')
+    image = FileField('Topic Image', validators=[FileAllowed(['jpg', 'png', 'jpeg','jfif'], 'Images only!')])
     submit = SubmitField('Submit')
 
 
