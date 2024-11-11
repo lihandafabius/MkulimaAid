@@ -12,7 +12,7 @@
                         <h5 class="card-title">{{ topic.title }}</h5>
                         <p class="card-text">{{ topic.content | truncate(100) }}</p>
                         <small class="text-muted">Posted by {{ topic.author.username }} on {{ topic.date_posted.strftime('%B %d, %Y') }}</small>
-                        <a href="{{ url_for('main.view_topic', topic_id=topic.id) }}" class="btn btn-primary btn-sm mt-3 mt-auto">
+                        <a href="{{ url_for('main.view_topic', topic_id=topic.id) }}" class="btn btn-success btn-sm mt-3 mt-auto">
                             Read More
                         </a>
                     </div>

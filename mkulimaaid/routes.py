@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, session
 from werkzeug.utils import secure_filename
 from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm
 from config import Config
@@ -35,7 +35,31 @@ def load_settings():
     g.settings = Settings.query.first()
 
 
+@main.before_request
+def check_session_timeout():
+    if current_user.is_authenticated:
+        # Retrieve 'last_active' timestamp
+        last_active_str = session.get('last_active')
 
+        # Ensure 'last_active' exists and is a valid string before processing
+        if isinstance(last_active_str, str):
+            try:
+                last_active = datetime.fromisoformat(last_active_str)  # Convert from string
+            except ValueError:
+                # Handle cases where the string is not in the correct ISO format
+                last_active = datetime.now()
+
+            # Calculate time elapsed since last activity
+            time_elapsed = datetime.now() - last_active
+
+            if time_elapsed > current_app.permanent_session_lifetime:
+                logout_user()
+                session.clear()
+                flash("Your session has expired. Please log in again.", "warning")
+                return redirect(url_for('main.login'))
+
+        # Update 'last_active' timestamp as an ISO format string
+        session['last_active'] = datetime.now().isoformat()
 # Home page and file upload handling
 @main.route('/', methods=['GET', 'POST'])
 @login_required
@@ -137,12 +161,14 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
-            flash('Login successful!', 'success')  # Flash message for successful login
+            session['last_active'] = datetime.now()
+            flash('Login successful!', 'success')
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.upload'))
         else:
             flash('Invalid credentials, please try again.', 'danger')
     return render_template('login.html', form=form)
+
 
 
 # Register route
@@ -178,15 +204,21 @@ def dashboard():
     # Instantiate the form
     form = AdminForm()
 
-    diseases = Diseases.query.all()  # Get all diseases
-    users = User.query.all()  # Get all users
+    # Get all diseases and users
+    diseases = Diseases.query.all()
+    users = User.query.all()
 
-    # Pass the form, diseases, and users to the template
-    return render_template('dashboard.html', form=form, diseases=diseases, users=users)
+    # Count unseen messages
+    unread_count = ContactMessage.query.filter_by(seen=False).count()
+
+    # Pass form, diseases, users, and unread_count to the template
+    return render_template('dashboard.html', form=form, diseases=diseases, users=users, unread_count=unread_count)
+
 
 
 # Logout route
 @main.route("/logout")
+
 @login_required
 def logout():
     logout_user()
@@ -917,11 +949,21 @@ def view_messages():
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.dashboard'))
 
-    # Retrieve all messages from the ContactMessage table, ordered by date sent
+    # Retrieve all messages, ordered by date
     messages = ContactMessage.query.order_by(ContactMessage.date_sent.desc()).all()
     form = DeleteForm()
 
-    return render_template('messages.html', messages=messages, form=form)
+    # Mark all messages as seen
+    for message in messages:
+        if not message.seen:
+            message.seen = True
+    db.session.commit()  # Save changes to the database
+
+    # Since all messages are now seen, the unread count should be zero
+    unread_count = 0
+
+    return render_template('messages.html', messages=messages, form=form, unread_count=unread_count)
+
 
 
 @main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])

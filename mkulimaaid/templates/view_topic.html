@@ -6,7 +6,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-success text-white">
                     <h2 class="mb-0">{{ topic.title }}</h2>
                     <small class="text-white">Posted by {{ topic.author.username }} on {{ topic.date_posted.strftime('%B %d, %Y') }}</small>
                 </div>
@@ -21,7 +21,7 @@
     <div class="row justify-content-center mt-5">
         <div class="col-md-8">
             <div class="card shadow-lg">
-                <div class="card-header bg-info text-white">
+                <div class="card-header bg-success text-white">
                     <h4>Join the Conversation</h4>
                     <p class="mb-0">Share your thoughts on the topic with the MkulimaAid community.</p>
                 </div>
@@ -36,7 +36,7 @@
                                 <div class="text-danger small mt-1">{{ form.comment.errors[0] }}</div>
                             {% endif %}
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3">Post Comment</button>
+                        <button type="submit" class="btn btn-success mt-3">Post Comment</button>
                     </form>
 
                     <!-- Display Comments -->

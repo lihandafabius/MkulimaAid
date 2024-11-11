@@ -153,6 +153,7 @@ class ContactMessage(db.Model):
     subject = db.Column(db.String(150), nullable=False)
     message = db.Column(db.Text, nullable=False)
     date_sent = db.Column(db.DateTime, default=datetime.utcnow)
+    seen = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"ContactMessage('{self.name}', '{self.email}', '{self.subject}')"
