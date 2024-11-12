@@ -8,6 +8,7 @@ from wtforms import IntegerField
 from config import Config
 from flask_login import current_user
 from mkulimaaid import bcrypt
+from flask_ckeditor import CKEditorField
 
 
 class UploadForm(FlaskForm):
@@ -180,7 +181,7 @@ class VideoForm(FlaskForm):
 
 class TopicForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=200)])
-    content = TextAreaField('Content', validators=[DataRequired()])
+    content = CKEditorField('Content', validators=[DataRequired()])
     is_trending = BooleanField('Trending')
     image = FileField('Topic Image', validators=[FileAllowed(['jpg', 'png', 'jpeg','jfif'], 'Images only!')])
     submit = SubmitField('Submit')

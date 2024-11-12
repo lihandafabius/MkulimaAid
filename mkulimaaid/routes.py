@@ -792,8 +792,10 @@ def post_video_to_homepage(video_id):
 @main.route('/topics')
 @login_required
 def topics():
-    topics = Topic.query.order_by(Topic.date_posted.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    topics = Topic.query.order_by(Topic.date_posted.desc()).paginate(page=page, per_page=6)
     return render_template('topics.html', topics=topics)
+
 
 # Route to view details of a single topic
 @main.route('/topics/view/<int:topic_id>')

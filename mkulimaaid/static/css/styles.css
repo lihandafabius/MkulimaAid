@@ -744,3 +744,21 @@ body.dark-mode .feature-icon {
 .tab-content h5 {
     color: #2a7a2a; /* Dark green headings */
 }
+/* Custom styling for the topic page */
+.topic-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: justify;
+}
+.card-img-top {
+    max-height: 400px;
+    object-fit: cover;
+}
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+.btn-success:hover {
+    background-color: #218838;
+}

@@ -4,15 +4,16 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager  # Import LoginManager
-
+from flask_login import LoginManager
+from flask_ckeditor import CKEditor  # Import CKEditor
 
 # Initialize extensions
 csrf = CSRFProtect()
-db = SQLAlchemy()  # Initialize db here
+db = SQLAlchemy()
 bcrypt = Bcrypt()
-login_manager = LoginManager()  # Initialize LoginManager
+login_manager = LoginManager()
 migrate = Migrate()
+ckeditor = CKEditor()  # Initialize CKEditor
 
 def create_app():
     app = Flask(__name__)
@@ -22,11 +23,15 @@ def create_app():
     csrf.init_app(app)
     db.init_app(app)
     bcrypt.init_app(app)
-    login_manager.init_app(app)  # Initialize login_manager with the app
+    login_manager.init_app(app)
     login_manager.login_message = "Please log in to access MkulimaAid."
     migrate.init_app(app, db)
+    ckeditor.init_app(app)  # Initialize CKEditor with the app
 
-    # Set the login view (this is where users will be redirected if not authenticated)
+    # Configure CKEditor file uploader endpoint
+    app.config['CKEDITOR_FILE_UPLOADER'] = 'main.upload'  # Set the correct endpoint
+
+    # Set the login view
     login_manager.login_view = 'main.login'
     login_manager.login_message_category = 'info'
 
