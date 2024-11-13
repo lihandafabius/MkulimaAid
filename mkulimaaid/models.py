@@ -14,6 +14,8 @@ class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
     password = db.Column(db.String(60), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     avatar = db.Column(db.String(100), nullable=True)
+    date_joined = db.Column(db.DateTime, default=datetime.utcnow)
+
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -156,6 +158,8 @@ class ContactMessage(db.Model):
     date_sent = db.Column(db.DateTime, default=datetime.utcnow)
     seen = db.Column(db.Boolean, default=False)
 
+
+
     def __repr__(self):
         return f"ContactMessage('{self.name}', '{self.email}', '{self.subject}')"
 
@@ -175,4 +179,15 @@ class TeamMember(db.Model):
 
     def __repr__(self):
         return f'<TeamMember {self.name}>'
+
+
+class Farmer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    farmer_name = db.Column(db.String(100), nullable=False)
+    farm_name = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    farm_size = db.Column(db.Float, nullable=False)
+    crop_types = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    contact_info = db.Column(db.String(15), nullable=False)
 

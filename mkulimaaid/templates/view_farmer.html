@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Page Title -->
+<h2 class="mt-4">Farmer Profile Overview</h2>
+
+<!-- Basic Farmer Information -->
+<div class="farmer-info card mt-4">
+    <div class="card-body">
+        <h4>{{ farmer.name }}</h4>
+        <p><strong>Location:</strong> {{ farmer.location }}</p>
+        <p><strong>Joined:</strong>
+            {% if farmer.date_joined %}
+                {{ farmer.date_joined.strftime('%B %d, %Y') }}
+            {% else %}
+                Date not available
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<!-- Dashboard Overview Section -->
+<div class="row mt-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Total Questions Asked</h5>
+                <h3 class="text-primary">{{ total_questions }}</h3>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Total Answers Given</h5>
+                <h3 class="text-success">{{ total_answers }}</h3>
+            </div>
+        </div>
+    </div>
+<!--    <div class="col-lg-3 col-md-6 mb-4">-->
+<!--        <div class="card shadow-sm">-->
+<!--            <div class="card-body">-->
+<!--                <h5>Total Comments</h5>-->
+<!--                <h3 class="text-warning">{{ total_comments }}</h3>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Total Messages Sent</h5>
+                <h3 class="text-danger">{{ total_messages }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interaction Visualizations -->
+<div class="row mt-4">
+    <!-- Questions and Answers Over Time -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Questions & Answers Over Time</h5>
+                <canvas id="questionsAnswersChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments by Month -->
+<!--    <div class="col-lg-6 mb-4">-->
+<!--        <div class="card shadow-sm">-->
+<!--            <div class="card-body">-->
+<!--                <h5 class="card-title">Comments Submitted (Monthly)</h5>-->
+<!--                <canvas id="commentsChart"></canvas>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="row mt-4">-->
+<!--    &lt;!&ndash; Messages Sent Over Time &ndash;&gt;-->
+<!--    <div class="col-lg-6 mb-4">-->
+<!--        <div class="card shadow-sm">-->
+<!--            <div class="card-body">-->
+<!--                <h5 class="card-title">Messages Sent Over Time</h5>-->
+<!--                <canvas id="messagesChart"></canvas>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- Top Topics Interacted With -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Top Topics Interacted With</h5>
+                <canvas id="topicsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sample data, replace with data passed from the backend as JSON.
+    const questionsAnswersData = {
+        labels: {{ questions_dates | safe }},
+        datasets: [
+            {
+                label: 'Questions',
+                data: {{ questions_counts | safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Answers',
+                data: {{ answers_counts | safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }
+        ]
+    };
+
+<!--    const commentsData = {-->
+<!--        labels: {{ comments_dates | safe }},-->
+<!--        datasets: [{-->
+<!--            label: 'Comments',-->
+<!--            data: {{ comments_counts | safe }},-->
+<!--            backgroundColor: 'rgba(255, 206, 86, 0.5)',-->
+<!--            borderColor: 'rgba(255, 206, 86, 1)',-->
+<!--            borderWidth: 1-->
+<!--        }]-->
+<!--    };-->
+
+<!--    const messagesData = {-->
+<!--        labels: {{ messages_dates | safe }},-->
+<!--        datasets: [{-->
+<!--            label: 'Messages',-->
+<!--            data: {{ messages_counts | safe }},-->
+<!--            backgroundColor: 'rgba(255, 99, 132, 0.5)',-->
+<!--            borderColor: 'rgba(255, 99, 132, 1)',-->
+<!--            borderWidth: 1-->
+<!--        }]-->
+<!--    };-->
+
+    const topicsData = {
+        labels: {{ topic_names | safe }},
+        datasets: [{
+            label: 'Interactions',
+            data: {{ topic_interactions | safe }},
+            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    // Create Charts
+    const questionsAnswersChartCtx = document.getElementById('questionsAnswersChart').getContext('2d');
+    new Chart(questionsAnswersChartCtx, {
+        type: 'line',
+        data: questionsAnswersData,
+        options: { responsive: true }
+    });
+
+    const commentsChartCtx = document.getElementById('commentsChart').getContext('2d');
+    new Chart(commentsChartCtx, {
+        type: 'bar',
+        data: commentsData,
+        options: { responsive: true }
+    });
+
+    const messagesChartCtx = document.getElementById('messagesChart').getContext('2d');
+    new Chart(messagesChartCtx, {
+        type: 'line',
+        data: messagesData,
+        options: { responsive: true }
+    });
+
+    const topicsChartCtx = document.getElementById('topicsChart').getContext('2d');
+    new Chart(topicsChartCtx, {
+        type: 'pie',
+        data: topicsData,
+        options: { responsive: true }
+    });
+</script>
+{% endblock %}

@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, session
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm
 from config import Config
 from PIL import Image
 import torch
@@ -234,8 +234,45 @@ def logout():
 
 @main.route('/farmers')
 @login_required
-def customers():
-    return render_template('farmers.html')
+def farmers():
+    form = FarmersForm()
+    # Query all users
+    farmers = User.query.all()
+    return render_template('farmers.html', farmers=farmers, form=form)
+
+
+# View Farmer details
+@main.route('/farmers/view/<int:id>', methods=['GET'])
+@login_required
+def view_farmer(id):
+    farmer = User.query.get_or_404(id)
+    total_questions = len(farmer.questions)
+    total_answers = len(farmer.answers)# Alternatively, use `farmer.questions.count()`
+
+    # total_comments = len(farmer.comments)
+    # total_messages = len(farmer.messages.all())  # Convert the query result to a list first
+
+    return render_template('view_farmer.html', farmer=farmer, total_questions=total_questions,
+                           total_answers=total_answers)
+
+
+
+# Delete Farmer
+@main.route('/farmers/delete/<int:farmer_id>', methods=['POST'])
+@login_required
+def delete_farmer(farmer_id):
+    farmer = User.query.get_or_404(farmer_id)
+
+    # Only allow admins to delete farmers
+    if not current_user.is_admin:
+        flash('You do not have permission to perform this action.', 'warning')
+        return redirect(url_for('main.farmers'))
+
+    db.session.delete(farmer)
+    db.session.commit()
+    flash('Farmer deleted successfully.', 'success')
+    return redirect(url_for('main.farmers'))
+
 
 
 @main.route('/reports')

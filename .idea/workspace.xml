@@ -5,16 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/view_farmer.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/5ade3b22670c_add_description_column_to_diseases_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/versions/5ade3b22670c_add_description_column_to_diseases_table.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/topics.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/topics.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/view_topic.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/view_topic.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/farmers.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/farmers.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +92,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>309</line>
+          <line>346</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

@@ -223,3 +223,22 @@ class TeamForm(FlaskForm):
 
 class EmptyForm(FlaskForm):
     pass
+
+
+class FarmersForm(FlaskForm):
+    farmer_name = StringField('Farmer Name', validators=[
+        DataRequired(),
+        Length(max=100),
+        Regexp('^[A-Za-z ]*$', 0, 'Farmer name must contain only letters and spaces')
+    ])
+    farm_name = StringField('Farm Name', validators=[DataRequired(), Length(max=100)])
+    location = StringField('Location', validators=[DataRequired(), Length(max=200)])
+    farm_size = DecimalField('Farm Size (in acres)', validators=[DataRequired()], places=2)
+    crop_types = StringField('Types of Crops Grown', validators=[DataRequired(), Length(max=200)])
+    description = TextAreaField('Farm Description', validators=[Optional(), Length(max=500)])
+    contact_info = StringField('Contact Information', validators=[DataRequired(), Length(max=15)])
+    submit = SubmitField('Save Farmer')
+
+    def validate_contact_info(self, contact_info):
+        if not re.match(r'^\d{10}$', contact_info.data):
+            raise ValidationError('Contact number must contain exactly 10 digits and only numbers.')
