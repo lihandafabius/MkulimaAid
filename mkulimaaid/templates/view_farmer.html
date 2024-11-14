@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- Page Title -->
 <h2 class="mt-4">Farmer Profile Overview</h2>
 
-<!-- Basic Farmer Information -->
 <div class="farmer-info card mt-4">
     <div class="card-body text-center">
-        <!-- Profile Picture -->
         {% if farmer.avatar %}
             <img class="rounded-circle mt-3 shadow-lg border border-3 border-success"
                  width="170px" height="170px"
@@ -18,25 +15,13 @@
                  src="{{ url_for('static', filename='images/default.png') }}"
                  alt="Default Avatar">
         {% endif %}
-
-        <!-- Full Name and Username -->
         <h4 class="mt-3">{{ farmer.fullname }}</h4>
         <p><strong>Username:</strong> {{ farmer.username }}</p>
-
-        <!-- Location and Join Date -->
         <p><strong>Location:</strong> {{ farmer.location }}</p>
-        <p><strong>Joined:</strong>
-            {% if farmer.date_joined %}
-                {{ farmer.date_joined.strftime('%B %d, %Y') }}
-            {% else %}
-                Date not available
-            {% endif %}
-        </p>
+        <p><strong>Joined:</strong> {{ farmer.date_joined.strftime('%B %d, %Y') if farmer.date_joined else 'Date not available' }}</p>
     </div>
 </div>
 
-
-<!-- Dashboard Overview Section -->
 <div class="row mt-4">
     <div class="col-lg-3 col-md-6 mb-4">
         <div class="card shadow-sm">
@@ -72,119 +57,185 @@
     </div>
 </div>
 
-<!-- Interaction Visualizations -->
 <div class="row mt-4">
-    <!-- Questions and Answers Over Time -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Questions & Answers Over Time</h5>
-                <canvas id="questionsAnswersChart"></canvas>
+    {% if topics_values %}
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Topics Posted</h5>
+                    <canvas id="topicsChart"></canvas>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Comments by Month -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Comments Submitted (Monthly)</h5>
-                <canvas id="commentsChart"></canvas>
+    {% endif %}
+    {% if questions_values and answers_values %}
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Questions & Answers Over Time</h5>
+                    <canvas id="questionsAnswersChart"></canvas>
+                </div>
             </div>
+        </div>
+    {% endif %}
+    {% if messages_values %}
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Messages Sent Over Time</h5>
+                    <canvas id="messagesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+<div class="col-lg-6 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5>Topic Interactions (All Users)</h5>
+            <canvas id="userTopicInteractionsChart"></canvas>
         </div>
     </div>
 </div>
-
-<div class="row mt-4">
-    <!-- Messages Sent Over Time -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Messages Sent Over Time</h5>
-                <canvas id="messagesChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Topics Interacted With -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Top Topics Interacted With</h5>
-                <canvas id="topicsChart"></canvas>
-            </div>
-        </div>
-    </div>
 </div>
 
-<!-- Load JavaScript Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Prepare data for Questions & Answers chart
     const questionsAnswersData = {
-        labels: {{ questions_labels | safe }},
+        labels: {{ questions_labels | tojson }},
         datasets: [
             {
                 label: 'Questions',
-                data: {{ questions_values | safe }},
+                data: {{ questions_values | tojson }},
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
+                borderWidth: 1,
             },
             {
                 label: 'Answers',
-                data: {{ answers_values | safe }},
+                data: {{ answers_values | tojson }},
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
+                borderWidth: 1,
             }
         ]
     };
 
-    const commentsData = {
-        labels: {{ messages_labels | safe }},
+    if (questionsAnswersData.labels.length) {
+        new Chart(document.getElementById('questionsAnswersChart').getContext('2d'), {
+            type: 'line',
+            data: questionsAnswersData,
+            options: { responsive: true }
+        });
+    }
+
+    // Prepare data for Messages chart
+    const messagesData = {
+        labels: {{ messages_labels | tojson }},
         datasets: [{
             label: 'Messages',
-            data: {{ messages_values | safe }},
+            data: {{ messages_values | tojson }},
             backgroundColor: 'rgba(255, 206, 86, 0.5)',
             borderColor: 'rgba(255, 206, 86, 1)',
-            borderWidth: 1
+            borderWidth: 1,
         }]
     };
 
-    const topicsData = {
-        labels: {{ topics_labels | safe }},
-        datasets: [{
-            label: 'Interactions',
-            data: {{ topics_values | safe }},
-            backgroundColor: 'rgba(153, 102, 255, 0.5)',
-            borderColor: 'rgba(153, 102, 255, 1)',
-            borderWidth: 1
-        }]
-    };
+    if (messagesData.labels.length) {
+        new Chart(document.getElementById('messagesChart').getContext('2d'), {
+            type: 'line',
+            data: messagesData,
+            options: { responsive: true }
+        });
+    }
 
-    // Create Charts
-    new Chart(document.getElementById('questionsAnswersChart').getContext('2d'), {
-        type: 'line',
-        data: questionsAnswersData,
-        options: { responsive: true }
-    });
+    // Prepare data for Topics chart
+// Prepare data for Topics chart with different colors and sorted labels
+const topicsData = {
+    labels: {{ topics_labels | tojson }},
+    datasets: [{
+        label: 'Interactions',
+        data: {{ topics_values | tojson }},
+        backgroundColor: generateRandomColors({{ topics_labels | length }}),
+        borderColor: 'rgba(0, 0, 0, 0.1)', // Slight border for visibility
+        borderWidth: 1,
+    }]
+};
 
-    new Chart(document.getElementById('commentsChart').getContext('2d'), {
-        type: 'bar',
-        data: commentsData,
-        options: { responsive: true }
-    });
+// Sort labels and values in descending order based on interactions (optional)
+const sortedLabels = [...topicsData.labels].sort((a, b) => {
+    const aIndex = topicsData.labels.indexOf(a);
+    const bIndex = topicsData.labels.indexOf(b);
+    return topicsData.datasets[0].data[bIndex] - topicsData.datasets[0].data[aIndex];
+});
 
-    new Chart(document.getElementById('messagesChart').getContext('2d'), {
-        type: 'line',
-        data: commentsData,
-        options: { responsive: true }
-    });
+const sortedData = sortedLabels.map(label => {
+    const index = topicsData.labels.indexOf(label);
+    return topicsData.datasets[0].data[index];
+});
 
+topicsData.labels = sortedLabels;
+topicsData.datasets[0].data = sortedData;
+
+if (topicsData.labels.length) {
     new Chart(document.getElementById('topicsChart').getContext('2d'), {
         type: 'pie',
         data: topicsData,
         options: { responsive: true }
     });
+}
+
+// Function to generate random colors for each segment
+function generateRandomColors(count) {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+        const color = 'rgba(' +
+            Math.floor(Math.random() * 256) + ',' +
+            Math.floor(Math.random() * 256) + ',' +
+            Math.floor(Math.random() * 256) + ',0.5)';
+        colors.push(color);
+    }
+    return colors;
+}
+// Prepare data for User Topic Interactions chart (all users)
+    const userTopicInteractionsData = {
+        labels: {{ topics_labels | tojson }},
+        datasets: [{
+            label: 'Interactions by All Users',
+            data: {{ topics_values | tojson }},
+            backgroundColor: generateRandomColors({{ topics_labels | length }}),
+            borderColor: 'rgba(0, 0, 0, 0.1)', // Slight border for visibility
+            borderWidth: 1,
+        }]
+    };
+
+    if (userTopicInteractionsData.labels.length) {
+        new Chart(document.getElementById('userTopicInteractionsChart').getContext('2d'), {
+            type: 'bar',
+            data: userTopicInteractionsData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Function to generate random colors for each segment (bar chart)
+    function generateRandomColors(count) {
+        const colors = [];
+        for (let i = 0; i < count; i++) {
+            const color = 'rgba(' +
+                Math.floor(Math.random() * 256) + ',' +
+                Math.floor(Math.random() * 256) + ',' +
+                Math.floor(Math.random() * 256) + ',0.5)';
+            colors.push(color);
+        }
+        return colors;
+    }
 </script>
+
 {% endblock %}

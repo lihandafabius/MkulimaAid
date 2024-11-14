@@ -123,7 +123,10 @@ class TopicComment(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     topic = db.relationship('Topic', backref=db.backref('comments', lazy=True, cascade="all, delete-orphan"))
-    author = db.relationship('User', backref=db.backref('topic_comments', lazy=True))
+
+    # Explicitly specify the foreign key for the 'author' relationship
+    author = db.relationship('User', backref=db.backref('topic_comments', lazy=True), foreign_keys=[author_id])
+
 
 
 class Question(db.Model):

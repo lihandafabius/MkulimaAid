@@ -261,7 +261,6 @@ def view_farmer(id):
     question_counts = Counter(questions_dates)
     answer_counts = Counter(answers_dates)
 
-    # Ensure there is data before unpacking
     if question_counts:
         questions_labels, questions_values = zip(*question_counts.items())
     else:
