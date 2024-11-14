@@ -5,15 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/view_farmer.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/5ade3b22670c_add_description_column_to_diseases_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/versions/5ade3b22670c_add_description_column_to_diseases_table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/alembic.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/script.py.mako" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/01c545ab37aa_add_comments_table_added_avatar_file_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/31f7031d1d1b_add_question_and_answer_tables_for_q_a_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/5ade3b22670c_add_description_column_to_diseases_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/6f0778763def_add_seen_culumn_to_contact_maessage_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/8a666891348e_add_column_date_joined_and_publish_to_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/a4674d8c8910_add_is_trending_column_to_diseases_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/ccdc03ef208c_add_image_column_on_topic_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/d4b97119039e_add_column_is_trending_in_topic_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/db6c7942c78d_add_column_published_in_video_table.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/farmers.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/farmers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/view_farmer.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/view_farmer.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +101,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>346</line>
+          <line>397</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

@@ -16,6 +16,12 @@ class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
     avatar = db.Column(db.String(100), nullable=True)
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Relationship with farmers if every farmer is also a user
+    farmers = db.relationship('Farmer', backref='user', lazy=True)
+
+    # Relationship with ContactMessages
+    contact_messages = db.relationship('ContactMessage', backref='user', lazy=True)
+
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -157,7 +163,7 @@ class ContactMessage(db.Model):
     message = db.Column(db.Text, nullable=False)
     date_sent = db.Column(db.DateTime, default=datetime.utcnow)
     seen = db.Column(db.Boolean, default=False)
-
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to User
 
 
     def __repr__(self):
@@ -190,4 +196,6 @@ class Farmer(db.Model):
     crop_types = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
     contact_info = db.Column(db.String(15), nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to User
 

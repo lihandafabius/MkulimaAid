@@ -12,6 +12,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import bleach
 from datetime import datetime
+from collections import Counter
 from mkulimaaid.utils import save_avatar
 import re
 
@@ -246,16 +247,66 @@ def farmers():
 @login_required
 def view_farmer(id):
     farmer = User.query.get_or_404(id)
+
+    # Calculate totals
     total_questions = len(farmer.questions)
-    total_answers = len(farmer.answers)# Alternatively, use `farmer.questions.count()`
+    total_answers = len(farmer.answers)
+    total_comments = len(farmer.comments)
+    total_messages = len(farmer.contact_messages)
 
-    # total_comments = len(farmer.comments)
-    # total_messages = len(farmer.messages.all())  # Convert the query result to a list first
+    # Data for questions and answers over time
+    questions_dates = [q.timestamp.strftime('%Y-%m-%d') for q in farmer.questions]
+    answers_dates = [a.timestamp.strftime('%Y-%m-%d') for a in farmer.answers]
 
-    return render_template('view_farmer.html', farmer=farmer, total_questions=total_questions,
-                           total_answers=total_answers)
+    question_counts = Counter(questions_dates)
+    answer_counts = Counter(answers_dates)
 
+    # Ensure there is data before unpacking
+    if question_counts:
+        questions_labels, questions_values = zip(*question_counts.items())
+    else:
+        questions_labels, questions_values = [], []
 
+    if answer_counts:
+        answers_labels, answers_values = zip(*answer_counts.items())
+    else:
+        answers_labels, answers_values = [], []
+
+    # Data for messages over time
+    messages_dates = [m.date_sent.strftime('%Y-%m-%d') for m in farmer.contact_messages]
+    messages_counts = Counter(messages_dates)
+
+    if messages_counts:
+        messages_labels, messages_values = zip(*messages_counts.items())
+    else:
+        messages_labels, messages_values = [], []
+
+    # Data for topics interacted with
+    topic_names = [t.title for t in farmer.topics]
+    topic_interactions = Counter(topic_names)
+
+    if topic_interactions:
+        topics_labels, topics_values = zip(*topic_interactions.items())
+    else:
+        topics_labels, topics_values = [], []
+
+    # Prepare data for rendering
+    return render_template(
+        'view_farmer.html',
+        farmer=farmer,
+        total_questions=total_questions,
+        total_answers=total_answers,
+        total_comments=total_comments,
+        total_messages=total_messages,
+        questions_labels=questions_labels,
+        questions_values=questions_values,
+        answers_labels=answers_labels,
+        answers_values=answers_values,
+        messages_labels=messages_labels,
+        messages_values=messages_values,
+        topics_labels=topics_labels,
+        topics_values=topics_values
+    )
 
 # Delete Farmer
 @main.route('/farmers/delete/<int:farmer_id>', methods=['POST'])
@@ -990,6 +1041,7 @@ def contact():
             email=form.email.data,
             subject=form.subject.data,
             message=form.message.data,
+            user_id=current_user.id if current_user.is_authenticated else None  # Associate user if logged in
         )
         db.session.add(message)
         db.session.commit()
