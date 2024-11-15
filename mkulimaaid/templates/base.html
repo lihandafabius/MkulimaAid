@@ -279,11 +279,14 @@
       <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
       <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
       <script src="//cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+      <script src="{{ url_for('static', filename='js/show_users.js') }}"></script>
       <script>
           CKEDITOR.replace('newsletter_content');
       </script>
       <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="{{ url_for('static', filename='js/show_Top_identified.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/show_users.js') }}"></script>
 
       <!-- Block for page-specific scripts -->
       {% block scripts %}{% endblock %}

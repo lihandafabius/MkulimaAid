@@ -88,15 +88,6 @@
             </div>
         </div>
     {% endif %}
-<div class="col-lg-6 mb-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h5>Topic Interactions (All Users)</h5>
-            <canvas id="userTopicInteractionsChart"></canvas>
-        </div>
-    </div>
-</div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -197,45 +188,6 @@ function generateRandomColors(count) {
     }
     return colors;
 }
-// Prepare data for User Topic Interactions chart (all users)
-    const userTopicInteractionsData = {
-        labels: {{ topics_labels | tojson }},
-        datasets: [{
-            label: 'Interactions by All Users',
-            data: {{ topics_values | tojson }},
-            backgroundColor: generateRandomColors({{ topics_labels | length }}),
-            borderColor: 'rgba(0, 0, 0, 0.1)', // Slight border for visibility
-            borderWidth: 1,
-        }]
-    };
-
-    if (userTopicInteractionsData.labels.length) {
-        new Chart(document.getElementById('userTopicInteractionsChart').getContext('2d'), {
-            type: 'bar',
-            data: userTopicInteractionsData,
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-    // Function to generate random colors for each segment (bar chart)
-    function generateRandomColors(count) {
-        const colors = [];
-        for (let i = 0; i < count; i++) {
-            const color = 'rgba(' +
-                Math.floor(Math.random() * 256) + ',' +
-                Math.floor(Math.random() * 256) + ',' +
-                Math.floor(Math.random() * 256) + ',0.5)';
-            colors.push(color);
-        }
-        return colors;
-    }
 </script>
 
 {% endblock %}

@@ -27,7 +27,7 @@
             <td>{{ farmer.phone }}</td>
             <td>{{ 'Yes' if farmer.is_admin else 'No' }}</td>
             <td>
-              <a href="{{ url_for('main.view_farmer', id=farmer.id) }}" class="btn btn-sm btn-primary">View</a>
+              <a href="{{ url_for('main.view_farmer', id=farmer.id) }}" class="btn btn-sm btn-primary">View Interactions</a>
               <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ farmer.id }}">Delete</button>
             </td>
           </tr>

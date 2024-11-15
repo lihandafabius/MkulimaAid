@@ -202,3 +202,20 @@ class Farmer(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to User
 
+
+class IdentifiedDisease(db.Model):
+    __tablename__ = 'identified_diseases'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Reference to the user who uploaded the image
+    disease_name = db.Column(db.String(100), nullable=False)  # The name of the identified disease
+    image_filename = db.Column(db.String(100), nullable=True)  # Path to the uploaded image
+    date_identified = db.Column(db.DateTime, default=datetime.utcnow)  # Date and time of identification
+    is_trending = db.Column(db.Boolean, default=False)  # If this identification is trending
+    confidence = db.Column(db.Float, nullable=True)  # Confidence score for the prediction, if applicable
+
+    user = db.relationship('User', backref=db.backref('identified_diseases', lazy=True))
+
+    def __repr__(self):
+        return f'<IdentifiedDisease {self.disease_name}>'
+
+

@@ -6,15 +6,18 @@ from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import bleach
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import Counter
 from mkulimaaid.utils import save_avatar
 import re
+from flask import jsonify
+from sqlalchemy import func
+
 
 
 main = Blueprint('main', __name__)
@@ -99,12 +102,23 @@ def upload():
                 # Save the image filename for display
                 image_filename = filename
 
+                # Save identified disease to the database
+                identified_disease = IdentifiedDisease(
+                    user_id=current_user.id,
+                    disease_name=prediction,
+                    image_filename=filename,
+                    confidence=float(outputs.logits[0][predicted_label_idx].item())  # Optional: Store confidence
+                )
+                db.session.add(identified_disease)
+                db.session.commit()
+
             except Exception as e:
                 flash(f"Error processing the image: {e}", 'danger')
         else:
             flash("Invalid file type. Please upload a valid image (jpg, jpeg, png, jfif).", 'warning')
 
     return render_template('home.html', form=form, image_filename=image_filename, prediction=prediction, diseases=trending_diseases)
+
 
 
 # Serve the uploaded files
@@ -1233,3 +1247,46 @@ def publish_member(member_id):
         flash(f'Team member "{member.name}" has been unpublished.', 'warning')
 
     return redirect(url_for('main.dashboard_team'))
+
+
+@main.route('/api/top-crop-diseases', methods=['GET'])
+def get_top_crop_diseases():
+    time_filter = request.args.get('filter', 'week')
+    query = db.session.query(
+        IdentifiedDisease.disease_name,
+        db.func.count(IdentifiedDisease.id).label('count')
+    ).group_by(IdentifiedDisease.disease_name)
+
+    if time_filter == 'week':
+        start_date = datetime.utcnow() - timedelta(days=7)
+        query = query.filter(IdentifiedDisease.date_identified >= start_date)
+    elif time_filter == 'month':
+        start_date = datetime.utcnow() - timedelta(days=30)
+        query = query.filter(IdentifiedDisease.date_identified >= start_date)
+
+    data = [{'name': disease.disease_name, 'count': disease.count} for disease in query.order_by(db.desc('count')).limit(10)]
+    return jsonify(data)
+
+
+
+
+@main.route('/api/users-joined', methods=['GET'])
+def get_users_joined():
+    time_filter = request.args.get('filter', 'week')
+    query = db.session.query(
+        db.func.date(User.date_joined).label('date'),
+        db.func.count(User.id).label('count')
+    ).group_by(db.func.date(User.date_joined))
+
+    if time_filter == 'week':
+        start_date = datetime.utcnow() - timedelta(days=7)
+        query = query.filter(User.date_joined >= start_date)
+    elif time_filter == 'month':
+        start_date = datetime.utcnow() - timedelta(days=30)
+        query = query.filter(User.date_joined >= start_date)
+
+    data = [{'date': str(result.date), 'count': result.count} for result in query.order_by('date')]
+    return jsonify(data)
+
+
+
