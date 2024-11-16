@@ -608,7 +608,7 @@ body.dark-theme {
     display: inline-block;
     font-size: 2em;
     padding-right: 100%;
-    animation: scroll-text 15s linear infinite;
+   /* animation: scroll-text 15s linear infinite; */
 }
 
 /* Keyframes for scroll animation */

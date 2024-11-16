@@ -6,7 +6,7 @@ from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -64,61 +64,119 @@ def check_session_timeout():
 
         # Update 'last_active' timestamp as an ISO format string
         session['last_active'] = datetime.now().isoformat()
-# Home page and file upload handling
+
+
+
+def update_trending_status():
+    # Update trending status for IdentifiedDisease
+    distinct_identified_diseases = db.session.query(IdentifiedDisease.disease_name).distinct().all()
+
+    for disease_tuple in distinct_identified_diseases:
+        disease_name = disease_tuple[0]
+
+        # Count occurrences of the disease
+        disease_count = IdentifiedDisease.query.filter_by(disease_name=disease_name).count()
+
+        # Update is_trending status for all rows of this disease
+        is_trending = disease_count > 10
+        IdentifiedDisease.query.filter_by(disease_name=disease_name).update({
+            IdentifiedDisease.is_trending: is_trending
+        })
+
+    # Update trending status for Diseases
+    diseases = Diseases.query.all()
+    for disease in diseases:
+        # Check if the disease appears more than 10 times in IdentifiedDisease
+        count_in_identified = IdentifiedDisease.query.filter_by(disease_name=disease.name).count()
+        disease.is_trending = count_in_identified > 10
+
+    # Commit changes to the database
+    db.session.commit()
+
+
+
+# Home page with popup form for additional farmer details
 @main.route('/', methods=['GET', 'POST'])
 @login_required
 def upload():
-    form = UploadForm()
+    upload_form = UploadForm()
+    farmers_form = FarmersForm()
     image_filename = None
     prediction = None
+
+    # Fetch trending diseases
+    trending_identified_diseases = IdentifiedDisease.query.filter_by(is_trending=True).all()
     trending_diseases = Diseases.query.filter_by(is_trending=True).all()
 
-    if form.validate_on_submit():
-        if form.image.data and allowed_file(form.image.data.filename):
-            filename = secure_filename(form.image.data.filename)
+    # Process the file upload form
+    if upload_form.validate_on_submit() and 'upload_submit' in request.form:
+        if upload_form.image.data and allowed_file(upload_form.image.data.filename):
+            filename = secure_filename(upload_form.image.data.filename)
             file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
 
             # Save uploaded image to the uploads folder
-            form.image.data.save(file_path)
+            upload_form.image.data.save(file_path)
 
             try:
-                # Open the uploaded image and convert it to RGB
+                # Process the image and make a prediction
                 image = Image.open(file_path).convert("RGB")
-
-                # Prepare the image for the model
                 inputs = Config.disease_processor(images=image, return_tensors="pt")
 
-                # Make prediction using the model
                 with torch.no_grad():
                     outputs = Config.disease_model(**inputs)
 
-                # Get the predicted class index
                 predicted_label_idx = torch.argmax(outputs.logits, dim=-1).item()
-
-                # Map the predicted class index to its corresponding label
                 predicted_class = Config.disease_model.config.id2label[predicted_label_idx]
                 prediction = predicted_class
 
-                # Save the image filename for display
                 image_filename = filename
 
-                # Save identified disease to the database
+                # Save the identified disease
                 identified_disease = IdentifiedDisease(
                     user_id=current_user.id,
                     disease_name=prediction,
                     image_filename=filename,
-                    confidence=float(outputs.logits[0][predicted_label_idx].item())  # Optional: Store confidence
+                    confidence=float(outputs.logits[0][predicted_label_idx].item())
                 )
                 db.session.add(identified_disease)
                 db.session.commit()
+
+                # Update trending diseases
+                update_trending_status()
 
             except Exception as e:
                 flash(f"Error processing the image: {e}", 'danger')
         else:
             flash("Invalid file type. Please upload a valid image (jpg, jpeg, png, jfif).", 'warning')
 
-    return render_template('home.html', form=form, image_filename=image_filename, prediction=prediction, diseases=trending_diseases)
+    # Process the farmer information form
+    if farmers_form.validate_on_submit() and 'farmer_submit' in request.form:
+        try:
+            farmer = Farmer(
+                location=farmers_form.location.data,
+                farm_size=farmers_form.farm_size.data,
+                crop_types=farmers_form.crop_types.data,
+                description=farmers_form.description.data,
+                contact_info=farmers_form.contact_info.data,
+                user_id=current_user.id,
+                has_additional_info=True
+            )
+            db.session.add(farmer)
+            db.session.commit()
+            flash("Farmer details saved successfully!", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error saving farmer details: {e}", "danger")
 
+    return render_template(
+        'home.html',
+        form=upload_form,
+        farmers_form=farmers_form,
+        image_filename=image_filename,
+        prediction=prediction,
+        diseases=trending_diseases,
+        trending_identified_diseases=trending_identified_diseases,
+    )
 
 
 # Serve the uploaded files
@@ -224,6 +282,7 @@ def dashboard():
 
     # Instantiate the form
     form = AdminForm()
+    farmers_form = FarmersForm()
 
     # Get all diseases and users
     diseases = Diseases.query.all()
@@ -233,7 +292,7 @@ def dashboard():
     unread_count = ContactMessage.query.filter_by(seen=False).count()
 
     # Pass form, diseases, users, and unread_count to the template
-    return render_template('dashboard.html', form=form, diseases=diseases, users=users, unread_count=unread_count)
+    return render_template('dashboard.html', form=form, diseases=diseases, users=users, unread_count=unread_count, farmers_form=farmers_form)
 
 
 
@@ -251,15 +310,17 @@ def logout():
 @login_required
 def farmers():
     form = FarmersForm()
+    farmers_form = FarmersForm()
     # Query all users
     farmers = User.query.all()
-    return render_template('farmers.html', farmers=farmers, form=form)
+    return render_template('farmers.html', farmers=farmers, form=form, farmers_form=farmers_form)
 
 
 # View Farmer details
 @main.route('/farmers/view/<int:id>', methods=['GET'])
 @login_required
 def view_farmer(id):
+    farmers_form = FarmersForm()
     farmer = User.query.get_or_404(id)
 
     # Calculate totals
@@ -318,13 +379,15 @@ def view_farmer(id):
         messages_labels=messages_labels,
         messages_values=messages_values,
         topics_labels=topics_labels,
-        topics_values=topics_values
+        topics_values=topics_values,
+        farmers_form=farmers_form
     )
 
 # Delete Farmer
 @main.route('/farmers/delete/<int:farmer_id>', methods=['POST'])
 @login_required
 def delete_farmer(farmer_id):
+
     farmer = User.query.get_or_404(farmer_id)
 
     # Only allow admins to delete farmers
@@ -342,15 +405,17 @@ def delete_farmer(farmer_id):
 @main.route('/reports')
 @login_required
 def reports():
+    farmers_form = FarmersForm()
     # Logic for displaying reports
-    return render_template('reports.html')
+    return render_template('reports.html', farmers_form=farmers_form)
 
 
 @main.route('/integrations')
 @login_required
 def integrations():
+    farmers_form = FarmersForm()
     # Logic for displaying integrations
-    return render_template('integrations.html')
+    return render_template('integrations.html', farmers_form=farmers_form)
 
 
 # Helper function to get or create settings
@@ -368,6 +433,7 @@ def get_settings():
 @login_required
 def settings():
     form = AdminForm()
+    farmers_form = FarmersForm()
 
     # Set the settings into the global `g` object
     g.settings = get_settings()
@@ -390,7 +456,7 @@ def settings():
     admins = User.query.filter_by(is_admin=True).all()
 
     settings = get_settings()  # Fetch settings for template rendering
-    return render_template('settings.html', form=form, admins=admins, settings=settings)
+    return render_template('settings.html', form=form, admins=admins, settings=settings, farmers_form=farmers_form)
 
 
 # Route to remove admin privileges
@@ -556,6 +622,7 @@ def send_newsletter():
 @login_required
 def add_disease():
     form = DiseaseForm()
+    farmers_form = FarmersForm()
 
     if form.validate_on_submit():
         disease_name = form.name.data
@@ -592,7 +659,7 @@ def add_disease():
         flash(f'Disease "{disease_name}" added successfully!', 'success')
         return redirect(url_for('main.diseases'))
 
-    return render_template('add_disease.html', form=form)
+    return render_template('add_disease.html', form=form, farmers_form=farmers_form)
 
 # Route to edit an existing crop disease
 @main.route("/disease/edit/<int:disease_id>", methods=["GET", "POST"])
@@ -600,6 +667,7 @@ def add_disease():
 def edit_disease(disease_id):
     disease = Diseases.query.get_or_404(disease_id)
     form = DiseaseForm()
+
 
     if form.validate_on_submit():
         # Update disease details
@@ -651,7 +719,8 @@ def delete_disease(disease_id):
 def diseases():
     diseases = Diseases.query.all()
     form = AdminForm()  # or any form that you want to use
-    return render_template('diseases.html', diseases=diseases, form=form)
+    farmers_form = FarmersForm()
+    return render_template('diseases.html', diseases=diseases, form=form, farmers_form=farmers_form)
 
 # Route to post disease to homepage
 @main.route('/post_disease/<int:disease_id>', methods=['POST'])
@@ -688,6 +757,7 @@ def profile():
     form = ProfileForm()
     comment_form = CommentForm()
     comments = Comments.query.order_by(Comments.timestamp.desc()).all()  # Fetch all comments
+    farmers_form = FarmersForm()
 
     if form.validate_on_submit():
         # Update profile information
@@ -713,7 +783,7 @@ def profile():
         form.email.data = current_user.email
         form.phone.data = current_user.phone
 
-    return render_template('profile.html', form=form, comment_form=comment_form, comments=comments)
+    return render_template('profile.html', form=form, comment_form=comment_form, comments=comments, farmers_form=farmers_form)
 
 
 
@@ -721,6 +791,7 @@ def profile():
 @login_required
 def change_password():
     form = ChangePasswordForm()
+    farmers_form = FarmersForm()
 
     if form.validate_on_submit():
         # Update the user's password
@@ -730,7 +801,7 @@ def change_password():
         flash('Your password has been updated!', 'success')
         return redirect(url_for('main.profile'))
 
-    return render_template('change_password.html', form=form)
+    return render_template('change_password.html', form=form, farmers_form=farmers_form)
 
 
 @main.route("/add_comment", methods=["POST"])
@@ -772,6 +843,7 @@ def remove_avatar():
 @main.route("/videos")
 @login_required
 def videos():
+    farmers_form = FarmersForm()
     page = request.args.get('page', 1, type=int)
     # Only fetch videos that are marked as published
     videos = Video.query.filter_by(published=True).order_by(Video.date_posted.desc()).paginate(page=page, per_page=6)
@@ -782,24 +854,26 @@ def videos():
         video.youtube_id = match.group(1) if match else None
         video.embed_url = f"https://www.youtube.com/embed/{video.youtube_id}" if video.youtube_id else None
 
-    return render_template("videos.html", videos=videos)
+    return render_template("videos.html", videos=videos, farmers_form=farmers_form)
 
 
 # Route to manage videos in the dashboard
 @main.route('/dashboard/videos', methods=['GET', 'POST'])
 @login_required
 def dashboard_videos():
+    farmers_form = FarmersForm()
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.upload'))
 
     videos = Video.query.order_by(Video.date_posted.desc()).all()
-    return render_template('dashboard_videos.html', videos=videos)
+    return render_template('dashboard_videos.html', videos=videos, farmers_form=farmers_form)
 
 # Route to add a new video
 @main.route('/dashboard/videos/add', methods=['GET', 'POST'])
 @login_required
 def add_video():
+    farmers_form = FarmersForm()
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.upload'))
@@ -826,12 +900,13 @@ def add_video():
         flash('Video added successfully!', 'success')
         return redirect(url_for('main.dashboard_videos'))
 
-    return render_template('add_video.html', form=form)
+    return render_template('add_video.html', form=form, farmers_form=farmers_form)
 
 # Route to edit an existing video
 @main.route('/dashboard/videos/edit/<int:video_id>', methods=['GET', 'POST'])
 @login_required
 def edit_video(video_id):
+    farmers_form = FarmersForm()
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.upload'))
@@ -853,7 +928,7 @@ def edit_video(video_id):
         flash(f'Video "{video.title}" updated successfully!', 'success')
         return redirect(url_for('main.dashboard_videos'))
 
-    return render_template('edit_video.html', form=form, video=video)
+    return render_template('edit_video.html', form=form, video=video, farmers_form=farmers_form)
 
 # Route to delete a video
 @main.route('/dashboard/videos/delete/<int:video_id>', methods=['POST'])
@@ -893,18 +968,20 @@ def post_video_to_homepage(video_id):
 @main.route('/topics')
 @login_required
 def topics():
+    farmers_form = FarmersForm()
     page = request.args.get('page', 1, type=int)
     topics = Topic.query.order_by(Topic.date_posted.desc()).paginate(page=page, per_page=6)
-    return render_template('topics.html', topics=topics)
+    return render_template('topics.html', topics=topics, farmers_form=farmers_form)
 
 
 # Route to view details of a single topic
 @main.route('/topics/view/<int:topic_id>')
 @login_required
 def view_topic(topic_id):
+    farmers_form = FarmersForm()
     topic = Topic.query.get_or_404(topic_id)
     form = CommentForm()
-    return render_template('view_topic.html', topic=topic, form=form)
+    return render_template('view_topic.html', topic=topic, form=form, farmers_form=farmers_form)
 
 
 @main.route('/topics/<int:topic_id>/comment', methods=['POST'])
@@ -928,13 +1005,14 @@ def add_topic_comment(topic_id):
 @main.route('/dashboard/topics')
 @login_required
 def dashboard_topics():
+    farmers_form = FarmersForm()
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.dashboard'))
     form = DeleteForm()
 
     topics = Topic.query.order_by(Topic.date_posted.desc()).all()
-    return render_template('dashboard_topics.html', topics=topics, form=form)
+    return render_template('dashboard_topics.html', topics=topics, form=form, farmers_form=farmers_form)
 
 # Route to add a new topic
 @main.route('/dashboard/topics/add', methods=['GET', 'POST'])
@@ -945,6 +1023,8 @@ def add_topic():
         return redirect(url_for('main.dashboard'))
 
     form = TopicForm()
+    farmers_form = FarmersForm()
+
     if form.validate_on_submit():
         image_filename = None
         if form.image.data and hasattr(form.image.data, 'filename'):
@@ -966,7 +1046,7 @@ def add_topic():
         flash('Topic added successfully!', 'success')
         return redirect(url_for('main.dashboard_topics'))
 
-    return render_template('add_topic.html', form=form)
+    return render_template('add_topic.html', form=form, farmers_form=farmers_form)
 
 @main.route('/dashboard/topics/edit/<int:topic_id>', methods=['GET', 'POST'])
 @login_required
@@ -976,6 +1056,7 @@ def edit_topic(topic_id):
         return redirect(url_for('main.dashboard'))
 
     topic = Topic.query.get_or_404(topic_id)
+    farmers_form = FarmersForm()
     form = TopicForm(obj=topic)
     if form.validate_on_submit():
         if form.image.data and hasattr(form.image.data, 'filename'):
@@ -992,7 +1073,7 @@ def edit_topic(topic_id):
         flash('Topic updated successfully!', 'success')
         return redirect(url_for('main.dashboard_topics'))
 
-    return render_template('edit_topic.html', form=form, topic=topic)
+    return render_template('edit_topic.html', form=form, topic=topic, farmers_form=farmers_form)
 @main.route('/dashboard/topics/delete/<int:topic_id>', methods=['POST'])
 @login_required
 def delete_topic(topic_id):
@@ -1009,14 +1090,16 @@ def delete_topic(topic_id):
 
 @main.route('/forum')
 def forum():
+    farmers_form = FarmersForm()
     questions = Question.query.order_by(Question.timestamp.desc()).all()
-    return render_template('forum.html', questions=questions)
+    return render_template('forum.html', questions=questions, farmers_form=farmers_form)
 
 @main.route('/forum/question/<int:question_id>', methods=['GET', 'POST'])
 def view_question(question_id):
     question = Question.query.get_or_404(question_id)
     answers = Answer.query.filter_by(question_id=question_id).order_by(Answer.timestamp.desc()).all()
     answer_form = AnswerForm()
+    farmers_form = FarmersForm()
 
     if answer_form.validate_on_submit():
         answer = Answer(content=answer_form.content.data, author_id=current_user.id, question_id=question_id)
@@ -1025,12 +1108,13 @@ def view_question(question_id):
         flash("Your answer has been posted!", "success")
         return redirect(url_for('main.view_question', question_id=question_id))
 
-    return render_template('view_question.html', question=question, answers=answers, answer_form=answer_form)
+    return render_template('view_question.html', question=question, answers=answers, answer_form=answer_form, farmers_form=farmers_form)
 
 @main.route('/forum/new_question', methods=['GET', 'POST'])
 @login_required
 def new_question():
     form = QuestionForm()
+    farmers_form = FarmersForm()
     if form.validate_on_submit():
         question = Question(title=form.title.data, content=form.content.data, author_id=current_user.id)
         db.session.add(question)
@@ -1038,16 +1122,18 @@ def new_question():
         flash("Your question has been posted!", "success")
         return redirect(url_for('main.forum'))
 
-    return render_template('new_question.html', form=form)
+    return render_template('new_question.html', form=form, farmers_form=farmers_form)
 
 
 @main.route("/about")
 def about():
-    return render_template("about.html")
+    farmers_form = FarmersForm()
+    return render_template("about.html", farmers_form=farmers_form)
 
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
     form = ContactForm()
+    farmers_form = FarmersForm()
     if form.validate_on_submit():
         message = ContactMessage(
             name=form.name.data,
@@ -1060,7 +1146,7 @@ def contact():
         db.session.commit()
         flash('Your message has been sent successfully. We will get back to you soon!', 'success')
         return redirect(url_for('main.contact'))
-    return render_template("contact.html", form=form)
+    return render_template("contact.html", form=form, farmers_form=farmers_form)
 
 
 
@@ -1074,6 +1160,7 @@ def view_messages():
     # Retrieve all messages, ordered by date
     messages = ContactMessage.query.order_by(ContactMessage.date_sent.desc()).all()
     form = DeleteForm()
+    farmers_form = FarmersForm()
 
     # Mark all messages as seen
     for message in messages:
@@ -1084,7 +1171,7 @@ def view_messages():
     # Since all messages are now seen, the unread count should be zero
     unread_count = 0
 
-    return render_template('messages.html', messages=messages, form=form, unread_count=unread_count)
+    return render_template('messages.html', messages=messages, form=form, unread_count=unread_count, farmers_form=farmers_form)
 
 
 
@@ -1111,39 +1198,44 @@ def delete_message(message_id):
 @main.route('/privacy-policy')
 @login_required
 def privacy_policy():
-    return render_template('privacy_policy.html')
+    farmers_form = FarmersForm()
+    return render_template('privacy_policy.html', farmers_form=farmers_form)
 
 
 @main.route("/donate")
 @login_required
 def donate():
-    return render_template("donate.html")
+    farmers_form = FarmersForm()
+    return render_template("donate.html", farmers_form=farmers_form)
 
 @main.route("/faqs")
 @login_required
 def faqs():
-    return render_template("faqs.html")
+    farmers_form = FarmersForm()
+    return render_template("faqs.html", farmers_form=farmers_form)
 
 
 # Display all published team members on the main team page
 @main.route("/team")
 def team():
+    farmers_form = FarmersForm()
     page = request.args.get('page', 1, type=int)
     members = TeamMember.query.filter_by(published=True).order_by(TeamMember.date_joined.desc()).paginate(page=page, per_page=6)
-    return render_template("team.html", members=members)
+    return render_template("team.html", members=members, farmers_form=farmers_form)
 
 
 
 @main.route('/dashboard/team', methods=['GET', 'POST'])
 @login_required
 def dashboard_team():
+    farmers_form = FarmersForm()
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.upload'))
 
     form = EmptyForm()
     members = TeamMember.query.order_by(TeamMember.date_joined.desc()).all()
-    return render_template('dashboard_team.html', members=members, form=form)
+    return render_template('dashboard_team.html', members=members, form=form, farmers_form=farmers_form)
 
 
 # Route to add a new team member
@@ -1193,6 +1285,7 @@ def edit_member(member_id):
 
     member = TeamMember.query.get_or_404(member_id)
     form = TeamForm(obj=member)
+    farmers_form = FarmersForm()
 
     if form.validate_on_submit():
         member.name = form.name.data
@@ -1212,7 +1305,7 @@ def edit_member(member_id):
         flash(f'Team member "{member.name}" updated successfully!', 'success')
         return redirect(url_for('main.dashboard_team'))
 
-    return render_template('edit_member.html', form=form, member=member)
+    return render_template('edit_member.html', form=form, member=member, farmers_form=farmers_form)
 
 
 # Route to delete a team member
@@ -1289,4 +1382,37 @@ def get_users_joined():
     return jsonify(data)
 
 
+@main.route('/submit_farm_info', methods=['GET', 'POST'])
+@login_required
+def submit_farm_info():
+    # Fetch the current user's farmer profile, if it exists
+    farmer = Farmer.query.filter_by(user_id=current_user.id).first()
+    form = FarmersForm(obj=farmer)  # Populate the form with existing data if available
+
+    if form.validate_on_submit():
+        if farmer:
+            # Update existing record
+            farmer.location = form.location.data
+            farmer.farm_size = form.farm_size.data
+            farmer.crop_types = form.crop_types.data
+            farmer.description = form.description.data
+            farmer.contact_info = form.contact_info.data
+        else:
+            # Create a new Farmer record
+            farmer = Farmer(
+                location=form.location.data,
+                farm_size=form.farm_size.data,
+                crop_types=form.crop_types.data,
+                description=form.description.data,
+                contact_info=form.contact_info.data,
+                user_id=current_user.id,
+                has_additional_info=True
+            )
+            db.session.add(farmer)
+
+        db.session.commit()
+        flash('Your farm information has been successfully saved!', 'success')
+        return redirect(url_for('main.upload'))  # Redirect to homepage or desired location
+
+    return redirect(url_for('main.upload'))  # Redirect immediately if the form is not submitted
 

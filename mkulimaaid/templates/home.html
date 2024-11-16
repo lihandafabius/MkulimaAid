@@ -112,6 +112,7 @@
     <div class="carousel" data-flickity='{ "wrapAround": true, "autoPlay": 3000, "contain": true }'>
         {% for disease in diseases %}
         <div class="carousel-cell">
+
             <img src="{{ url_for('static', filename='uploads/' + disease.image) }}"
                  class="carousel-image"
                  alt="{{ disease.name }}">
@@ -124,6 +125,7 @@
         {% endfor %}
     </div>
 </div>
+
 
 
 

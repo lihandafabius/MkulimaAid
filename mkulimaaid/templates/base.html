@@ -65,6 +65,12 @@
                   <li><a class="dropdown-item" href="/forum">QA</a></li>
                   <li><a class="dropdown-item" href="/donate">Donate</a></li>
                   <li><a class="dropdown-item" href="#">Events and Blog</a></li>
+                    <!-- Submit Farm Info Button -->
+                  <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#farmInfoModal">
+                        Submit Farm Info
+                      </a>
+                  </li>
                 </ul>
               </li>
             </ul>
@@ -243,7 +249,52 @@
             </div>
         </footer>
     </div>
-
+    <!-- Farm Info Modal -->
+    <div class="modal fade" id="farmInfoModal" tabindex="-1" aria-labelledby="farmInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="farmInfoModalLabel">Submit Your Farm Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('main.submit_farm_info') }}">
+                        {{ farmers_form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ farmers_form.location.label(class="form-label") }}
+                            {{ farmers_form.location(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.farm_size.label(class="form-label") }}
+                            {{ farmers_form.farm_size(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.crop_types.label(class="form-label") }}
+                            {{ farmers_form.crop_types(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.description.label(class="form-label") }}
+                            {{ farmers_form.description(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.contact_info.label(class="form-label") }}
+                            {{ farmers_form.contact_info(class="form-control") }}
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Trigger the modal -->
+    <script>
+        // Show modal on page load
+        $(document).ready(function () {
+            $('#farmInfoModal').modal('show');
+        });
+    </script>
 
 
 

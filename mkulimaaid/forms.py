@@ -226,13 +226,7 @@ class EmptyForm(FlaskForm):
 
 
 class FarmersForm(FlaskForm):
-    farmer_name = StringField('Farmer Name', validators=[
-        DataRequired(),
-        Length(max=100),
-        Regexp('^[A-Za-z ]*$', 0, 'Farmer name must contain only letters and spaces')
-    ])
-    farm_name = StringField('Farm Name', validators=[DataRequired(), Length(max=100)])
-    location = StringField('Location', validators=[DataRequired(), Length(max=200)])
+    location = StringField('Farm Location', validators=[DataRequired(), Length(max=200)])
     farm_size = DecimalField('Farm Size (in acres)', validators=[DataRequired()], places=2)
     crop_types = StringField('Types of Crops Grown', validators=[DataRequired(), Length(max=200)])
     description = TextAreaField('Farm Description', validators=[Optional(), Length(max=500)])

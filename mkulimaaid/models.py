@@ -192,13 +192,12 @@ class TeamMember(db.Model):
 
 class Farmer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    farmer_name = db.Column(db.String(100), nullable=False)
-    farm_name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(200), nullable=False)
     farm_size = db.Column(db.Float, nullable=False)
     crop_types = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
     contact_info = db.Column(db.String(15), nullable=False)
+    has_additional_info = db.Column(db.Boolean, default=False)  # New field
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to User
 
