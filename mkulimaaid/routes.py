@@ -95,27 +95,26 @@ def update_trending_status():
 
 
 
-# Home page with popup form for additional farmer details
+# Home page and file upload handling
 @main.route('/', methods=['GET', 'POST'])
 @login_required
 def upload():
-    upload_form = UploadForm()
-    farmers_form = FarmersForm()
+    form = UploadForm()
     image_filename = None
     prediction = None
+    farmers_form = FarmersForm()
 
     # Fetch trending diseases
     trending_identified_diseases = IdentifiedDisease.query.filter_by(is_trending=True).all()
     trending_diseases = Diseases.query.filter_by(is_trending=True).all()
 
-    # Process the file upload form
-    if upload_form.validate_on_submit() and 'upload_submit' in request.form:
-        if upload_form.image.data and allowed_file(upload_form.image.data.filename):
-            filename = secure_filename(upload_form.image.data.filename)
+    if form.validate_on_submit():
+        if form.image.data and allowed_file(form.image.data.filename):
+            filename = secure_filename(form.image.data.filename)
             file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
 
             # Save uploaded image to the uploads folder
-            upload_form.image.data.save(file_path)
+            form.image.data.save(file_path)
 
             try:
                 # Process the image and make a prediction
@@ -149,33 +148,14 @@ def upload():
         else:
             flash("Invalid file type. Please upload a valid image (jpg, jpeg, png, jfif).", 'warning')
 
-    # Process the farmer information form
-    if farmers_form.validate_on_submit() and 'farmer_submit' in request.form:
-        try:
-            farmer = Farmer(
-                location=farmers_form.location.data,
-                farm_size=farmers_form.farm_size.data,
-                crop_types=farmers_form.crop_types.data,
-                description=farmers_form.description.data,
-                contact_info=farmers_form.contact_info.data,
-                user_id=current_user.id,
-                has_additional_info=True
-            )
-            db.session.add(farmer)
-            db.session.commit()
-            flash("Farmer details saved successfully!", "success")
-        except Exception as e:
-            db.session.rollback()
-            flash(f"Error saving farmer details: {e}", "danger")
-
     return render_template(
         'home.html',
-        form=upload_form,
-        farmers_form=farmers_form,
+        form=form,
         image_filename=image_filename,
         prediction=prediction,
         diseases=trending_diseases,
         trending_identified_diseases=trending_identified_diseases,
+        farmers_form=farmers_form
     )
 
 
@@ -1380,6 +1360,35 @@ def get_users_joined():
 
     data = [{'date': str(result.date), 'count': result.count} for result in query.order_by('date')]
     return jsonify(data)
+
+
+@main.route('/api/crop-diseases-by-location', methods=['GET'])
+def get_crop_diseases_by_location():
+    time_filter = request.args.get('filter', 'week')
+    query = db.session.query(
+        Farmer.location,
+        IdentifiedDisease.disease_name,
+        db.func.count(IdentifiedDisease.id).label('count')
+    ).join(Farmer, Farmer.user_id == IdentifiedDisease.user_id) \
+      .group_by(Farmer.location, IdentifiedDisease.disease_name)
+
+    if time_filter == 'week':
+        start_date = datetime.utcnow() - timedelta(days=7)
+        query = query.filter(IdentifiedDisease.date_identified >= start_date)
+    elif time_filter == 'month':
+        start_date = datetime.utcnow() - timedelta(days=30)
+        query = query.filter(IdentifiedDisease.date_identified >= start_date)
+
+    data = {}
+    for row in query:
+        location = row.location
+        if location not in data:
+            data[location] = []
+        data[location].append({'name': row.disease_name, 'count': row.count})
+
+    response = [{'location': loc, 'diseases': diseases} for loc, diseases in data.items()]
+    return jsonify(response)
+
 
 
 @main.route('/submit_farm_info', methods=['GET', 'POST'])
