@@ -762,3 +762,56 @@ body.dark-mode .feature-icon {
 .btn-success:hover {
     background-color: #218838;
 }
+/* Hover Effect for Cards */
+.stats-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stats-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+
+/* Center the headings inside cards */
+.card-body h5 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Chart Section Styling */
+canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* Text Alignment */
+.card-body h3 {
+    font-size: 2rem;
+    margin: 0;
+}
+/* Farmer Info Card */
+.farmer-info {
+    background: #f9f9f9;
+    border-left: 4px solid #28a745;
+    padding: 1rem;
+}
+
+.farmer-info .text-center img {
+    margin-bottom: 1rem;
+}
+
+/* Profile Details Styling */
+.farmer-info p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+
+
+/* Divider Styling */
+.farmer-info hr {
+    border-top: 1px solid #dee2e6;
+    margin: 1rem 0;
+}

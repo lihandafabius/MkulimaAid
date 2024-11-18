@@ -82,13 +82,13 @@ def update_trending_status():
         IdentifiedDisease.query.filter_by(disease_name=disease_name).update({
             IdentifiedDisease.is_trending: is_trending
         })
-
-    # Update trending status for Diseases
-    diseases = Diseases.query.all()
-    for disease in diseases:
-        # Check if the disease appears more than 10 times in IdentifiedDisease
-        count_in_identified = IdentifiedDisease.query.filter_by(disease_name=disease.name).count()
-        disease.is_trending = count_in_identified > 10
+    #
+    # # Update trending status for Diseases
+    # diseases = Diseases.query.all()
+    # for disease in diseases:
+    #     # Check if the disease appears more than 10 times in IdentifiedDisease
+    #     count_in_identified = IdentifiedDisease.query.filter_by(disease_name=disease.name).count()
+    #     disease.is_trending = count_in_identified > 10
 
     # Commit changes to the database
     db.session.commit()
@@ -204,8 +204,9 @@ def predict():
 @main.route('/disease/<int:disease_id>')
 @login_required
 def disease_detail(disease_id):
+    farmers_form = FarmersForm()
     disease = Diseases.query.get_or_404(disease_id)
-    return render_template('disease_detail.html', disease=disease)
+    return render_template('disease_detail.html', disease=disease, farmers_form=farmers_form)
 
 
 # Login route
@@ -302,6 +303,7 @@ def farmers():
 def view_farmer(id):
     farmers_form = FarmersForm()
     farmer = User.query.get_or_404(id)
+    farmer_details = Farmer.query.filter_by(user_id=farmer.id).first()
 
     # Calculate totals
     total_questions = len(farmer.questions)
@@ -360,7 +362,8 @@ def view_farmer(id):
         messages_values=messages_values,
         topics_labels=topics_labels,
         topics_values=topics_values,
-        farmers_form=farmers_form
+        farmers_form=farmers_form,
+        farmer_details=farmer_details
     )
 
 # Delete Farmer
@@ -1389,6 +1392,26 @@ def get_crop_diseases_by_location():
     response = [{'location': loc, 'diseases': diseases} for loc, diseases in data.items()]
     return jsonify(response)
 
+
+@main.route('/api/disease-confidence', methods=['GET'])
+def get_disease_confidence():
+    # Query the IdentifiedDisease table to get disease names and their average confidence
+    disease_confidences = (
+        db.session.query(
+            IdentifiedDisease.disease_name,
+            func.avg(IdentifiedDisease.confidence).label('avg_confidence')
+        )
+        .group_by(IdentifiedDisease.disease_name)
+        .all()
+    )
+
+    # Prepare the data for the API response
+    data = [
+        {"disease_name": disease_name, "avg_confidence": avg_confidence}
+        for disease_name, avg_confidence in disease_confidences
+    ]
+
+    return jsonify(data)
 
 
 @main.route('/submit_farm_info', methods=['GET', 'POST'])

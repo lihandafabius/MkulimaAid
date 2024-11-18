@@ -56,13 +56,19 @@
               <li class="nav-item">
                 <a class="nav-link text-white" href="/team">Team</a>
               </li>
+              <li>
+                <a class="nav-link text-white" href="/topics">Topics</a>
+              </li>
+              <li>
+                <a class="nav-link text-white" href="/videos">Video Library</a>
+              </li>
+              <li>
+                  <a class="nav-link text-white" href="/forum">QA</a>
+              </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/topics">Topics</a></li>
-                  <li><a class="dropdown-item" href="/videos">Video Library</a></li>
                   <li><a class="dropdown-item" href="#">Reports</a></li>
-                  <li><a class="dropdown-item" href="/forum">QA</a></li>
                   <li><a class="dropdown-item" href="/donate">Donate</a></li>
                   <li><a class="dropdown-item" href="#">Events and Blog</a></li>
                     <!-- Submit Farm Info Button -->
@@ -338,7 +344,7 @@
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <script src="{{ url_for('static', filename='js/show_Top_identified.js') }}"></script>
       <script src="{{ url_for('static', filename='js/show_users.js') }}"></script>
-
+      <script src="{{ url_for('static', filename='js/donut.js') }}"></script>
       <!-- Block for page-specific scripts -->
       {% block scripts %}{% endblock %}
 
