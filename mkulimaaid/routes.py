@@ -1366,6 +1366,7 @@ def get_users_joined():
 
 
 @main.route('/api/crop-diseases-by-location', methods=['GET'])
+@login_required
 def get_crop_diseases_by_location():
     time_filter = request.args.get('filter', 'week')
     query = db.session.query(

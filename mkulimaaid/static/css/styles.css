@@ -815,3 +815,13 @@ canvas {
     border-top: 1px solid #dee2e6;
     margin: 1rem 0;
 }
+
+.leaflet-popup-content {
+  background-color: #1a1a1a; /* Dark background */
+  color: #00FFFF; /* Neon text */
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  border: 1px solid #ff073a; /* Neon red border */
+  border-radius: 10px;
+}
+

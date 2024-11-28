@@ -2,108 +2,73 @@ document.addEventListener("DOMContentLoaded", () => {
   const chartContainer = document.getElementById("pieChartsContainer");
   const timeFilterLinks = document.querySelectorAll('.dropdown-menu a[data-filter]');
 
-  // Function to fetch and render the stacked bar chart for crop diseases by location
+  // Function to fetch and render the data in an interactive table
   function loadCropDiseasesByLocation(filter = "week") {
     fetch(`/api/crop-diseases-by-location?filter=${filter}`)
       .then((response) => response.json())
       .then((data) => {
-        // Clear existing chart
+        // Clear existing content
         chartContainer.innerHTML = "";
 
-        // Initialize data for the chart
-        let diseases = [];
-        let locations = [];
-        let datasets = [];
-        let diseaseLocationCounts = {};
+        // Create the table
+        const table = document.createElement("table");
+        table.classList.add("table", "table-bordered", "table-hover", "display");
+        table.id = "interactiveTable"; // Assign an ID for DataTables initialization
 
-        // Process the data to organize it into a format suitable for a stacked bar chart
+        // Create the table header
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+
+        const headers = ["Location", "Diseases (with Counts)"];
+        headers.forEach((header) => {
+          const th = document.createElement("th");
+          th.textContent = header;
+          headerRow.appendChild(th);
+        });
+
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create the table body
+        const tbody = document.createElement("tbody");
+
+        // Populate table rows with grouped data
         data.forEach((locationData) => {
           const { location, diseases: locationDiseases } = locationData;
-          if (!locations.includes(location)) locations.push(location);
 
-          locationDiseases.forEach((disease) => {
-            if (!diseases.includes(disease.name)) diseases.push(disease.name);
-            if (!diseaseLocationCounts[disease.name]) {
-              diseaseLocationCounts[disease.name] = {};
-            }
-            diseaseLocationCounts[disease.name][location] = disease.count;
-          });
+          const row = document.createElement("tr");
+
+          const locationCell = document.createElement("td");
+          locationCell.textContent = location;
+          row.appendChild(locationCell);
+
+          const diseasesCell = document.createElement("td");
+          // Format diseases with counts as "Disease Name (Count)"
+          const diseasesList = locationDiseases
+            .map((disease) => `${disease.name} (${disease.count})`)
+            .join(", ");
+          diseasesCell.textContent = diseasesList;
+          row.appendChild(diseasesCell);
+
+          tbody.appendChild(row);
         });
 
-        // Create a container for the chart
-        const locationDiv = document.createElement("div");
-        locationDiv.style.margin = "20px";
-        locationDiv.style.textAlign = "center";
+        table.appendChild(tbody);
+        chartContainer.appendChild(table);
 
-        // Create a canvas for the chart
-        const canvas = document.createElement("canvas");
-        canvas.width = 500;
-        canvas.height = 500;
-        locationDiv.appendChild(canvas);
-
-        // Append the container to the main container
-        chartContainer.appendChild(locationDiv);
-
-        // Prepare chart datasets for each disease
-        diseases.forEach((diseaseName) => {
-          let diseaseCounts = locations.map((location) => diseaseLocationCounts[diseaseName][location] || 0);
-
-          datasets.push({
-            label: diseaseName,
-            data: diseaseCounts,
-            backgroundColor: getRandomColor(), // You can define a function to generate random colors for each disease
-            stack: "stack1",
+        // Initialize DataTables
+        $(document).ready(function () {
+          $('#interactiveTable').DataTable({
+            paging: true,            // Enable pagination
+            searching: true,         // Enable search box
+            ordering: true,          // Enable column sorting
+            responsive: true,        // Make the table responsive
+            info: true,              // Show table info
+            lengthChange: true,      // Allow changing the number of rows displayed
           });
-        });
-
-        // Prepare chart data
-        const chartData = {
-          labels: locations,  // Locations on the x-axis
-          datasets: datasets, // Datasets for each disease
-        };
-
-        // Render the stacked bar chart
-        new Chart(canvas, {
-          type: "bar",
-          data: chartData,
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                display: true,
-                position: "top",
-              },
-            },
-            scales: {
-              x: {
-                stacked: true,
-                title: {
-                  display: true,
-                  text: "Location",
-                },
-              },
-              y: {
-                stacked: true,
-                title: {
-                  display: true,
-                  text: "Occurrences",
-                },
-              },
-            },
-          },
         });
       })
       .catch((error) => console.error("Error fetching crop diseases data:", error));
-  }
-
-  // Function to generate a random color for each disease
-  function getRandomColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
   }
 
   // Attach event listeners to the dropdown filter links

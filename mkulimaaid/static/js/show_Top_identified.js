@@ -1,27 +1,31 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const cropChartContainer = document.getElementById('topCropDiseasesChart').getContext('2d');
   const userChartContainer = document.getElementById('usersJoinedChart').getContext('2d');
+  const timeFilterLabel = document.getElementById('timeFilterLabel');
 
   let topCropDiseasesChart = null;
   let usersJoinedChart = null;
 
-  /**
-   * Fetch and render the crop diseases data
-   */
+  // Fetch and render the crop diseases data
   function loadCropData(filter = 'week') {
+    console.log(`Fetching crop data for filter: ${filter}`);
     fetch(`/api/top-crop-diseases?filter=${filter}`)
       .then(response => response.json())
       .then(data => {
+        console.log(`Crop data received for ${filter}:`, data);
+
         const labels = data.map(item => item.name);
         const counts = data.map(item => item.count);
 
-        if (topCropDiseasesChart) topCropDiseasesChart.destroy();
+        if (topCropDiseasesChart) {
+          topCropDiseasesChart.destroy();
+          topCropDiseasesChart = null;
+        }
 
         topCropDiseasesChart = new Chart(cropChartContainer, {
           type: 'bar',
           data: {
-            labels: labels,
+            labels,
             datasets: [{
               label: 'Number of Detections',
               data: counts,
@@ -40,25 +44,29 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       })
-      .catch(error => console.error('Error fetching crop data:', error));
+      .catch(error => console.error(`Error fetching crop data for ${filter}:`, error));
   }
 
-  /**
-   * Fetch and render the users joined data with trendline
-   */
+  // Fetch and render the users joined data
   function loadUserData(filter = 'week') {
+    console.log(`Fetching user data for filter: ${filter}`);
     fetch(`/api/users-joined?filter=${filter}`)
       .then(response => response.json())
       .then(data => {
+        console.log(`User data received for ${filter}:`, data);
+
         const labels = data.map(item => item.date);
         const counts = data.map(item => item.count);
 
-        if (usersJoinedChart) usersJoinedChart.destroy();
+        if (usersJoinedChart) {
+          usersJoinedChart.destroy();
+          usersJoinedChart = null;
+        }
 
         usersJoinedChart = new Chart(userChartContainer, {
           type: 'line',
           data: {
-            labels: labels,
+            labels,
             datasets: [{
               label: 'Users Joined',
               data: counts,
@@ -82,21 +90,24 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       })
-      .catch(error => console.error('Error fetching user data:', error));
+      .catch(error => console.error(`Error fetching user data for ${filter}:`, error));
   }
 
-  // Load initial data with the 'week' filter
+  // Handle dropdown filter changes
+  document.querySelectorAll('.dropdown-menu a[data-filter]').forEach(link => {
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      const filter = event.target.getAttribute('data-filter');
+      if (filter) {
+        console.log(`Applying filter: ${filter}`);
+        loadCropData(filter);
+        loadUserData(filter);
+        timeFilterLabel.innerText = event.target.textContent;
+      }
+    });
+  });
+
+  // Initial load with default filter (week)
   loadCropData('week');
   loadUserData('week');
-
-  // Handle time filter changes
-  document.querySelector('.dropdown-menu').addEventListener('click', event => {
-    const filter = event.target.getAttribute('data-filter');
-    if (filter) {
-      loadCropData(filter);
-      loadUserData(filter);
-      document.getElementById('timeFilterLabel').innerText = event.target.textContent;
-    }
-  });
 });
-
