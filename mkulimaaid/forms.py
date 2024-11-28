@@ -214,11 +214,13 @@ class ContactForm(FlaskForm):
 class TeamForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(max=100)])
     role = StringField('Role', validators=[DataRequired(), Length(max=100)])
-    bio = TextAreaField('Bio', validators=[Length(max=500)])
-    photo = FileField('Profile Photo')  # Uploading a profile photo
-    contact_info = StringField('Contact Information', validators=[Length(max=200)])
+    bio = TextAreaField('Bio', validators=[Optional(), Length(max=500)])
+    photo = FileField('Profile Photo', validators=[FileAllowed(['jpg', 'jpeg', 'png'], 'Only images are allowed!')])
+    contact_info = StringField('Contact Information', validators=[Optional(), Length(max=200)])
     publish = BooleanField('Publish Profile')
     submit = SubmitField('Save')
+
+
 
 
 class EmptyForm(FlaskForm):

@@ -1225,6 +1225,7 @@ def dashboard_team():
 @main.route('/dashboard/team/add', methods=['GET', 'POST'])
 @login_required
 def add_member():
+    farmers_form = FarmersForm()
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.upload'))
@@ -1232,43 +1233,52 @@ def add_member():
     form = TeamForm()
 
     if form.validate_on_submit():
-        # Get file from form and save it
         photo = form.photo.data
+        filename = None
         if photo:
-            # Secure the filename and save the file
             filename = secure_filename(photo.filename)
             photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             photo.save(photo_path)
 
-        # Create the new team member instance with the filename saved in the 'photo' field
         new_member = TeamMember(
             name=form.name.data,
             role=form.role.data,
             bio=form.bio.data,
-            photo=filename,  # Save only the filename in the database
+            photo=filename,
             contact_info=form.contact_info.data,
             date_joined=datetime.now(),
             published=form.publish.data
         )
 
-        db.session.add(new_member)
-        db.session.commit()
-        flash('Team member added successfully!', 'success')
-        return redirect(url_for('main.dashboard_team'))
+        try:
+            db.session.add(new_member)
+            db.session.commit()
+            flash('Team member added successfully!', 'success')
+            return redirect(url_for('main.dashboard_team'))
+        except Exception as e:
+            db.session.rollback()
+            print("Database error:", e)  # Debug database errors
+            flash('An error occurred while adding the team member. Please try again.', 'danger')
 
-    return render_template('add_member.html', form=form)
+    # Debugging the form validation and data
+    if form.errors:
+        print("Form errors:", form.errors)
+
+    return render_template('add_member.html', form=form, farmers_form=farmers_form)
+
 
 # Route to edit an existing team member
 @main.route('/dashboard/team/edit/<int:member_id>', methods=['GET', 'POST'])
 @login_required
 def edit_member(member_id):
+    farmers_form = FarmersForm()
     if not current_user.is_admin:
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.upload'))
 
     member = TeamMember.query.get_or_404(member_id)
     form = TeamForm(obj=member)
-    farmers_form = FarmersForm()
+
 
     if form.validate_on_submit():
         member.name = form.name.data
