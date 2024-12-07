@@ -5,15 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/notifications.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/add_member.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/add_member.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_team.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_team.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_topics.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_topics.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_videos.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_videos.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/diseases.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/diseases.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/js/show_Top_identified.js" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/js/show_Top_identified.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/js/show_users.js" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/js/show_users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>

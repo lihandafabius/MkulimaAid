@@ -1157,6 +1157,23 @@ def view_messages():
     return render_template('messages.html', messages=messages, form=form, unread_count=unread_count, farmers_form=farmers_form)
 
 
+# @main.route('/notifications')
+# @login_required
+# def notifications():
+#     farmer_form = FarmersForm()
+#     # Fetch user-specific notifications and global notifications
+#     user_notifications = Notification.query.filter(
+#         (Notification.user_id == current_user.id) | (Notification.user_id == None)  # None indicates global
+#     ).order_by(Notification.timestamp.desc()).all()
+#
+#     # Mark all notifications as read
+#     for notification in user_notifications:
+#         notification.is_read = True
+#     db.session.commit()  # Save changes to the database
+#
+#     return render_template('notifications.html', notifications=user_notifications, farmer_form=farmer_form)
+#
+
 
 @main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])
 @login_required

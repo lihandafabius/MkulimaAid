@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let usersJoinedChart = null;
 
   // Fetch and render the crop diseases data
-  function loadCropData(filter = 'week') {
+  function loadCropData(filter = 'month') {
     console.log(`Fetching crop data for filter: ${filter}`);
     fetch(`/api/top-crop-diseases?filter=${filter}`)
       .then(response => response.json())
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Fetch and render the users joined data
-  function loadUserData(filter = 'week') {
+  function loadUserData(filter = 'month') {
     console.log(`Fetching user data for filter: ${filter}`);
     fetch(`/api/users-joined?filter=${filter}`)
       .then(response => response.json())
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Initial load with default filter (week)
-  loadCropData('week');
-  loadUserData('week');
+  // Initial load with default filter (month)
+  loadCropData('month');
+  loadUserData('month');
 });
