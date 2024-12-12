@@ -5,14 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/notifications.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/js/show_Top_identified.js" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/js/show_Top_identified.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/js/show_users.js" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/js/show_users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/instance/site.db-journal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

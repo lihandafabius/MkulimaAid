@@ -5,10 +5,10 @@
 <div class="container mt-5">
     <div class="info-section p-4 mb-4 {{ 'dark-info' if is_dark_theme else 'light-info' }} rounded">
 
-        <!-- Dynamic Moving Welcome Text -->
-        <div class="moving-text-wrapper text-center">
-            <h2 class="moving-text" style="color: {{ '#a8dba8' if is_dark_theme else '#2a7a2a' }};">
-                Welcome to MkulimaAid's Crop Disease Recognition!
+        <!-- Dynamic Typing Welcome Text -->
+        <div class="typing-text-wrapper text-center">
+            <h2 id="typing-text" style="color: {{ '#a8dba8' if is_dark_theme else '#2a7a2a' }};">
+                <!-- The text will be dynamically typed here -->
             </h2>
         </div>
 
@@ -122,6 +122,23 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const text = "Welcome to MkulimaAid's Crop Disease Recognition!";
+        const typingElement = document.getElementById("typing-text");
+        let index = 0;
+
+        function typeCharacter() {
+            if (index < text.length) {
+                typingElement.textContent += text.charAt(index);
+                index++;
+                setTimeout(typeCharacter, 80); // Adjust the speed (in milliseconds) if necessary
+            }
+        }
+
+        typeCharacter();
+    });
+</script>
 
 
 

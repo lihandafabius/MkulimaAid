@@ -597,19 +597,23 @@ body.dark-theme {
 .sidebar .nav-link svg {
     transition: fill 0.1s;
 }
-/* Wrapper for moving text */
-.moving-text-wrapper {
-    overflow: hidden;
-    white-space: nowrap;
+
+/* Center alignment for the text */
+.typing-text-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-/* Scrolling text */
-.moving-text {
-    display: inline-block;
+/* Styling for the text */
+#typing-text {
     font-size: 2em;
-    padding-right: 100%;
-   /* animation: scroll-text 15s linear infinite; */
+    font-weight: bold;
+    white-space: nowrap; /* Prevent text wrapping */
 }
+
+
 
 /* Keyframes for scroll animation */
 @keyframes scroll-text {
