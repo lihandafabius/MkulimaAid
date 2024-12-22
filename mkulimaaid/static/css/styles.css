@@ -829,3 +829,7 @@ canvas {
   border-radius: 10px;
 }
 
+.card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease-in-out;
+}

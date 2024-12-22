@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Notification Settings</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-check">
+            {{ form.email_notifications(class="form-check-input") }}
+            {{ form.email_notifications.label(class="form-check-label") }}
+        </div>
+        <div class="form-check">
+            {{ form.push_notifications(class="form-check-input") }}
+            {{ form.push_notifications.label(class="form-check-label") }}
+        </div>
+        <div class="form-group mt-3">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -218,18 +218,28 @@ class IdentifiedDisease(db.Model):
         return f'<IdentifiedDisease {self.disease_name}>'
 
 
-# class Notification(db.Model):
-#     __tablename__ = 'notifications'
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # Null if it's a global notification
-#     message = db.Column(db.Text, nullable=False)
-#     is_read = db.Column(db.Boolean, default=False)
-#     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-#     type = db.Column(db.String(50), nullable=True)  # Optional type/category of notification
-#
-#     user = db.relationship('User', backref=db.backref('notifications', lazy=True))
-#
-#     def __repr__(self):
-#         return f'<Notification {self.message[:20]}...>'
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)  # Title of the notification
+    message = db.Column(db.Text, nullable=False)  # Content of the notification
+    date_sent = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp of when the notification was sent
+    admin_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Admin who sent the notification
+    is_active = db.Column(db.Boolean, default=True)  # Whether the notification is still active
+
+    admin = db.relationship('User', backref=db.backref('sent_notifications', lazy=True))
+
+    def __repr__(self):
+        return f'<Notification {self.title}>'
+
+
+class UserNotificationSetting(db.Model):
+    __tablename__ = 'user_notification_settings'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    email_notifications = db.Column(db.Boolean, default=True)  # User preference for email notifications
+    push_notifications = db.Column(db.Boolean, default=True)  # User preference for push/browser notifications
+
+    user = db.relationship('User', backref=db.backref('notification_settings', lazy=True, uselist=False))
 
 

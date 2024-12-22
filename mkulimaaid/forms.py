@@ -238,3 +238,15 @@ class FarmersForm(FlaskForm):
     def validate_contact_info(self, contact_info):
         if not re.match(r'^\d{10}$', contact_info.data):
             raise ValidationError('Contact number must contain exactly 10 digits and only numbers.')
+
+
+class NotificationForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(), Length(max=200)])
+    message = TextAreaField('Message', validators=[DataRequired()])
+    submit = SubmitField('Send Notification')
+
+
+class NotificationSettingsForm(FlaskForm):
+    email_notifications = BooleanField('Enable Email Notifications')
+    push_notifications = BooleanField('Enable Push Notifications')
+    submit = SubmitField('Save Settings')

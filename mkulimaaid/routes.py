@@ -1,12 +1,12 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, session
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm
+from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm, NotificationSettingsForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification, UserNotificationSetting
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -21,7 +21,6 @@ from sqlalchemy import func
 
 
 main = Blueprint('main', __name__)
-
 
 # Define allowed extensions for uploads
 def allowed_file(filename):
@@ -1385,7 +1384,7 @@ def get_users_joined():
         start_date = datetime.utcnow() - timedelta(days=7)
         query = query.filter(User.date_joined >= start_date)
     elif time_filter == 'month':
-        start_date = datetime.utcnow() - timedelta(days=30)
+        start_date = datetime.utcnow() - timedelta(days=90)
         query = query.filter(User.date_joined >= start_date)
 
     data = [{'date': str(result.date), 'count': result.count} for result in query.order_by('date')]
@@ -1407,7 +1406,7 @@ def get_crop_diseases_by_location():
         start_date = datetime.utcnow() - timedelta(days=7)
         query = query.filter(IdentifiedDisease.date_identified >= start_date)
     elif time_filter == 'month':
-        start_date = datetime.utcnow() - timedelta(days=30)
+        start_date = datetime.utcnow() - timedelta(days=90)
         query = query.filter(IdentifiedDisease.date_identified >= start_date)
 
     data = {}
@@ -1476,3 +1475,64 @@ def submit_farm_info():
 
     return redirect(url_for('main.upload'))  # Redirect immediately if the form is not submitted
 
+
+# Route for displaying notifications
+@main.route('/notifications')
+@login_required
+def view_notifications():
+    notifications = Notification.query.filter_by(is_active=True).order_by(Notification.date_sent.desc()).all()
+    farmers_form = FarmersForm()
+    return render_template('notifications.html', notifications=notifications, farmers_form=farmers_form)
+
+# Route for sending a notification (admin only)
+@main.route('/notifications/send', methods=['GET', 'POST'])
+@login_required
+def send_notification():
+    if not current_user.is_admin:
+        flash('You do not have access to this page.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    form = NotificationForm()
+    if form.validate_on_submit():
+        notification = Notification(
+            title=form.title.data,
+            message=form.message.data,
+            admin_id=current_user.id,
+        )
+        db.session.add(notification)
+        db.session.commit()
+        flash('Notification sent successfully!', 'success')
+        return redirect(url_for('notifications.view_notifications'))
+
+    return render_template('send_notification.html', form=form)
+
+# Route for managing user notification settings
+@main.route('/notifications/settings', methods=['GET', 'POST'])
+@login_required
+def notification_settings():
+    settings = UserNotificationSetting.query.filter_by(user_id=current_user.id).first()
+    farmers_form = FarmersForm()
+    if not settings:
+        settings = UserNotificationSetting(user_id=current_user.id)
+        db.session.add(settings)
+        db.session.commit()
+
+    form = NotificationSettingsForm(
+        email_notifications=settings.email_notifications,
+        push_notifications=settings.push_notifications
+    )
+
+    if form.validate_on_submit():
+        settings.email_notifications = form.email_notifications.data
+        settings.push_notifications = form.push_notifications.data
+        db.session.commit()
+        flash('Notification settings updated successfully!', 'success')
+        return redirect(url_for('notifications.notification_settings'))
+
+    return render_template('notification_settings.html', form=form, farmers_form=farmers_form)
+
+@main.route('/user_settings')
+@login_required
+def user_settings():
+    farmers_form = FarmersForm()
+    return render_template('user_settings.html', farmers_form=farmers_form)

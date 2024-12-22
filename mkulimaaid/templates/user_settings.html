@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Settings</h1>
+    <div class="list-group">
+        <!-- Add more settings sections as needed -->
+        <a href="{{ url_for('main.notification_settings') }}" class="list-group-item list-group-item-action">
+            Notification Settings
+        </a>
+        <!-- Future sections can be added here -->
+    </div>
+</div>
+{% endblock %}
+
