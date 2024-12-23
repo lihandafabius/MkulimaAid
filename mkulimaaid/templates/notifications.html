@@ -12,58 +12,90 @@
             <button type="button" class="btn btn-outline-primary" id="filter-archived">Archived</button>
         </div>
         <div class="input-group" style="max-width: 300px;">
-            <input type="text" class="form-control" placeholder="Search notifications" aria-label="Search notifications">
-            <button class="btn btn-primary" type="button">Search</button>
+            <input type="text" class="form-control" id="search-notifications" placeholder="Search notifications" aria-label="Search notifications">
+            <button class="btn btn-primary" type="button" onclick="searchNotifications()">Search</button>
         </div>
     </div>
 
     <!-- Notifications List -->
-    <div class="list-group">
-        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            <div>
-                <h5 class="mb-1">Notification Title</h5>
-                <p class="mb-1">This is a brief message about the notification...</p>
-                <small class="text-muted">Sent on Dec 20, 2024</small>
+    <div class="list-group" id="notifications-list">
+        {% if notifications %}
+            {% for notification in notifications %}
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-archived="{{ notification.is_archived }}">
+                <div>
+                    <h5 class="mb-1">{{ notification.title }}</h5>
+                    <p class="mb-1">{{ notification.message }}</p>
+                    <small class="text-muted">Sent on {{ notification.date_sent.strftime('%b %d, %Y') }}</small>
+                </div>
+                <div>
+                    <!-- Mark as Read Button -->
+                    <form method="POST" action="{{ url_for('main.mark_notification_read', notification_id=notification.id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-outline-success btn-sm me-2" type="submit">Mark as Read</button>
+                    </form>
+                    <!-- Archive Button -->
+                    <form method="POST" action="{{ url_for('main.archive_notification', notification_id=notification.id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-outline-secondary btn-sm" type="submit">Archive</button>
+                    </form>
+                </div>
             </div>
-            <div>
-                <button class="btn btn-outline-success btn-sm me-2">Mark as Read</button>
-                <button class="btn btn-outline-secondary btn-sm">Archive</button>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info text-center">
+                No notifications available.
             </div>
-        </div>
-        <!-- Additional notifications go here -->
-    </div>
-
-    <!-- Admin Create Notification Button -->
-    <div class="mt-4 text-center">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createNotificationModal">Create New Notification</button>
+        {% endif %}
     </div>
 </div>
 
-<!-- Create Notification Modal -->
-<div class="modal fade" id="createNotificationModal" tabindex="-1" aria-labelledby="createNotificationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createNotificationModalLabel">Create Notification</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="POST" action="/create-notification">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Send Notification</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<script>
+    // JavaScript for filtering notifications
+    document.getElementById('filter-all').addEventListener('click', () => {
+        showAllNotifications();
+    });
+
+    document.getElementById('filter-active').addEventListener('click', () => {
+        filterActiveNotifications();
+    });
+
+    document.getElementById('filter-archived').addEventListener('click', () => {
+        filterArchivedNotifications();
+    });
+
+    function searchNotifications() {
+        const query = document.getElementById('search-notifications').value.toLowerCase();
+        const notifications = document.querySelectorAll('#notifications-list .list-group-item');
+        notifications.forEach(notification => {
+            const title = notification.querySelector('h5').innerText.toLowerCase();
+            const message = notification.querySelector('p').innerText.toLowerCase();
+            if (title.includes(query) || message.includes(query)) {
+                notification.style.display = '';
+            } else {
+                notification.style.display = 'none';
+            }
+        });
+    }
+
+    function showAllNotifications() {
+        const notifications = document.querySelectorAll('#notifications-list .list-group-item');
+        notifications.forEach(notification => notification.style.display = '');
+    }
+
+    function filterActiveNotifications() {
+        const notifications = document.querySelectorAll('#notifications-list .list-group-item');
+        notifications.forEach(notification => {
+            const isArchived = notification.dataset.archived === 'true';
+            notification.style.display = isArchived ? 'none' : '';
+        });
+    }
+
+    function filterArchivedNotifications() {
+        const notifications = document.querySelectorAll('#notifications-list .list-group-item');
+        notifications.forEach(notification => {
+            const isArchived = notification.dataset.archived === 'true';
+            notification.style.display = isArchived ? '' : 'none';
+        });
+    }
+</script>
 {% endblock %}

@@ -6,7 +6,7 @@ from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification, UserNotificationSetting
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification, UserNotificationSetting, UserNotification
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -1131,7 +1131,6 @@ def contact():
     return render_template("contact.html", form=form, farmers_form=farmers_form)
 
 
-
 @main.route('/dashboard/messages', methods=['GET'])
 @login_required
 def view_messages():
@@ -1139,10 +1138,14 @@ def view_messages():
         flash("You do not have access to this page.", 'danger')
         return redirect(url_for('main.dashboard'))
 
+    # Pagination (10 messages per page)
+    page = request.args.get('page', 1, type=int)
+    messages = ContactMessage.query.order_by(ContactMessage.date_sent.desc()).paginate(page=page, per_page=10)
+
     # Retrieve all messages, ordered by date
-    messages = ContactMessage.query.order_by(ContactMessage.date_sent.desc()).all()
     form = DeleteForm()
     farmers_form = FarmersForm()
+    notification_form = NotificationForm()
 
     # Mark all messages as seen
     for message in messages:
@@ -1153,25 +1156,8 @@ def view_messages():
     # Since all messages are now seen, the unread count should be zero
     unread_count = 0
 
-    return render_template('messages.html', messages=messages, form=form, unread_count=unread_count, farmers_form=farmers_form)
+    return render_template('messages.html', messages=messages, form=form, unread_count=unread_count, farmers_form=farmers_form, notification_form=notification_form)
 
-
-# @main.route('/notifications')
-# @login_required
-# def notifications():
-#     farmer_form = FarmersForm()
-#     # Fetch user-specific notifications and global notifications
-#     user_notifications = Notification.query.filter(
-#         (Notification.user_id == current_user.id) | (Notification.user_id == None)  # None indicates global
-#     ).order_by(Notification.timestamp.desc()).all()
-#
-#     # Mark all notifications as read
-#     for notification in user_notifications:
-#         notification.is_read = True
-#     db.session.commit()  # Save changes to the database
-#
-#     return render_template('notifications.html', notifications=user_notifications, farmer_form=farmer_form)
-#
 
 
 @main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])
@@ -1480,17 +1466,19 @@ def submit_farm_info():
 @main.route('/notifications')
 @login_required
 def view_notifications():
+    # Fetch all active notifications
     notifications = Notification.query.filter_by(is_active=True).order_by(Notification.date_sent.desc()).all()
     farmers_form = FarmersForm()
     return render_template('notifications.html', notifications=notifications, farmers_form=farmers_form)
 
-# Route for sending a notification (admin only)
-@main.route('/notifications/send', methods=['GET', 'POST'])
+
+# Unified Route for Creating Notifications (Admin Only)
+@main.route('/notifications/create', methods=['GET', 'POST'])
 @login_required
-def send_notification():
+def create_notification():
     if not current_user.is_admin:
         flash('You do not have access to this page.', 'danger')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('main.dashboard'))
 
     form = NotificationForm()
     if form.validate_on_submit():
@@ -1501,10 +1489,11 @@ def send_notification():
         )
         db.session.add(notification)
         db.session.commit()
-        flash('Notification sent successfully!', 'success')
-        return redirect(url_for('notifications.view_notifications'))
+        flash('Notification created successfully!', 'success')
+        return redirect(url_for('main.view_notifications'))
 
-    return render_template('send_notification.html', form=form)
+    return render_template('create_notification.html', form=form)
+
 
 # Route for managing user notification settings
 @main.route('/notifications/settings', methods=['GET', 'POST'])
@@ -1527,9 +1516,36 @@ def notification_settings():
         settings.push_notifications = form.push_notifications.data
         db.session.commit()
         flash('Notification settings updated successfully!', 'success')
-        return redirect(url_for('notifications.notification_settings'))
+        return redirect(url_for('main.notification_settings'))
 
     return render_template('notification_settings.html', form=form, farmers_form=farmers_form)
+
+
+@main.route('/notifications/<int:notification_id>/mark_read', methods=['POST'])
+@login_required
+def mark_notification_read(notification_id):
+    user_notification = UserNotification.query.filter_by(
+        user_id=current_user.id, notification_id=notification_id
+    ).first()
+    if user_notification:
+        user_notification.is_read = True
+        db.session.commit()
+        flash('Notification marked as read.', 'success')
+    return redirect(url_for('main.view_notifications'))
+
+
+@main.route('/notifications/<int:notification_id>/archive', methods=['POST'])
+@login_required
+def archive_notification(notification_id):
+    user_notification = UserNotification.query.filter_by(
+        user_id=current_user.id, notification_id=notification_id
+    ).first()
+    if user_notification:
+        user_notification.is_archived = True
+        db.session.commit()
+        flash('Notification archived.', 'success')
+    return redirect(url_for('main.view_notifications'))
+
 
 @main.route('/user_settings')
 @login_required

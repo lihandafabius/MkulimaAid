@@ -4,9 +4,14 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Contact Messages</h2>
 
-    {% if messages %}
+    <div class="d-flex justify-content-end align-items-center mb-4">
+        <!-- Button to Create Notification -->
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#createNotificationModal">Create Notification</button>
+    </div>
+
+    {% if messages.items %}
         <div class="list-group">
-            {% for message in messages %}
+            {% for message in messages.items %}
                 <div class="list-group-item list-group-item-action mb-3 shadow-sm p-4 rounded">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -41,8 +46,75 @@
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination Navigation -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if messages.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.view_messages', page=messages.prev_num) }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                {% endif %}
+
+                {% for page_num in messages.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == messages.page %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('main.view_messages', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if messages.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.view_messages', page=messages.next_num) }}">Next</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     {% else %}
         <p class="text-center text-muted">No messages yet.</p>
     {% endif %}
+</div>
+
+<!-- Create Notification Modal -->
+<div class="modal fade" id="createNotificationModal" tabindex="-1" aria-labelledby="createNotificationLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createNotificationLabel">Create Notification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{{ url_for('main.create_notification') }}">
+                    {{ notification_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ notification_form.title.label(class="form-label") }}
+                        {{ notification_form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ notification_form.message.label(class="form-label") }}
+                        {{ notification_form.message(class="form-control", rows=5) }}
+                    </div>
+                    <button type="submit" class="btn btn-success">Send Notification</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

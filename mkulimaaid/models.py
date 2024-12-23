@@ -233,6 +233,19 @@ class Notification(db.Model):
         return f'<Notification {self.title}>'
 
 
+class UserNotification(db.Model):
+    __tablename__ = 'user_notifications'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    notification_id = db.Column(db.Integer, db.ForeignKey('notifications.id'), nullable=False)
+    is_read = db.Column(db.Boolean, default=False)  # Whether the user has read the notification
+    is_archived = db.Column(db.Boolean, default=False)  # Whether the user has archived the notification
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # When the notification was sent to the user
+
+    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True))
+    notification = db.relationship('Notification', backref=db.backref('user_notifications', lazy=True))
+
+
 class UserNotificationSetting(db.Model):
     __tablename__ = 'user_notification_settings'
     id = db.Column(db.Integer, primary_key=True)
