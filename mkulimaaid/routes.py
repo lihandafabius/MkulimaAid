@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, session, abort
 from werkzeug.utils import secure_filename
 from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm, NotificationSettingsForm
 from config import Config
@@ -1463,14 +1463,73 @@ def submit_farm_info():
 
 
 # Route for displaying notifications
-@main.route('/notifications')
+@main.route('/notifications', methods=['GET'])
 @login_required
 def view_notifications():
-    # Fetch all active notifications
-    notifications = Notification.query.filter_by(is_active=True).order_by(Notification.date_sent.desc()).all()
-    farmers_form = FarmersForm()
-    return render_template('notifications.html', notifications=notifications, farmers_form=farmers_form)
+    filter_type = request.args.get('filter', 'all').strip().lower()
+    search_query = request.args.get('query', '').strip()
+    page = request.args.get('page', 1, type=int)  # Get current page number, default to 1
+    per_page = 10  # Number of notifications per page
 
+    # Validate filter type
+    valid_filters = ['all', 'active', 'archived']
+    if filter_type not in valid_filters:
+        abort(400, description="Invalid filter type.")
+
+    # Sanitize and validate search query
+    search_query = re.sub(r'[^\w\s]', '', search_query)  # Remove special characters
+    search_query = search_query.lower()
+
+    # Base query
+    query = (
+        db.session.query(Notification, UserNotification)
+        .join(UserNotification, UserNotification.notification_id == Notification.id)
+        .filter(UserNotification.user_id == current_user.id)
+    )
+
+    # Apply filter
+    if filter_type == 'active':
+        query = query.filter(UserNotification.is_archived == False)
+    elif filter_type == 'archived':
+        query = query.filter(UserNotification.is_archived == True)
+
+    # Apply search
+    if search_query:
+        query = query.filter(
+            db.or_(
+                Notification.title.ilike(f'%{search_query}%'),
+                Notification.message.ilike(f'%{search_query}%')
+            )
+        )
+
+    # Apply pagination
+    pagination = query.order_by(Notification.date_sent.desc()).paginate(page=page, per_page=per_page)
+    notifications = pagination.items
+
+    farmers_form = FarmersForm()
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Return JSON for dynamic search or AJAX calls
+        notifications_list = [
+            {
+                "title": n.title,
+                "message": n.message,
+                "date_sent": n.date_sent.strftime('%b %d, %Y'),
+                "is_archived": un.is_archived,
+            }
+            for n, un in notifications
+        ]
+        return jsonify(notifications_list)
+
+    # Render template
+    return render_template(
+        'notifications.html',
+        notifications=notifications,
+        filter_type=filter_type,
+        search_query=search_query,
+        farmers_form=farmers_form,
+        pagination=pagination  # Pass the pagination object to the template
+    )
 
 # Unified Route for Creating Notifications (Admin Only)
 @main.route('/notifications/create', methods=['GET', 'POST'])
@@ -1488,6 +1547,17 @@ def create_notification():
             admin_id=current_user.id,
         )
         db.session.add(notification)
+        db.session.flush()  # Get the notification ID before committing
+
+        # Create UserNotification entries for all users
+        users = User.query.all()
+        for user in users:
+            user_notification = UserNotification(
+                user_id=user.id,
+                notification_id=notification.id
+            )
+            db.session.add(user_notification)
+
         db.session.commit()
         flash('Notification created successfully!', 'success')
         return redirect(url_for('main.view_notifications'))
@@ -1531,7 +1601,10 @@ def mark_notification_read(notification_id):
         user_notification.is_read = True
         db.session.commit()
         flash('Notification marked as read.', 'success')
+    else:
+        flash('Notification not found.', 'danger')
     return redirect(url_for('main.view_notifications'))
+
 
 
 @main.route('/notifications/<int:notification_id>/archive', methods=['POST'])
@@ -1544,7 +1617,25 @@ def archive_notification(notification_id):
         user_notification.is_archived = True
         db.session.commit()
         flash('Notification archived.', 'success')
+    else:
+        flash('Notification not found.', 'danger')
     return redirect(url_for('main.view_notifications'))
+
+
+@main.route('/notifications/<int:notification_id>/unarchive', methods=['POST'])
+@login_required
+def unarchive_notification(notification_id):
+    user_notification = UserNotification.query.filter_by(
+        user_id=current_user.id, notification_id=notification_id
+    ).first()
+    if user_notification:
+        user_notification.is_archived = False
+        db.session.commit()
+        flash('Notification unarchived.', 'success')
+    else:
+        flash('Notification not found.', 'danger')
+    return redirect(url_for('main.view_notifications'))
+
 
 
 @main.route('/user_settings')
