@@ -78,12 +78,10 @@
         <path d="M3 18h18" stroke="#4CAF50" stroke-width="1.5"/>
       </symbol>
 
-      <!-- Integrations Icon -->
-      <symbol id="integrations" viewBox="0 0 24 24">
-        <circle cx="6" cy="12" r="3" fill="#FFFFFF"/>
-        <circle cx="18" cy="12" r="3" fill="#FFFFFF"/>
-        <path d="M8.5 12h7" stroke="#4CAF50" stroke-width="1.5"/>
-        <path d="M12 4v4M12 16v4" stroke="#4CAF50" stroke-width="1.5"/>
+      <!-- Notifications Icon -->
+      <symbol id="notifications" viewBox="0 0 24 24">
+        <path d="M12 2a4 4 0 0 1 4 4v2.586a2 2 0 0 0 .586 1.414l1.828 1.828a2 2 0 0 1 .586 1.414V14a6 6 0 0 1-12 0v-1.172a2 2 0 0 1 .586-1.414l1.828-1.828A2 2 0 0 0 8 8.586V6a4 4 0 0 1 4-4z" fill="#4CAF50"/>
+        <path d="M12 20a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z" fill="#FFFFFF"/>
       </symbol>
             <symbol id="play-btn" viewBox="0 0 16 16">
             <path d="M6.79 5.093a.5.5 0 0 1 .592-.057L10.5 7.021a.5.5 0 0 1 0 .832L7.382 9.964a.5.5 0 0 1-.592-.057A.5.5 0 0 1 6.5 9.5v-3a.5.5 0 0 1 .29-.407z"/>
@@ -143,11 +141,14 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.integrations') }}">
-                <svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#integrations"></use></svg>
-                Integrations
+              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.dashboard_notifications') }}">
+                <svg class="bi" width="16" height="16" fill="currentColor">
+                  <use xlink:href="#notifications"></use>
+                </svg>
+                Notifications Manager
               </a>
             </li>
+
             <li class="nav-item position-relative">
               <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('main.view_messages') }}" style="position: relative;">
                 <svg class="bi" width="16" height="16" fill="currentColor">

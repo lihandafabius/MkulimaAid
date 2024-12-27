@@ -4,11 +4,6 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Contact Messages</h2>
 
-    <div class="d-flex justify-content-end align-items-center mb-4">
-        <!-- Button to Create Notification -->
-        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#createNotificationModal">Create Notification</button>
-    </div>
-
     {% if messages.items %}
         <div class="list-group">
             {% for message in messages.items %}
@@ -92,29 +87,5 @@
     {% endif %}
 </div>
 
-<!-- Create Notification Modal -->
-<div class="modal fade" id="createNotificationModal" tabindex="-1" aria-labelledby="createNotificationLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createNotificationLabel">Create Notification</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="{{ url_for('main.create_notification') }}">
-                    {{ notification_form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ notification_form.title.label(class="form-label") }}
-                        {{ notification_form.title(class="form-control") }}
-                    </div>
-                    <div class="mb-3">
-                        {{ notification_form.message.label(class="form-label") }}
-                        {{ notification_form.message(class="form-control", rows=5) }}
-                    </div>
-                    <button type="submit" class="btn btn-success">Send Notification</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
 {% endblock %}

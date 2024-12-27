@@ -1506,6 +1506,12 @@ def view_notifications():
     pagination = query.order_by(Notification.date_sent.desc()).paginate(page=page, per_page=per_page)
     notifications = pagination.items
 
+    # Mark notifications as read
+    for _, user_notification in notifications:
+        if not user_notification.is_read:
+            user_notification.is_read = True
+    db.session.commit()
+
     farmers_form = FarmersForm()
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -1530,6 +1536,7 @@ def view_notifications():
         farmers_form=farmers_form,
         pagination=pagination  # Pass the pagination object to the template
     )
+
 
 # Unified Route for Creating Notifications (Admin Only)
 @main.route('/notifications/create', methods=['GET', 'POST'])
@@ -1560,7 +1567,7 @@ def create_notification():
 
         db.session.commit()
         flash('Notification created successfully!', 'success')
-        return redirect(url_for('main.view_notifications'))
+        return redirect(url_for('main.dashboard_notifications'))
 
     return render_template('create_notification.html', form=form)
 
@@ -1589,22 +1596,6 @@ def notification_settings():
         return redirect(url_for('main.notification_settings'))
 
     return render_template('notification_settings.html', form=form, farmers_form=farmers_form)
-
-
-@main.route('/notifications/<int:notification_id>/mark_read', methods=['POST'])
-@login_required
-def mark_notification_read(notification_id):
-    user_notification = UserNotification.query.filter_by(
-        user_id=current_user.id, notification_id=notification_id
-    ).first()
-    if user_notification:
-        user_notification.is_read = True
-        db.session.commit()
-        flash('Notification marked as read.', 'success')
-    else:
-        flash('Notification not found.', 'danger')
-    return redirect(url_for('main.view_notifications'))
-
 
 
 @main.route('/notifications/<int:notification_id>/archive', methods=['POST'])
@@ -1636,6 +1627,83 @@ def unarchive_notification(notification_id):
         flash('Notification not found.', 'danger')
     return redirect(url_for('main.view_notifications'))
 
+
+@main.route('/notifications/unread_count', methods=['GET'])
+@login_required
+def unread_notification_count():
+    unread_count = (
+        UserNotification.query
+        .join(Notification, UserNotification.notification_id == Notification.id)
+        .filter(UserNotification.user_id == current_user.id, UserNotification.is_read == False, Notification.is_active == True)
+        .count()
+    )
+    return jsonify({'unread_count': unread_count})
+
+
+@main.route('/dashboard/notifications', methods=['GET', 'POST'])
+@login_required
+def dashboard_notifications():
+    farmers_form = FarmersForm()
+    if not current_user.is_admin:
+        flash("Access restricted to admins only.", "warning")
+        return redirect(url_for('main.dashboard'))
+
+    # Pagination setup
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Number of notifications per page
+    pagination = Notification.query.order_by(Notification.date_sent.desc()).paginate(page=page, per_page=per_page)
+    notifications = pagination.items
+
+    notification_form = NotificationForm()
+    form = EmptyForm()
+
+    return render_template(
+        'dashboard_notifications.html',
+        notifications=notifications,
+        notification_form=notification_form,
+        farmers_form=farmers_form,
+        form=form,
+        pagination=pagination
+    )
+
+
+@main.route('/dashboard/notifications/edit/<int:notification_id>', methods=['GET', 'POST'])
+@login_required
+def edit_notification(notification_id):
+    if not current_user.is_admin:
+        flash("Access restricted to admins only.", "warning")
+        return redirect(url_for('main.dashboard'))
+
+    notification = Notification.query.get_or_404(notification_id)
+    form = NotificationForm(obj=notification)
+    farmers_form = FarmersForm()
+
+    if form.validate_on_submit():
+        notification.title = form.title.data
+        notification.message = form.message.data
+        db.session.commit()
+        flash("Notification updated successfully!", "success")
+        return redirect(url_for('main.dashboard_notifications'))
+
+    return render_template('edit_notification.html', form=form, notification=notification, farmers_form=farmers_form)
+
+
+@main.route('/dashboard/notifications/delete/<int:notification_id>', methods=['POST'])
+@login_required
+def delete_notification(notification_id):
+    if not current_user.is_admin:
+        flash("Access restricted to admins only.", "warning")
+        return redirect(url_for('main.dashboard'))
+
+    notification = Notification.query.get_or_404(notification_id)
+
+    # Explicitly delete UserNotification entries
+    UserNotification.query.filter_by(notification_id=notification_id).delete()
+
+    db.session.delete(notification)
+    db.session.commit()
+    flash("Notification deleted successfully!", "success")
+    return redirect(url_for('main.dashboard_notifications'))
 
 
 @main.route('/user_settings')
