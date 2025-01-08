@@ -65,7 +65,6 @@ def check_session_timeout():
         session['last_active'] = datetime.now().isoformat()
 
 
-
 def update_trending_status():
     # Update trending status for IdentifiedDisease
     distinct_identified_diseases = db.session.query(IdentifiedDisease.disease_name).distinct().all()
@@ -162,6 +161,14 @@ def upload():
 @main.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(Config.UPLOAD_FOLDER, filename)
+
+
+@main.route('/clear_results', methods=['POST'])
+@login_required
+def clear_results():
+    # Redirect back to the upload page without any data
+    return redirect(url_for('main.upload'))
+
 
 
 # Predict route
@@ -595,7 +602,7 @@ def send_newsletter():
             print(f"Error: {e}")
 
     flash('Notification sent to subscribers successfully!', 'success')
-    return redirect(url_for('main.diseases'))
+    return redirect(url_for('main.dashboard_notifications'))
 
 
 # Routes related to Disease Management
@@ -649,6 +656,7 @@ def add_disease():
 def edit_disease(disease_id):
     disease = Diseases.query.get_or_404(disease_id)
     form = DiseaseForm()
+    farmers_form = FarmersForm()
 
 
     if form.validate_on_submit():
@@ -683,7 +691,7 @@ def edit_disease(disease_id):
         form.chemical_control.data = disease.chemical_control
         form.preventive_measures.data = disease.preventive_measures
 
-    return render_template('edit_disease.html', form=form, disease=disease)
+    return render_template('edit_disease.html', form=form, disease=disease, farmers_form=farmers_form)
 
 # Route to delete a disease
 @main.route("/disease/delete/<int:disease_id>", methods=["POST"])
@@ -696,13 +704,24 @@ def delete_disease(disease_id):
     flash(f'Disease "{disease.name}" deleted successfully!', 'success')
     return redirect(url_for('main.diseases'))
 
+
 @main.route('/diseases')
 @login_required
 def diseases():
-    diseases = Diseases.query.all()
+    page = request.args.get('page', 1, type=int)  # Get the current page number from the request
+    per_page = 5  # Number of diseases per page
+    pagination = Diseases.query.paginate(page=page, per_page=per_page, error_out=False)
+    diseases = pagination.items  # Get the current page's items
     form = AdminForm()  # or any form that you want to use
     farmers_form = FarmersForm()
-    return render_template('diseases.html', diseases=diseases, form=form, farmers_form=farmers_form)
+    return render_template(
+        'diseases.html',
+        diseases=diseases,
+        pagination=pagination,
+        form=form,
+        farmers_form=farmers_form
+    )
+
 
 # Route to post disease to homepage
 @main.route('/post_disease/<int:disease_id>', methods=['POST'])
@@ -1030,6 +1049,7 @@ def add_topic():
 
     return render_template('add_topic.html', form=form, farmers_form=farmers_form)
 
+
 @main.route('/dashboard/topics/edit/<int:topic_id>', methods=['GET', 'POST'])
 @login_required
 def edit_topic(topic_id):
@@ -1056,6 +1076,8 @@ def edit_topic(topic_id):
         return redirect(url_for('main.dashboard_topics'))
 
     return render_template('edit_topic.html', form=form, topic=topic, farmers_form=farmers_form)
+
+
 @main.route('/dashboard/topics/delete/<int:topic_id>', methods=['POST'])
 @login_required
 def delete_topic(topic_id):
@@ -1076,6 +1098,7 @@ def forum():
     questions = Question.query.order_by(Question.timestamp.desc()).all()
     return render_template('forum.html', questions=questions, farmers_form=farmers_form)
 
+
 @main.route('/forum/question/<int:question_id>', methods=['GET', 'POST'])
 def view_question(question_id):
     question = Question.query.get_or_404(question_id)
@@ -1090,7 +1113,9 @@ def view_question(question_id):
         flash("Your answer has been posted!", "success")
         return redirect(url_for('main.view_question', question_id=question_id))
 
-    return render_template('view_question.html', question=question, answers=answers, answer_form=answer_form, farmers_form=farmers_form)
+    return render_template('view_question.html', question=question, answers=answers,
+                           answer_form=answer_form, farmers_form=farmers_form)
+
 
 @main.route('/forum/new_question', methods=['GET', 'POST'])
 @login_required
@@ -1111,6 +1136,7 @@ def new_question():
 def about():
     farmers_form = FarmersForm()
     return render_template("about.html", farmers_form=farmers_form)
+
 
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
@@ -1178,7 +1204,6 @@ def delete_message(message_id):
     return redirect(url_for('main.view_messages'))
 
 
-
 # Route to render the privacy policy page
 @main.route('/privacy-policy')
 @login_required
@@ -1192,6 +1217,7 @@ def privacy_policy():
 def donate():
     farmers_form = FarmersForm()
     return render_template("donate.html", farmers_form=farmers_form)
+
 
 @main.route("/faqs")
 @login_required
@@ -1317,6 +1343,7 @@ def delete_member(member_id):
     flash(f'Team member "{member.name}" deleted successfully!', 'success')
     return redirect(url_for('main.dashboard_team'))
 
+
 # Route to publish/unpublish a team member
 @main.route('/dashboard/team/publish/<int:member_id>', methods=['POST'])
 @login_required
@@ -1357,8 +1384,8 @@ def get_top_crop_diseases():
 
 
 
-
 @main.route('/api/users-joined', methods=['GET'])
+@login_required
 def get_users_joined():
     time_filter = request.args.get('filter', 'week')
     query = db.session.query(
@@ -1407,6 +1434,7 @@ def get_crop_diseases_by_location():
 
 
 @main.route('/api/disease-confidence', methods=['GET'])
+@login_required
 def get_disease_confidence():
     # Query the IdentifiedDisease table to get disease names and their average confidence
     disease_confidences = (
@@ -1538,7 +1566,6 @@ def view_notifications():
     )
 
 
-# Unified Route for Creating Notifications (Admin Only)
 @main.route('/notifications/create', methods=['GET', 'POST'])
 @login_required
 def create_notification():
@@ -1556,14 +1583,19 @@ def create_notification():
         db.session.add(notification)
         db.session.flush()  # Get the notification ID before committing
 
-        # Create UserNotification entries for all users
-        users = User.query.all()
-        for user in users:
-            user_notification = UserNotification(
-                user_id=user.id,
-                notification_id=notification.id
-            )
-            db.session.add(user_notification)
+        # Query all users and check their notification settings
+        all_users = User.query.all()
+        for user in all_users:
+            # Fetch the user's notification settings
+            settings = user.notification_settings
+
+            # Default to push_notifications=True if no settings exist
+            if settings is None or settings.push_notifications:
+                user_notification = UserNotification(
+                    user_id=user.id,
+                    notification_id=notification.id
+                )
+                db.session.add(user_notification)
 
         db.session.commit()
         flash('Notification created successfully!', 'success')

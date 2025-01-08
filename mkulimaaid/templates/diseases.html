@@ -25,14 +25,14 @@
               <th>Preventive Measures</th>
               <th>Description</th>
               <th>Actions</th>
-              <th>Post to Homepage</th> <!-- New column for posting -->
+              <th>Post to Homepage</th>
               <th>Trending Status</th>
             </tr>
           </thead>
           <tbody>
             {% for disease in diseases %}
             <tr>
-              <td>{{ loop.index }}</td>
+              <td>{{ loop.index + ((pagination.page - 1) * pagination.per_page) }}</td>
               <td>{{ disease.name }}</td>
               <td>{{ disease.scientific_name }}</td>
               <td>{{ disease.symptoms }}</td>
@@ -43,20 +43,14 @@
               <td>{{ disease.description }}</td>
               <td class="text-center">
                 <a href="{{ url_for('main.edit_disease', disease_id=disease.id) }}" class="btn btn-sm btn-primary mb-1">Edit</a>
-
-                <!-- Delete Button that triggers the modal -->
                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ disease.id }}">Delete</button>
               </td>
-
-              <!-- Post to Homepage -->
               <td class="text-center">
                 <form action="{{ url_for('main.post_disease_to_homepage', disease_id=disease.id) }}" method="POST">
                   {{ form.hidden_tag() }}
                   <button type="submit" class="btn btn-sm btn-warning">Post</button>
                 </form>
               </td>
-
-              <!-- Trending Checkbox -->
               <td class="text-center">
                 <form action="{{ url_for('main.toggle_trending', disease_id=disease.id) }}" method="POST">
                   {{ form.hidden_tag() }}
@@ -86,27 +80,42 @@
                 </div>
               </div>
             </div>
-
             {% endfor %}
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
 
-  <!-- Subscriber Notification Section -->
-  <div class="row mt-5">
-    <div class="col">
-      <h3 class="mb-3">Notify Subscribers About Trending Crop Diseases</h3>
-      <p>Send updates to your subscribers whenever new trending crop diseases are added.</p>
-      <form method="POST" action="{{ url_for('main.send_newsletter') }}">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-          <label for="newsletter_content">Message to Subscribers</label>
-          <textarea class="form-control ckeditor" id="newsletter_content" name="content" rows="5"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Send Notification</button>
-      </form>
+      <!-- Pagination Controls -->
+      <div class="pagination justify-content-center mt-4">
+        {% if pagination.has_prev %}
+        <a href="{{ url_for('main.diseases', page=pagination.prev_num) }}"
+           class="btn btn-outline-success mx-1">
+           Previous
+        </a>
+        {% endif %}
+
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                <span class="btn btn-success mx-1 disabled">{{ page_num }}</span>
+                {% else %}
+                <a href="{{ url_for('main.diseases', page=page_num) }}"
+                   class="btn btn-outline-success mx-1">
+                   {{ page_num }}
+                </a>
+                {% endif %}
+            {% else %}
+            <span class="mx-1">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagination.has_next %}
+        <a href="{{ url_for('main.diseases', page=pagination.next_num) }}"
+           class="btn btn-outline-success mx-1">
+           Next
+        </a>
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>

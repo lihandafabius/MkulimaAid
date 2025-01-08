@@ -95,6 +95,17 @@
                     <h4>Prediction Result: {{ prediction }}</h4>
                 </div>
             {% endif %}
+
+            <!-- Clear Results Button -->
+            {% if image_filename or prediction %}
+                <div class="mt-3 text-center">
+                    <form method="POST" action="{{ url_for('main.clear_results') }}">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="btn btn-danger">Clear Results</button>
+                    </form>
+                </div>
+            {% endif %}
+
         </div>
     </div>
   </div>

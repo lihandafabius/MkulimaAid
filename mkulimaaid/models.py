@@ -265,3 +265,6 @@ class UserNotificationSetting(db.Model):
     user = db.relationship('User', backref=db.backref('notification_settings', lazy=True, uselist=False))
 
 
+
+
+
