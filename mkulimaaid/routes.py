@@ -1,12 +1,13 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, session, abort
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, \
+    session, abort, make_response
 from werkzeug.utils import secure_filename
 from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm, NotificationSettingsForm
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification, UserNotificationSetting, UserNotification
+from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification, UserNotificationSetting, UserNotification, Report
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -17,6 +18,7 @@ from mkulimaaid.utils import save_avatar
 import re
 from flask import jsonify
 from sqlalchemy import func
+from weasyprint import HTML
 
 
 
@@ -90,7 +92,6 @@ def update_trending_status():
 
     # Commit changes to the database
     db.session.commit()
-
 
 
 # Home page and file upload handling
@@ -285,7 +286,6 @@ def dashboard():
 
 # Logout route
 @main.route("/logout")
-
 @login_required
 def logout():
     logout_user()
@@ -390,21 +390,95 @@ def delete_farmer(farmer_id):
     return redirect(url_for('main.farmers'))
 
 
-
-@main.route('/reports')
+@main.route('/reports', methods=['GET'])
 @login_required
-def reports():
+def list_reports():
     farmers_form = FarmersForm()
-    # Logic for displaying reports
-    return render_template('reports.html', farmers_form=farmers_form)
+    """List all generated reports."""
+    reports = Report.query.order_by(Report.generated_at.desc()).all()  # Fetch reports sorted by date
+    return render_template('reports.html', reports=reports, farmers_form=farmers_form)
 
 
-@main.route('/integrations')
+@main.route('/reports/<int:report_id>/view', methods=['GET'])
 @login_required
-def integrations():
-    farmers_form = FarmersForm()
-    # Logic for displaying integrations
-    return render_template('integrations.html', farmers_form=farmers_form)
+def view_report(report_id):
+    """View a detailed report with insights."""
+    report = Report.query.get_or_404(report_id)
+
+    # Fetch data for insights
+    total_users = User.query.count()
+    admin_count = User.query.filter_by(is_admin=True).count()
+    farmer_count = total_users - admin_count
+
+    daily_new_users = db.session.query(
+        db.func.date(User.date_joined).label('date'),
+        db.func.count(User.id)
+    ).group_by(db.func.date(User.date_joined)).order_by('date').all()
+
+    top_diseases = db.session.query(
+        IdentifiedDisease.disease_name,
+        db.func.count(IdentifiedDisease.id).label('count')
+    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(10).all()
+
+    avg_confidence = db.session.query(
+        IdentifiedDisease.disease_name,
+        db.func.avg(IdentifiedDisease.confidence).label('avg_confidence')
+    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('avg_confidence')).all()
+
+    active_questions = Question.query.count()
+    active_answers = Answer.query.count()
+
+    return render_template(
+        'report_view.html',
+        report=report,
+        total_users=total_users,
+        admin_count=admin_count,
+        farmer_count=farmer_count,
+        daily_new_users=daily_new_users,
+        top_diseases=top_diseases,
+        avg_confidence=avg_confidence,
+        active_questions=active_questions,
+        active_answers=active_answers
+    )
+
+@main.route('/reports/<int:report_id>/download', methods=['GET'])
+@login_required
+def download_report(report_id):
+    """Download a report as a PDF."""
+    report = Report.query.get_or_404(report_id)
+
+    # Render the report HTML
+    report_html = render_template('report_view.html', report=report, download=True)
+
+    # Generate the PDF
+    pdf = HTML(string=report_html).write_pdf()
+
+    # Prepare the response
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename={report.filename}.pdf'
+
+    return response
+
+@main.route('/reports/<int:report_id>/delete', methods=['POST'])
+@login_required
+def delete_report(report_id):
+    """Delete a report."""
+    report = Report.query.get_or_404(report_id)
+    db.session.delete(report)
+    db.session.commit()
+    flash('Report deleted successfully.', 'success')
+    return redirect(url_for('main.list_reports'))
+
+@main.route('/reports/<int:report_id>/post', methods=['POST'])
+@login_required
+def post_to_homepage(report_id):
+    """Post the report to the homepage."""
+    report = Report.query.get_or_404(report_id)
+    # Logic for posting the report (e.g., marking it as featured or visible on the homepage)
+    flash('Report has been posted to the homepage!', 'success')
+    return redirect(url_for('main.list_reports'))
+
 
 
 # Helper function to get or create settings

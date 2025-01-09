@@ -265,6 +265,21 @@ class UserNotificationSetting(db.Model):
     user = db.relationship('User', backref=db.backref('notification_settings', lazy=True, uselist=False))
 
 
+class Report(db.Model):
+    __tablename__ = 'reports'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)  # Title of the report
+    filename = db.Column(db.String(255), nullable=False, unique=True)  # Name of the report file
+    description = db.Column(db.Text, nullable=True)  # Optional description of the report
+    generated_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # User ID of who generated it
+    generated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # Timestamp of generation
+
+    # Relationship to the User model
+    user = db.relationship('User', backref='generated_reports', lazy=True)
+
+    def __repr__(self):
+        return f"<Report {self.title} ({self.filename}) by User {self.generated_by} on {self.generated_at}>"
 
 
 
