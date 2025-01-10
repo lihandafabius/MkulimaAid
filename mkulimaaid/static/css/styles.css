@@ -833,3 +833,41 @@ canvas {
   transform: translateY(-5px);
   transition: transform 0.3s ease-in-out;
 }
+
+header {
+    margin-bottom: 20px;
+}
+header h1 {
+    font-size: 2rem;
+    color: #4CAF50;
+}
+header p {
+    margin: 0;
+    font-size: 1rem;
+}
+section h2 {
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    color: #4CAF50;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #f4f4f4;
+}
+footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 20px;
+}

@@ -2,12 +2,17 @@ import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, \
     session, abort, make_response
 from werkzeug.utils import secure_filename
-from mkulimaaid.forms import UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm, ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm, QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm, NotificationSettingsForm
+from mkulimaaid.forms import (UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm,
+                              ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm,
+                              QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm,
+                              NotificationSettingsForm)
 from config import Config
 from PIL import Image
 import torch
 from flask_login import login_user, login_required, current_user, logout_user
-from mkulimaaid.models import User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question, Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification, UserNotificationSetting, UserNotification, Report
+from mkulimaaid.models import (User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question,
+                               Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification,
+                               UserNotificationSetting, UserNotification, Report)
 from mkulimaaid import db, bcrypt, login_manager
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -21,8 +26,8 @@ from sqlalchemy import func
 from weasyprint import HTML
 
 
-
 main = Blueprint('main', __name__)
+
 
 # Define allowed extensions for uploads
 def allowed_file(filename):
@@ -33,6 +38,7 @@ def allowed_file(filename):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 @main.before_request
 def load_settings():
@@ -171,7 +177,6 @@ def clear_results():
     return redirect(url_for('main.upload'))
 
 
-
 # Predict route
 @main.route('/predict', methods=['POST'])
 def predict():
@@ -208,6 +213,7 @@ def predict():
 
     return redirect(url_for('main.upload'))
 
+
 @main.route('/disease/<int:disease_id>')
 @login_required
 def disease_detail(disease_id):
@@ -235,7 +241,6 @@ def login():
         else:
             flash('Invalid credentials, please try again.', 'danger')
     return render_template('login.html', form=form)
-
 
 
 # Register route
@@ -281,7 +286,6 @@ def dashboard():
 
     # Pass form, diseases, users, and unread_count to the template
     return render_template('dashboard.html', form=form, diseases=diseases, users=users, unread_count=unread_count, farmers_form=farmers_form)
-
 
 
 # Logout route
@@ -372,6 +376,7 @@ def view_farmer(id):
         farmer_details=farmer_details
     )
 
+
 # Delete Farmer
 @main.route('/farmers/delete/<int:farmer_id>', methods=['POST'])
 @login_required
@@ -441,6 +446,7 @@ def view_report(report_id):
         active_answers=active_answers
     )
 
+
 @main.route('/reports/<int:report_id>/download', methods=['GET'])
 @login_required
 def download_report(report_id):
@@ -453,12 +459,14 @@ def download_report(report_id):
     # Generate the PDF
     pdf = HTML(string=report_html).write_pdf()
 
+
     # Prepare the response
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename={report.filename}.pdf'
 
     return response
+
 
 @main.route('/reports/<int:report_id>/delete', methods=['POST'])
 @login_required
@@ -470,6 +478,7 @@ def delete_report(report_id):
     flash('Report deleted successfully.', 'success')
     return redirect(url_for('main.list_reports'))
 
+
 @main.route('/reports/<int:report_id>/post', methods=['POST'])
 @login_required
 def post_to_homepage(report_id):
@@ -478,6 +487,65 @@ def post_to_homepage(report_id):
     # Logic for posting the report (e.g., marking it as featured or visible on the homepage)
     flash('Report has been posted to the homepage!', 'success')
     return redirect(url_for('main.list_reports'))
+
+
+@main.route('/generate_report', methods=['POST'])
+@login_required
+def generate_report():
+    """Generate a new report dynamically."""
+    # Set default title and description
+    title = f"Report {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"
+    description = "An auto-generated report summarizing key platform insights."
+
+    # Fetch data
+    total_users = User.query.count()
+    admin_count = User.query.filter_by(is_admin=True).count()
+    farmer_count = total_users - admin_count
+    top_diseases = db.session.query(
+        IdentifiedDisease.disease_name,
+        db.func.count(IdentifiedDisease.id).label('count')
+    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(10).all()
+    active_questions = Question.query.count()
+    active_answers = Answer.query.count()
+    farmers_form = FarmersForm()
+
+    # Render the HTML content for the report
+    report_html = render_template(
+        'report_template.html',
+        title=title,
+        description=description,
+        total_users=total_users,
+        admin_count=admin_count,
+        farmer_count=farmer_count,
+        top_diseases=top_diseases,
+        active_questions=active_questions,
+        active_answers=active_answers,
+        datetime=datetime,
+        farmers_form=farmers_form
+    )
+
+    # Generate PDF
+    pdf = HTML(string=report_html).write_pdf()
+
+    # Save the PDF file
+    filename = f'report_{datetime.utcnow().strftime("%Y%m%d%H%M%S")}.pdf'
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    with open(file_path, 'wb') as f:
+        f.write(pdf)
+
+    # Save report metadata
+    new_report = Report(
+        title=title,
+        description=description,
+        generated_by=current_user.id,  # Use `generated_by` instead of `user_id`
+        filename=filename
+    )
+    db.session.add(new_report)
+    db.session.commit()
+
+    flash('Report generated successfully!', 'success')
+    return redirect(url_for('main.list_reports'))
+
 
 
 

@@ -14,3 +14,4 @@ Werkzeug~=3.0.4
 bleach~=6.1.0
 sendgrid~=6.11.0
 django-sendgrid-webhook~=0.3.0
+weasyprint~=63.1
