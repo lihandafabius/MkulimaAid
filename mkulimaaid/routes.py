@@ -398,10 +398,23 @@ def delete_farmer(farmer_id):
 @main.route('/reports', methods=['GET'])
 @login_required
 def list_reports():
+    """List all generated reports with pagination."""
     farmers_form = FarmersForm()
-    """List all generated reports."""
-    reports = Report.query.order_by(Report.generated_at.desc()).all()  # Fetch reports sorted by date
-    return render_template('reports.html', reports=reports, farmers_form=farmers_form)
+
+    # Get the current page number from query parameters, default to 1
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Define the number of reports per page
+
+    # Fetch paginated reports sorted by date
+    pagination = Report.query.order_by(Report.generated_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    reports = pagination.items  # Get reports for the current page
+
+    return render_template(
+        'reports.html',
+        reports=reports,
+        pagination=pagination,
+        farmers_form=farmers_form
+    )
 
 
 @main.route('/reports/<int:report_id>/view', methods=['GET'])
@@ -490,18 +503,15 @@ def delete_report(report_id):
 @main.route('/reports/<int:report_id>/post', methods=['POST'])
 @login_required
 def post_to_homepage(report_id):
-    """Post the report to the homepage."""
+    """Feature or unfeature a report on the homepage."""
     report = Report.query.get_or_404(report_id)
 
-    # Unset featured status for all other reports
-    Report.query.update({Report.is_featured: False})
+    # Toggle the `is_featured` flag for the selected report
+    report.is_featured = not report.is_featured
     db.session.commit()
 
-    # Set the selected report as featured
-    report.is_featured = True
-    db.session.commit()
-
-    flash(f'Report "{report.title}" has been posted to the homepage!', 'success')
+    status = "featured" if report.is_featured else "removed from the homepage"
+    flash(f'Report "{report.title}" has been {status}!', 'success')
     return redirect(url_for('main.list_reports'))
 
 
@@ -564,16 +574,16 @@ def generate_report():
 
 
 @main.route('/homepage/reports', methods=['GET'])
-@login_required
 def homepage_reports():
-    """List reports posted by the admin to the homepage."""
-    # Fetch the featured report and other reports marked as `is_featured`
-    featured_report = Report.query.filter_by(is_featured=True).first()
+    """List all reports marked as featured on the homepage."""
+    # Fetch all featured reports
+    featured_reports = Report.query.filter_by(is_featured=True).order_by(Report.generated_at.desc()).all()
     farmers_form = FarmersForm()
 
     return render_template(
         'homepage_reports.html',
-        featured_report=featured_report, farmers_form=farmers_form
+        featured_reports=featured_reports,
+        farmers_form=farmers_form
     )
 
 

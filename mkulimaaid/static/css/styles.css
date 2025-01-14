@@ -418,6 +418,18 @@ body.dark-theme {
 .navbar {
     background-color: #f5f5f5; /* Light background for consistency */
     padding: 1rem;
+    width: 100vw; /* Make the navbar span the full viewport width */
+    position: relative; /* Ensure proper placement */
+    left: 50%; /* Center the navbar */
+    transform: translateX(-50%); /* Center adjustment */
+}
+
+.navbar .container-fluid {
+    max-width: 1200px; /* Keep the content within a fixed width */
+    margin: 0 auto; /* Center the content */
+    display: flex;
+    justify-content: space-between; /* Proper spacing between items */
+    align-items: center; /* Vertically align items */
 }
 
 .navbar-brand .site-title {
@@ -508,6 +520,7 @@ body.dark-theme {
     color: #ffffff;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
+
 
 .navbar-nav .dropdown-item:hover {
     background-color: #d4e157;
