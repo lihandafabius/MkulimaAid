@@ -30,9 +30,14 @@
                         <a href="{{ url_for('main.download_report', report_id=report.id) }}" class="btn btn-warning btn-sm" title="Download Report">
                             <i class="fas fa-download"></i> Download
                         </a>
-                        <a href="{{ url_for('main.post_to_homepage', report_id=report.id) }}" class="btn btn-success btn-sm" title="Post to Homepage">
-                            <i class="fas fa-share-alt"></i> Post
-                        </a>
+                        <form action="{{ url_for('main.post_to_homepage', report_id=report.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-success btn-sm" title="Post to Homepage">
+                                <i class="fas fa-share-alt"></i> Post
+                            </button>
+                        </form>
+
+
                         <form action="{{ url_for('main.delete_report', report_id=report.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this report?');">
                             <button type="submit" class="btn btn-danger btn-sm" title="Delete Report">
                                 <i class="fas fa-trash"></i> Delete

@@ -414,11 +414,18 @@ def view_report(report_id):
     total_users = User.query.count()
     admin_count = User.query.filter_by(is_admin=True).count()
     farmer_count = total_users - admin_count
+    farmers_form = FarmersForm()
 
     daily_new_users = db.session.query(
-        db.func.date(User.date_joined).label('date'),
+        User.date_joined,
         db.func.count(User.id)
-    ).group_by(db.func.date(User.date_joined)).order_by('date').all()
+    ).group_by(User.date_joined).order_by(User.date_joined).all()
+
+    # Convert `date_joined` if needed
+    daily_new_users = [
+        {'date': entry.date_joined, 'count': entry.count}
+        for entry in daily_new_users
+    ]
 
     top_diseases = db.session.query(
         IdentifiedDisease.disease_name,
@@ -443,7 +450,8 @@ def view_report(report_id):
         top_diseases=top_diseases,
         avg_confidence=avg_confidence,
         active_questions=active_questions,
-        active_answers=active_answers
+        active_answers=active_answers,
+        farmers_form=farmers_form
     )
 
 
@@ -452,13 +460,13 @@ def view_report(report_id):
 def download_report(report_id):
     """Download a report as a PDF."""
     report = Report.query.get_or_404(report_id)
+    farmers_form = FarmersForm()
 
     # Render the report HTML
-    report_html = render_template('report_view.html', report=report, download=True)
+    report_html = render_template('report_view.html', report=report, farmers_form=farmers_form, download=True)
 
     # Generate the PDF
     pdf = HTML(string=report_html).write_pdf()
-
 
     # Prepare the response
     response = make_response(pdf)
@@ -484,8 +492,16 @@ def delete_report(report_id):
 def post_to_homepage(report_id):
     """Post the report to the homepage."""
     report = Report.query.get_or_404(report_id)
-    # Logic for posting the report (e.g., marking it as featured or visible on the homepage)
-    flash('Report has been posted to the homepage!', 'success')
+
+    # Unset featured status for all other reports
+    Report.query.update({Report.is_featured: False})
+    db.session.commit()
+
+    # Set the selected report as featured
+    report.is_featured = True
+    db.session.commit()
+
+    flash(f'Report "{report.title}" has been posted to the homepage!', 'success')
     return redirect(url_for('main.list_reports'))
 
 
@@ -547,6 +563,18 @@ def generate_report():
     return redirect(url_for('main.list_reports'))
 
 
+@main.route('/homepage/reports', methods=['GET'])
+@login_required
+def homepage_reports():
+    """List reports posted by the admin to the homepage."""
+    # Fetch the featured report and other reports marked as `is_featured`
+    featured_report = Report.query.filter_by(is_featured=True).first()
+    farmers_form = FarmersForm()
+
+    return render_template(
+        'homepage_reports.html',
+        featured_report=featured_report, farmers_form=farmers_form
+    )
 
 
 # Helper function to get or create settings
@@ -605,6 +633,7 @@ def remove_admin(admin_id):
 
     return redirect(url_for('main.settings'))
 
+
 @main.before_request
 def check_maintenance_mode():
     # Get current settings from the database
@@ -616,6 +645,7 @@ def check_maintenance_mode():
     # If maintenance mode is enabled and the user is not an admin, show the maintenance page
     if settings.maintenance_mode and (not current_user.is_authenticated or not current_user.is_admin):
         return render_template('maintenance.html'), 503  # 503 Service Unavailable
+
 
 @main.route('/toggle_maintenance', methods=['POST'])
 @login_required
@@ -636,6 +666,8 @@ def toggle_maintenance():
         flash(f'Error updating maintenance mode: {str(e)}', 'danger')
 
     return redirect(url_for('main.settings'))
+
+
 @main.route('/update_contact_info', methods=['POST'])
 @login_required
 def update_contact_info():
@@ -703,6 +735,7 @@ def update_branding():
 
     return redirect(url_for('main.settings'))
 
+
 @main.route('/subscribe', methods=['POST'])
 def subscribe():
     email = request.form.get('email')
@@ -718,9 +751,6 @@ def subscribe():
     else:
         flash('Please provide a valid email.', 'danger')
     return redirect(url_for('main.upload'))
-
-
-
 
 
 @main.route('/send_newsletter', methods=['POST'])
@@ -792,6 +822,7 @@ def add_disease():
 
     return render_template('add_disease.html', form=form, farmers_form=farmers_form)
 
+
 # Route to edit an existing crop disease
 @main.route("/disease/edit/<int:disease_id>", methods=["GET", "POST"])
 @login_required
@@ -799,7 +830,6 @@ def edit_disease(disease_id):
     disease = Diseases.query.get_or_404(disease_id)
     form = DiseaseForm()
     farmers_form = FarmersForm()
-
 
     if form.validate_on_submit():
         # Update disease details
@@ -834,6 +864,7 @@ def edit_disease(disease_id):
         form.preventive_measures.data = disease.preventive_measures
 
     return render_template('edit_disease.html', form=form, disease=disease, farmers_form=farmers_form)
+
 
 # Route to delete a disease
 @main.route("/disease/delete/<int:disease_id>", methods=["POST"])
@@ -876,6 +907,7 @@ def post_disease_to_homepage(disease_id):
 
     flash(f'{disease.name} has been posted to the homepage.', 'success')
     return redirect(url_for('main.diseases'))
+
 
 # Route to toggle "is_trending" status
 @main.route('/toggle_trending/<int:disease_id>', methods=['POST'])
@@ -927,7 +959,6 @@ def profile():
         form.phone.data = current_user.phone
 
     return render_template('profile.html', form=form, comment_form=comment_form, comments=comments, farmers_form=farmers_form)
-
 
 
 @main.route("/change_password", methods=["GET", "POST"])
@@ -982,7 +1013,6 @@ def remove_avatar():
     return redirect(url_for('main.profile'))
 
 
-
 @main.route("/videos")
 @login_required
 def videos():
@@ -1011,6 +1041,7 @@ def dashboard_videos():
 
     videos = Video.query.order_by(Video.date_posted.desc()).all()
     return render_template('dashboard_videos.html', videos=videos, farmers_form=farmers_form)
+
 
 # Route to add a new video
 @main.route('/dashboard/videos/add', methods=['GET', 'POST'])
@@ -1045,6 +1076,7 @@ def add_video():
 
     return render_template('add_video.html', form=form, farmers_form=farmers_form)
 
+
 # Route to edit an existing video
 @main.route('/dashboard/videos/edit/<int:video_id>', methods=['GET', 'POST'])
 @login_required
@@ -1073,6 +1105,7 @@ def edit_video(video_id):
 
     return render_template('edit_video.html', form=form, video=video, farmers_form=farmers_form)
 
+
 # Route to delete a video
 @main.route('/dashboard/videos/delete/<int:video_id>', methods=['POST'])
 @login_required
@@ -1086,7 +1119,6 @@ def delete_video(video_id):
     db.session.commit()
     flash(f'Video "{video.title}" deleted successfully!', 'success')
     return redirect(url_for('main.dashboard_videos'))
-
 
 
 @main.route('/dashboard/videos/post/<int:video_id>', methods=['POST'])
@@ -1156,6 +1188,7 @@ def dashboard_topics():
 
     topics = Topic.query.order_by(Topic.date_posted.desc()).all()
     return render_template('dashboard_topics.html', topics=topics, form=form, farmers_form=farmers_form)
+
 
 # Route to add a new topic
 @main.route('/dashboard/topics/add', methods=['GET', 'POST'])
@@ -1325,7 +1358,6 @@ def view_messages():
     unread_count = 0
 
     return render_template('messages.html', messages=messages, form=form, unread_count=unread_count, farmers_form=farmers_form, notification_form=notification_form)
-
 
 
 @main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])
@@ -1523,7 +1555,6 @@ def get_top_crop_diseases():
 
     data = [{'name': disease.disease_name, 'count': disease.count} for disease in query.order_by(db.desc('count')).limit(10)]
     return jsonify(data)
-
 
 
 @main.route('/api/users-joined', methods=['GET'])

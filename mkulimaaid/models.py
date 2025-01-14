@@ -274,12 +274,14 @@ class Report(db.Model):
     description = db.Column(db.Text, nullable=True)  # Optional description of the report
     generated_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # User ID of who generated it
     generated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # Timestamp of generation
+    is_featured = db.Column(db.Boolean, default=False, nullable=False)  # Marks if the report is featured
 
     # Relationship to the User model
     user = db.relationship('User', backref='generated_reports', lazy=True)
 
     def __repr__(self):
         return f"<Report {self.title} ({self.filename}) by User {self.generated_by} on {self.generated_at}>"
+
 
 
 
