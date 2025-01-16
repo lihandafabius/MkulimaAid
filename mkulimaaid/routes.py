@@ -518,12 +518,12 @@ def post_to_homepage(report_id):
 @main.route('/generate_report', methods=['POST'])
 @login_required
 def generate_report():
-    """Generate a new report dynamically."""
-    # Set default title and description
-    title = f"Report {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"
-    description = "An auto-generated report summarizing key platform insights."
+    """Generate a new report dynamically based on admin input."""
+    # Get custom title and description from the form
+    title = request.form.get('title', f"Report {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}")
+    description = request.form.get('description', "An auto-generated report summarizing key platform insights.")
 
-    # Fetch data
+    # Fetch data for the report
     total_users = User.query.count()
     admin_count = User.query.filter_by(is_admin=True).count()
     farmer_count = total_users - admin_count
@@ -563,7 +563,7 @@ def generate_report():
     new_report = Report(
         title=title,
         description=description,
-        generated_by=current_user.id,  # Use `generated_by` instead of `user_id`
+        generated_by=current_user.id,
         filename=filename
     )
     db.session.add(new_report)
@@ -575,14 +575,22 @@ def generate_report():
 
 @main.route('/homepage/reports', methods=['GET'])
 def homepage_reports():
-    """List all reports marked as featured on the homepage."""
-    # Fetch all featured reports
-    featured_reports = Report.query.filter_by(is_featured=True).order_by(Report.generated_at.desc()).all()
+    """List all reports marked as featured on the homepage with pagination."""
+    # Get the current page from the query parameters
+    page = request.args.get('page', 1, type=int)
+
+    # Paginate the featured reports
+    pagination = Report.query.filter_by(is_featured=True) \
+        .order_by(Report.generated_at.desc()) \
+        .paginate(page=page, per_page=6)  # Adjust `per_page` as needed
+
+    featured_reports = pagination.items  # Get the reports for the current page
     farmers_form = FarmersForm()
 
     return render_template(
         'homepage_reports.html',
         featured_reports=featured_reports,
+        pagination=pagination,  # Pass the pagination object to the template
         farmers_form=farmers_form
     )
 

@@ -6,27 +6,59 @@
         <div class="row">
             {% for report in featured_reports %}
                 <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body" style="background-color: #f6fff4;">
-                            <h5 class="card-title text-success font-weight-bold">{{ report.title }}</h5>
-                            <p class="card-text text-muted">
+                    <div class="card report-card">
+                        <div class="report-cover">
+                            <h5 class="report-title">{{ report.title }}</h5>
+                            <p class="report-subtitle">Generated on: {{ report.generated_at.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
                                 {{ report.description[:150] }}{% if report.description|length > 150 %}...{% endif %}
                             </p>
-                            <p class="text-muted small mb-3">
-                                <i class="fas fa-calendar-alt"></i> Generated on: {{ report.generated_at.strftime('%Y-%m-%d') }}
-                            </p>
-                            <a href="{{ url_for('main.view_report', report_id=report.id) }}"
-                               class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                            <a href="{{ url_for('main.download_report', report_id=report.id) }}"
-                               class="btn btn-success btn-sm text-white">
-                                <i class="fas fa-download"></i> Download
-                            </a>
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{{ url_for('main.view_report', report_id=report.id) }}"
+                                   class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <a href="{{ url_for('main.download_report', report_id=report.id) }}"
+                                   class="btn btn-success btn-sm text-white">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             {% endfor %}
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination justify-content-center mt-4">
+            {% if pagination.has_prev %}
+            <a href="{{ url_for('main.homepage_reports', page=pagination.prev_num) }}" class="btn btn-outline-success mx-1">
+                Previous
+            </a>
+            {% endif %}
+
+            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == pagination.page %}
+                    <span class="btn btn-success mx-1 disabled">{{ page_num }}</span>
+                    {% else %}
+                    <a href="{{ url_for('main.homepage_reports', page=page_num) }}" class="btn btn-outline-success mx-1">
+                        {{ page_num }}
+                    </a>
+                    {% endif %}
+                {% else %}
+                <span class="mx-1">…</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.has_next %}
+            <a href="{{ url_for('main.homepage_reports', page=pagination.next_num) }}" class="btn btn-outline-success mx-1">
+                Next
+            </a>
+            {% endif %}
         </div>
     {% else %}
         <div class="alert alert-warning text-center" role="alert">

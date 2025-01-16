@@ -430,6 +430,7 @@ body.dark-theme {
     display: flex;
     justify-content: space-between; /* Proper spacing between items */
     align-items: center; /* Vertically align items */
+    overflow: visible;
 }
 
 .navbar-brand .site-title {
@@ -454,6 +455,7 @@ body.dark-theme {
 .dropdown-item {
     font-weight: 500;
     color: #2b7a2b;
+    overflow: visible;
 }
 
 .dropdown-item:hover {
@@ -514,6 +516,9 @@ body.dark-theme {
     background-color: #2a7a2a;
     border: none;
     border-radius: 5px;
+    overflow: visible;
+    z-index: 1050; /* Ensure it's above other elements */
+    position: absolute; /* Ensure proper positioning */
 }
 
 .navbar-nav .dropdown-item {
@@ -826,7 +831,6 @@ canvas {
 }
 
 
-
 /* Divider Styling */
 .farmer-info hr {
     border-top: 1px solid #dee2e6;
@@ -878,9 +882,89 @@ th, td {
 th {
     background-color: #f4f4f4;
 }
-footer {
-    text-align: center;
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: 20px;
+/* Overall Report Card Styling */
+.report-card {
+    background: #faf9f4; /* Light paper-like texture */
+    border: 2px solid #e0e0e0; /* Slightly thicker border */
+    border-radius: 10px; /* Rounded edges */
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1), inset 0 0 25px rgba(255, 255, 255, 0.8); /* Depth and glow */
+    position: relative; /* For binding and corner effects */
+    padding: 0; /* Remove default padding */
+    overflow: hidden; /* Prevent content overflow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+/* Report Cover Section */
+.report-cover {
+    background: linear-gradient(to bottom, #e8f5e9, #c8e6c9); /* Subtle gradient for cover */
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #dcedc8; /* Divider to separate cover from body */
+    box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.05); /* Embossed effect */
+}
+
+.report-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #388e3c; /* Dark green for the title */
+    margin-bottom: 10px;
+}
+
+.report-subtitle {
+    font-size: 0.9rem;
+    color: #757575; /* Gray for subtitle */
+    font-style: italic;
+}
+
+/* Report Content */
+.report-card .card-body {
+    background: #fff; /* Clear white for body */
+    padding: 20px;
+    line-height: 1.6;
+    font-family: 'Georgia', serif; /* Classic font for report content */
+    color: #333;
+}
+
+/* Page Dividers */
+.report-card .card-body p {
+    border-bottom: 1px dashed #e0e0e0; /* Dashed dividers between sections */
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* Binding Effect */
+.report-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 8px; /* Thicker binding */
+    height: 100%;
+    background: linear-gradient(90deg, #d6d6d6, #f0f0f0); /* Subtle gradient for spine */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15); /* Spine shadow */
+    z-index: 2;
+}
+
+/* Dynamic Corner Fold */
+.report-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background: #faf9f4;
+    border: 2px solid #e0e0e0;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    z-index: 3;
+    box-shadow: -3px -3px 6px rgba(0, 0, 0, 0.1);
+    transform: rotate(-2deg); /* Slight rotation for realism */
+}
+
+/* Hover Effect */
+.report-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 5px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+
