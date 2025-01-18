@@ -918,7 +918,7 @@ th {
 
 /* Report Content */
 .report-card .card-body {
-    background: #fff; /* Clear white for body */
+    background: #f7f7f7; /* Light gray */
     padding: 20px;
     line-height: 1.6;
     font-family: 'Georgia', serif; /* Classic font for report content */
@@ -966,5 +966,4 @@ th {
     transform: translateY(-5px);
     box-shadow: 5px 8px 15px rgba(0, 0, 0, 0.2);
 }
-
 

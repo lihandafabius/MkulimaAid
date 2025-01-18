@@ -422,50 +422,76 @@ def list_reports():
 def view_report(report_id):
     """View a detailed report with insights."""
     report = Report.query.get_or_404(report_id)
-
-    # Fetch data for insights
-    total_users = User.query.count()
-    admin_count = User.query.filter_by(is_admin=True).count()
-    farmer_count = total_users - admin_count
     farmers_form = FarmersForm()
 
-    daily_new_users = db.session.query(
-        User.date_joined,
-        db.func.count(User.id)
-    ).group_by(User.date_joined).order_by(User.date_joined).all()
-
-    # Convert `date_joined` if needed
-    daily_new_users = [
-        {'date': entry.date_joined, 'count': entry.count}
-        for entry in daily_new_users
-    ]
-
+    # Top identified diseases
     top_diseases = db.session.query(
         IdentifiedDisease.disease_name,
         db.func.count(IdentifiedDisease.id).label('count')
     ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(10).all()
 
+    # Average detection confidence for diseases
     avg_confidence = db.session.query(
         IdentifiedDisease.disease_name,
         db.func.avg(IdentifiedDisease.confidence).label('avg_confidence')
     ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('avg_confidence')).all()
 
+    # Forum insights
     active_questions = Question.query.count()
     active_answers = Answer.query.count()
+
+    # Popular crops
+    popular_crops = db.session.query(
+        Farmer.crop_types, db.func.count(Farmer.id).label('count')
+    ).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
+
+    # Regional disease distribution
+    regional_disease_distribution = db.session.query(
+        Farmer.location, db.func.count(IdentifiedDisease.id).label('count')
+    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).group_by(Farmer.location).all()
+
+    # Top forum questions with most answers
+    top_questions = db.session.query(
+        Question.title, db.func.count(Answer.id).label('answers_count')
+    ).join(Answer, Question.id == Answer.question_id).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
+
+    # Most active users
+    most_active_users = db.session.query(
+        User.username, db.func.count(Question.id + Answer.id).label('activity_count')
+    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id  == User.id).group_by(
+        User.username).order_by(db.desc('activity_count')).limit(5).all()
+
+    # Average answers per question
+    avg_answers_per_question = db.session.query(
+        db.func.avg(db.func.count(Answer.id)).over()
+    ).scalar()
+
 
     return render_template(
         'report_view.html',
         report=report,
-        total_users=total_users,
-        admin_count=admin_count,
-        farmer_count=farmer_count,
-        daily_new_users=daily_new_users,
         top_diseases=top_diseases,
         avg_confidence=avg_confidence,
         active_questions=active_questions,
         active_answers=active_answers,
+        popular_crops=popular_crops,
+        regional_disease_distribution=regional_disease_distribution,
+        top_questions=top_questions,
+        most_active_users=most_active_users,
+        avg_answers_per_question=avg_answers_per_question,
         farmers_form=farmers_form
     )
+
+def calculate_avg_answers_per_question():
+    total_answers = db.session.query(func.count(Answer.id)).scalar()  # Replace `Answer` with your actual Answer model
+    total_questions = db.session.query(func.count(Question.id)).scalar()  # Replace `Question` with your actual Question model
+
+    # Avoid division by zero
+    if total_questions == 0:
+        return 0
+
+    return total_answers / total_questions
+
 
 
 @main.route('/reports/<int:report_id>/download', methods=['GET'])
@@ -474,9 +500,52 @@ def download_report(report_id):
     """Download a report as a PDF."""
     report = Report.query.get_or_404(report_id)
     farmers_form = FarmersForm()
+    avg_answers_per_question = calculate_avg_answers_per_question() or 0
+
+
+    # Fetch data for the report
+    top_diseases = db.session.query(
+        IdentifiedDisease.disease_name,
+        db.func.count(IdentifiedDisease.id).label('count')
+    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(5).all()
+
+    popular_crops = db.session.query(
+        Farmer.crop_types, db.func.count(Farmer.id).label('count')
+    ).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
+
+    regional_disease_distribution = db.session.query(
+        Farmer.location, db.func.count(IdentifiedDisease.id).label('count')
+    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).group_by(Farmer.location).all()
+
+    top_questions = db.session.query(
+        Question.title, db.func.count(Answer.id).label('answers_count')
+    ).join(Answer, Question.id == Answer.question_id).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
+
+    most_active_users = db.session.query(
+        User.username, db.func.count(Question.id + Answer.id).label('activity_count')
+    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id == User.id).group_by(
+        User.username).order_by(db.desc('activity_count')).limit(5).all()
+
+    avg_answers_per_question = db.session.query(
+        db.func.avg(db.func.count(Answer.id)).over()
+    ).scalar()
 
     # Render the report HTML
-    report_html = render_template('report_view.html', report=report, farmers_form=farmers_form, download=True)
+    report_html = render_template(
+        'report_template.html',
+        report=report,
+        farmers_form=farmers_form,
+        download=True,
+        datetime=datetime,  # Pass the datetime module
+        avg_answers_per_question=avg_answers_per_question,
+        top_diseases=top_diseases,
+        popular_crops=popular_crops,
+        regional_disease_distribution=regional_disease_distribution,
+        top_questions=top_questions,
+        most_active_users=most_active_users,
+        title=report.title,  # Use the report's title
+        description=report.description,  # Use the report's description
+    )
 
     # Generate the PDF
     pdf = HTML(string=report_html).write_pdf()
@@ -524,15 +593,34 @@ def generate_report():
     description = request.form.get('description', "An auto-generated report summarizing key platform insights.")
 
     # Fetch data for the report
-    total_users = User.query.count()
-    admin_count = User.query.filter_by(is_admin=True).count()
-    farmer_count = total_users - admin_count
     top_diseases = db.session.query(
         IdentifiedDisease.disease_name,
         db.func.count(IdentifiedDisease.id).label('count')
-    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(10).all()
-    active_questions = Question.query.count()
-    active_answers = Answer.query.count()
+    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(5).all()
+
+    # User-focused insights
+    popular_crops = db.session.query(
+        Farmer.crop_types, db.func.count(Farmer.id).label('count')
+    ).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
+
+    regional_disease_distribution = db.session.query(
+        Farmer.location, db.func.count(IdentifiedDisease.id).label('count')
+    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).group_by(Farmer.location).all()
+
+    top_questions = db.session.query(
+        Question.title, db.func.count(Answer.id).label('answers_count')
+    ).join(Answer, Question.id == Answer.question_id).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
+
+    most_active_users = db.session.query(
+        User.username, db.func.count(Question.id + Answer.id).label('activity_count')
+    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id  == User.id).group_by(
+        User.username).order_by(db.desc('activity_count')).limit(5).all()
+
+    avg_answers_per_question = db.session.query(
+        db.func.avg(db.func.count(Answer.id)).over()
+    ).scalar()
+
+
     farmers_form = FarmersForm()
 
     # Render the HTML content for the report
@@ -540,12 +628,12 @@ def generate_report():
         'report_template.html',
         title=title,
         description=description,
-        total_users=total_users,
-        admin_count=admin_count,
-        farmer_count=farmer_count,
         top_diseases=top_diseases,
-        active_questions=active_questions,
-        active_answers=active_answers,
+        popular_crops=popular_crops,
+        regional_disease_distribution=regional_disease_distribution,
+        top_questions=top_questions,
+        most_active_users=most_active_users,
+        avg_answers_per_question=avg_answers_per_question,
         datetime=datetime,
         farmers_form=farmers_form
     )

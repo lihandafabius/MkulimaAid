@@ -9,8 +9,8 @@
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/homepage_reports.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/homepage_reports.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/report_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/report_template.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/report_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/report_view.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,13 +90,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>654</line>
+          <line>742</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>1759</line>
+          <line>1847</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
+          <line>586</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -9,16 +9,6 @@
         <div class="col-lg-6 col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title text-primary">User Insights</h5>
-                    <p>Total Users: <strong>{{ total_users }}</strong></p>
-                    <p>Admin Users: <strong>{{ admin_count }}</strong></p>
-                    <p>Farmer Users: <strong>{{ farmer_count }}</strong></p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
                     <h5 class="card-title text-primary">Forum Insights</h5>
                     <p>Active Questions: <strong>{{ active_questions }}</strong></p>
                     <p>Active Answers: <strong>{{ active_answers }}</strong></p>
@@ -26,25 +16,8 @@
             </div>
         </div>
     </div>
-    <h3 class="text-center text-primary mb-4">Daily New Users</h3>
-    <div class="table-responsive mb-4">
-        <table class="table table-bordered table-striped align-middle">
-            <thead class="table-success text-center">
-                <tr>
-                    <th>Date</th>
-                    <th>New Users</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in daily_new_users %}
-                <tr>
-                    <td>{{ entry.date.strftime('%Y-%m-%d') }}</td>
-                    <td>{{ entry[1] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+
+
     <h3 class="text-center text-primary mb-4">Top Identified Diseases</h3>
     <div class="row">
         <div class="col-lg-6 col-md-12">
@@ -88,6 +61,69 @@
             </div>
         </div>
     </div>
+
+    <h3 class="text-center text-primary mb-4">Most Active Users</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Username</th>
+                    <th>Activity Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in most_active_users %}
+                <tr>
+                    <td>{{ user[0] }}</td>
+                    <td>{{ user[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="text-center text-primary mb-4">Popular Crops</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Crop Type</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crop in popular_crops %}
+                <tr>
+                    <td>{{ crop[0] }}</td>
+                    <td>{{ crop[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="text-center text-primary mb-4">Regional Disease Distribution</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Region</th>
+                    <th>Disease Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for region in regional_disease_distribution %}
+                <tr>
+                    <td>{{ region[0] }}</td>
+                    <td>{{ region[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    </div>
+
     <div class="text-center mt-5">
         <a href="{{ url_for('main.download_report', report_id=report.id) }}" class="btn btn-warning btn-lg">
             <i class="fas fa-download"></i> Download PDF

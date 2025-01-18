@@ -1,49 +1,173 @@
-{% extends "base.html" %}
-
-{% block title %}{{ title }}{% endblock %}
-
-{% block content %}
-<div class="container my-5">
-    <header class="text-center mb-4">
-        <h1 class="text-success">{{ title }}</h1>
-        <p class="text-muted">{{ description }}</p>
-        <p class="text-secondary">Generated on: {{ datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2e7d32;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header p {
+            text-align: center;
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .table th {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            border-bottom: 2px solid #2e7d32;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .list li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>{{ title }}</h1>
+        <p>{{ description }}</p>
+        <p>Generated on: {{ datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') }}</p>
     </header>
-    <section class="mb-5">
-        <h2 class="text-success border-bottom pb-2">User Statistics</h2>
-        <ul class="list-unstyled">
-            <li><strong>Total Users:</strong> {{ total_users }}</li>
-            <li><strong>Admins:</strong> {{ admin_count }}</li>
-            <li><strong>Farmers:</strong> {{ farmer_count }}</li>
+
+    <section class="section">
+        <h2>Top Diseases</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Disease Name</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for disease, count in top_diseases %}
+                <tr>
+                    <td>{{ disease }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>Popular Crops</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Crop Type</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crop, count in popular_crops %}
+                <tr>
+                    <td>{{ crop }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>Regional Disease Distribution</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Region</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location, count in regional_disease_distribution %}
+                <tr>
+                    <td>{{ location }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>Top Community Questions</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Question Title</th>
+                    <th>Answer Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question, answers_count in top_questions %}
+                <tr>
+                    <td>{{ question }}</td>
+                    <td>{{ answers_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>Most Active Users</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Activity Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for username, activity_count in most_active_users %}
+                <tr>
+                    <td>{{ username }}</td>
+                    <td>{{ activity_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>System Insights</h2>
+        <ul class="list">
+            <li><strong>Average Answers Per Question:</strong> {{ avg_answers_per_question | default(0) | round(2) }}</li>
+
         </ul>
     </section>
-    <section class="mb-5">
-        <h2 class="text-success border-bottom pb-2">Top Diseases</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
-                <thead class="table-success text-center">
-                    <tr>
-                        <th>Disease Name</th>
-                        <th>Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for disease, count in top_diseases %}
-                    <tr>
-                        <td>{{ disease }}</td>
-                        <td>{{ count }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-    <section>
-        <h2 class="text-success border-bottom pb-2">Community Activity</h2>
-        <ul class="list-unstyled">
-            <li><strong>Active Questions:</strong> {{ active_questions }}</li>
-            <li><strong>Active Answers:</strong> {{ active_answers }}</li>
-        </ul>
-    </section>
-</div>
-{% endblock %}
+</body>
+</html>
