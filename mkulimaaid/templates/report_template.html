@@ -58,9 +58,17 @@
 <body>
     <header class="header">
         <h1>{{ title }}</h1>
-        <p>{{ description }}</p>
+        <p>{{ description or "No description provided." }}</p>
         <p>Generated on: {{ datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') }}</p>
     </header>
+
+    <section class="section">
+        <h2>Forum Insights</h2>
+        <ul class="list">
+            <li><strong>Active Questions:</strong> {{ active_questions }}</li>
+            <li><strong>Active Answers:</strong> {{ active_answers }}</li>
+        </ul>
+    </section>
 
     <section class="section">
         <h2>Top Diseases</h2>
@@ -76,6 +84,26 @@
                 <tr>
                     <td>{{ disease }}</td>
                     <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>Average Confidence by Disease</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Disease Name</th>
+                    <th>Average Confidence (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for disease, avg_conf in avg_confidence %}
+                <tr>
+                    <td>{{ disease }}</td>
+                    <td>{{ avg_conf | round(2) }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -108,7 +136,7 @@
             <thead>
                 <tr>
                     <th>Region</th>
-                    <th>Count</th>
+                    <th>Disease Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -116,26 +144,6 @@
                 <tr>
                     <td>{{ location }}</td>
                     <td>{{ count }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </section>
-
-    <section class="section">
-        <h2>Top Community Questions</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Question Title</th>
-                    <th>Answer Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for question, answers_count in top_questions %}
-                <tr>
-                    <td>{{ question }}</td>
-                    <td>{{ answers_count }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -160,14 +168,6 @@
                 {% endfor %}
             </tbody>
         </table>
-    </section>
-
-    <section class="section">
-        <h2>System Insights</h2>
-        <ul class="list">
-            <li><strong>Average Answers Per Question:</strong> {{ avg_answers_per_question | default(0) | round(2) }}</li>
-
-        </ul>
     </section>
 </body>
 </html>

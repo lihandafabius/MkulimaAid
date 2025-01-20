@@ -9,8 +9,9 @@
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/js/theme_toggle.js" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/js/theme_toggle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/report_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/report_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/report_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/report_view.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,17 +91,17 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>742</line>
+          <line>718</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>1847</line>
+          <line>1823</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>586</line>
+          <line>562</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

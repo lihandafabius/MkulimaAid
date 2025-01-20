@@ -417,71 +417,6 @@ def list_reports():
     )
 
 
-@main.route('/reports/<int:report_id>/view', methods=['GET'])
-@login_required
-def view_report(report_id):
-    """View a detailed report with insights."""
-    report = Report.query.get_or_404(report_id)
-    farmers_form = FarmersForm()
-
-    # Top identified diseases
-    top_diseases = db.session.query(
-        IdentifiedDisease.disease_name,
-        db.func.count(IdentifiedDisease.id).label('count')
-    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(10).all()
-
-    # Average detection confidence for diseases
-    avg_confidence = db.session.query(
-        IdentifiedDisease.disease_name,
-        db.func.avg(IdentifiedDisease.confidence).label('avg_confidence')
-    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('avg_confidence')).all()
-
-    # Forum insights
-    active_questions = Question.query.count()
-    active_answers = Answer.query.count()
-
-    # Popular crops
-    popular_crops = db.session.query(
-        Farmer.crop_types, db.func.count(Farmer.id).label('count')
-    ).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
-
-    # Regional disease distribution
-    regional_disease_distribution = db.session.query(
-        Farmer.location, db.func.count(IdentifiedDisease.id).label('count')
-    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).group_by(Farmer.location).all()
-
-    # Top forum questions with most answers
-    top_questions = db.session.query(
-        Question.title, db.func.count(Answer.id).label('answers_count')
-    ).join(Answer, Question.id == Answer.question_id).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
-
-    # Most active users
-    most_active_users = db.session.query(
-        User.username, db.func.count(Question.id + Answer.id).label('activity_count')
-    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id  == User.id).group_by(
-        User.username).order_by(db.desc('activity_count')).limit(5).all()
-
-    # Average answers per question
-    avg_answers_per_question = db.session.query(
-        db.func.avg(db.func.count(Answer.id)).over()
-    ).scalar()
-
-
-    return render_template(
-        'report_view.html',
-        report=report,
-        top_diseases=top_diseases,
-        avg_confidence=avg_confidence,
-        active_questions=active_questions,
-        active_answers=active_answers,
-        popular_crops=popular_crops,
-        regional_disease_distribution=regional_disease_distribution,
-        top_questions=top_questions,
-        most_active_users=most_active_users,
-        avg_answers_per_question=avg_answers_per_question,
-        farmers_form=farmers_form
-    )
-
 def calculate_avg_answers_per_question():
     total_answers = db.session.query(func.count(Answer.id)).scalar()  # Replace `Answer` with your actual Answer model
     total_questions = db.session.query(func.count(Question.id)).scalar()  # Replace `Question` with your actual Question model
@@ -493,21 +428,23 @@ def calculate_avg_answers_per_question():
     return total_answers / total_questions
 
 
-
-@main.route('/reports/<int:report_id>/download', methods=['GET'])
-@login_required
-def download_report(report_id):
-    """Download a report as a PDF."""
-    report = Report.query.get_or_404(report_id)
-    farmers_form = FarmersForm()
-    avg_answers_per_question = calculate_avg_answers_per_question() or 0
-
-
+def get_report_insights():
+    """Fetch insights for the report."""
     # Fetch data for the report
     top_diseases = db.session.query(
         IdentifiedDisease.disease_name,
         db.func.count(IdentifiedDisease.id).label('count')
     ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(5).all()
+
+    # Average detection confidence for diseases
+    avg_confidence = db.session.query(
+        IdentifiedDisease.disease_name,
+        db.func.avg(IdentifiedDisease.confidence).label('avg_confidence')
+    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('avg_confidence')).limit(5).all()
+
+    # Forum insights
+    active_questions = Question.query.count()
+    active_answers = Answer.query.count()
 
     popular_crops = db.session.query(
         Farmer.crop_types, db.func.count(Farmer.id).label('count')
@@ -528,7 +465,51 @@ def download_report(report_id):
 
     avg_answers_per_question = db.session.query(
         db.func.avg(db.func.count(Answer.id)).over()
-    ).scalar()
+    ).scalar() or 0
+
+    return {
+        "top_diseases": top_diseases,
+        "active_questions":active_questions,
+        "active_answers": active_answers,
+        "avg_confidence": avg_confidence,
+        "popular_crops": popular_crops,
+        "regional_disease_distribution": regional_disease_distribution,
+        "top_questions": top_questions,
+        "most_active_users": most_active_users,
+        "avg_answers_per_question": avg_answers_per_question
+    }
+
+
+@main.route('/reports/<int:report_id>/view', methods=['GET'])
+@login_required
+def view_report(report_id):
+    """View a detailed report with insights."""
+    report = Report.query.get_or_404(report_id)
+    farmers_form = FarmersForm()
+
+    # Fetch insights using the helper function
+    insights = get_report_insights()
+
+    return render_template(
+        'report_view.html',
+        report=report,
+        farmers_form=farmers_form,
+        **insights,  # Pass the insights as keyword arguments
+        title=report.title,  # Use the report's title
+        description=report.description  # Use the report's description
+    )
+
+
+
+@main.route('/reports/<int:report_id>/download', methods=['GET'])
+@login_required
+def download_report(report_id):
+    """Download a report as a PDF."""
+    report = Report.query.get_or_404(report_id)
+    farmers_form = FarmersForm()
+
+    # Fetch insights using the helper function
+    insights = get_report_insights()
 
     # Render the report HTML
     report_html = render_template(
@@ -537,14 +518,9 @@ def download_report(report_id):
         farmers_form=farmers_form,
         download=True,
         datetime=datetime,  # Pass the datetime module
-        avg_answers_per_question=avg_answers_per_question,
-        top_diseases=top_diseases,
-        popular_crops=popular_crops,
-        regional_disease_distribution=regional_disease_distribution,
-        top_questions=top_questions,
-        most_active_users=most_active_users,
+        **insights,  # Pass the insights as keyword arguments
         title=report.title,  # Use the report's title
-        description=report.description,  # Use the report's description
+        description=report.description  # Use the report's description
     )
 
     # Generate the PDF
