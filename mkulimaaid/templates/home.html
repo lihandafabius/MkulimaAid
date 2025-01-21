@@ -50,7 +50,7 @@
 <!-- Form to upload an image for prediction -->
   <div class="container mt-5">
     <div class="upload-section mt-5">
-        <h3 class="text-center">Upload an Image for Crop Disease Recognition</h3>
+        <h3 class="text-center text-success fw-bold">Upload an Image for Crop Disease Recognition</h3>
         <div class="col-lg">
             <!-- File upload form -->
             <form enctype="multipart/form-data" method="POST" action="{{ url_for('main.upload') }}">
@@ -114,7 +114,7 @@
 <!-- Trending Pests and Diseases Section -->
 <div class="container mt-5">
     <!-- Trending Crop Pests and Diseases Title -->
-    <h2 class="text-center carousel-title">Trending Crop Diseases</h2>
+    <h2 class="text-center text-success fw-bold carousel-title">Trending Crop Diseases</h2>
     <!-- Flickity Carousel for trending pests and diseases -->
     <div class="carousel" data-flickity='{ "wrapAround": true, "autoPlay": 3000, "contain": true }'>
         {% for disease in diseases %}

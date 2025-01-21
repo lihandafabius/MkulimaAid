@@ -3,8 +3,8 @@
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center my-4">
-        <h2 class="text-info">MkulimaAid Community Q&A Forum</h2>
-        <a href="{{ url_for('main.new_question') }}" class="btn btn-info text-white">Ask a Question</a>
+        <h2 class="text-success">MkulimaAid Community Q&A Forum</h2>
+        <a href="{{ url_for('main.new_question') }}" class="btn btn-success text-white">Ask a Question</a>
     </div>
 
     <div class="row">
@@ -20,7 +20,7 @@
                         <p>{{ question.content[:200] }}{% if question.content|length > 200 %}...{% endif %}</p>
 
                         <!-- View and Answer Button -->
-                        <a href="{{ url_for('main.view_question', question_id=question.id) }}" class="btn btn-outline-info btn-sm mt-2">
+                        <a href="{{ url_for('main.view_question', question_id=question.id) }}" class="btn btn-outline-success btn-sm mt-2">
                             View and Answer
                         </a>
                     </div>

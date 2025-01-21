@@ -126,7 +126,7 @@ sign-in-page{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--bs-body-bg);
+    background-color: #e8f5e9;
 }
 
 main.form-signin {
@@ -136,7 +136,7 @@ main.form-signin {
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     margin: auto;
-    background-color: white;
+    background-color: #e8f5e9;
 }
 .dropdown-menu {
     right: 0;
@@ -148,7 +148,7 @@ body.login-page {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #c8e6c9;
+    background-color: #e8f5e9
     margin: 0;
 }
 
@@ -158,7 +158,7 @@ body.register-page {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #c8e6c9;
+    background-color: #e8f5e9;
     margin: 0;
 }
 
@@ -168,6 +168,7 @@ body.register-page {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #e8f5e9;
 }
 
 .form-register form {

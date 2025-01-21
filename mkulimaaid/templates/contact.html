@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container my-5">
-    <h2 class="text-center mb-4">Contact Us</h2>
+    <h2 class="text-center text-success mb-4">Contact Us</h2>
 
     <!-- Contact Info Section -->
     <div class="row justify-content-center text-center">
@@ -35,7 +35,7 @@
     <!-- Contact Form Section -->
     <div class="row justify-content-center my-5">
         <div class="col-md-8">
-            <h3 class="text-center mb-4">Send Us a Message</h3>
+            <h3 class="text-center text-success mb-4">Send Us a Message</h3>
             <form method="POST" action="{{ url_for('main.contact') }}">
                 {{ form.hidden_tag() }}
 
@@ -63,7 +63,7 @@
     <!-- Map Section -->
     <div class="row justify-content-center my-5">
         <div class="col-md-10">
-            <h3 class="text-center mb-4">Our Location</h3>
+            <h3 class="text-center text-success mb-4">Our Location</h3>
             <div class="map-responsive shadow-lg rounded">
                 <iframe src="https://www.google.com/maps/embed?pb=12345" width="100%" height="400" frameborder="0" style="border:0;" allowfullscreen></iframe>
             </div>
