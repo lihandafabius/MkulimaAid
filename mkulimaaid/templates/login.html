@@ -38,20 +38,27 @@
                 <label for="password">Password</label>
                 <!-- Eye icon for toggling password visibility with tooltip -->
                 <span id="toggle-password-icon" class="position-absolute top-50 end-0 translate-middle-y me-3"
-                      onclick="togglePasswordVisibility('password')"
+                      onclick="togglePasswordVisibility('password', 'toggle-password-icon')"
                       style="cursor: pointer;" data-bs-toggle="tooltip" title="Show Password">
                     <!-- Show Password Icon (Eye) -->
-                    <svg id="show-eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                         class="bi bi-eye" viewBox="0 0 16 16">
-                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
-                        <path d="M8 5a3 3 0 0 0-3 3 3 0 0 0 6 0 3 3 0 0 0-3-3z"/>
+                    <svg id="show-eye-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                      <path d="M12 5C5.5 5 2 12 2 12s3.5 7 10 7 10-7 10-7-3.5-7-10-7z"></path>
+                      <circle cx="12" cy="12" r="2.5"></circle>
+                      <path d="M12 8v8M8 12h8" opacity="0.2"></path> <!-- Subtle cross as decoration -->
                     </svg>
+
                     <!-- Hide Password Icon (Eye with Slash) -->
-                    <svg id="hide-eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16" style="display: none;">
-                        <path d="M13.359 11.238l2.387 2.387a.5.5 0 0 1-.708.707l-2.387-2.387A7.052 7.052 0 0 1 8 13.5c-3.314 0-6-3.5-6-3.5a7.05 7.05 0 0 1 1.918-2.042l-.942-.942a.5.5 0 1 1 .708-.707l2.387 2.387a5.002 5.002 0 0 0 6.888 6.888l.942.942a.5.5 0 0 1-.707.708l-2.387-2.387a7.054 7.054 0 0 0 2.052-1.918zm-.81.81a5.053 5.053 0 0 1-2.048 1.125l1.093 1.093a7.052 7.052 0 0 0 1.09-1.093l-1.093-1.093z"/>
-                        <path d="M8 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm0 1a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/>
-                        <path d="M1.146 1.854a.5.5 0 1 1 .708-.708l13 13a.5.5 0 0 1-.708.708L1.146 1.854z"/>
+                    <svg id="hide-eye-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display: none;">
+                      <path d="M17.94 17.94C15.68 19.41 13.27 20 12 20 5.5 20 2 12 2 12c1.52-3.11 3.91-5.83 6.78-7.22"></path>
+                      <circle cx="12" cy="12" r="2.5"></circle>
+                      <path d="M3 3l18 18"></path>
+                      <path d="M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-5.12" opacity="0.4"></path>
                     </svg>
+
+
+
+
+
                 </span>
             </div>
 

@@ -500,7 +500,6 @@ def view_report(report_id):
     )
 
 
-
 @main.route('/reports/<int:report_id>/download', methods=['GET'])
 @login_required
 def download_report(report_id):
@@ -964,7 +963,7 @@ def delete_disease(disease_id):
 @login_required
 def diseases():
     page = request.args.get('page', 1, type=int)  # Get the current page number from the request
-    per_page = 5  # Number of diseases per page
+    per_page = 4  # Number of diseases per page
     pagination = Diseases.query.paginate(page=page, per_page=per_page, error_out=False)
     diseases = pagination.items  # Get the current page's items
     form = AdminForm()  # or any form that you want to use

@@ -1,15 +1,19 @@
-function togglePasswordVisibility(fieldId, iconId) {
+function togglePasswordVisibility(fieldId, iconContainerId) {
     const passwordField = document.getElementById(fieldId);
-    const icon = document.getElementById(iconId);
-    const tooltip = bootstrap.Tooltip.getInstance(icon);
+    const iconContainer = document.getElementById(iconContainerId);
+    const showIcon = iconContainer.querySelector('#show-eye-icon');
+    const hideIcon = iconContainer.querySelector('#hide-eye-icon');
+    const tooltip = bootstrap.Tooltip.getInstance(iconContainer);
 
     if (passwordField.type === 'password') {
         passwordField.type = 'text';
-        icon.classList.replace('bi-eye', 'bi-eye-slash');
+        showIcon.style.display = 'none';
+        hideIcon.style.display = 'inline';
         tooltip.setContent({ '.tooltip-inner': 'Hide Password' });
     } else {
         passwordField.type = 'password';
-        icon.classList.replace('bi-eye-slash', 'bi-eye');
+        showIcon.style.display = 'inline';
+        hideIcon.style.display = 'none';
         tooltip.setContent({ '.tooltip-inner': 'Show Password' });
     }
 }
