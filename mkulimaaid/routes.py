@@ -1,3 +1,4 @@
+
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, g, current_app, \
     session, abort, make_response
@@ -20,6 +21,7 @@ import bleach
 from datetime import datetime, timedelta
 from collections import Counter
 from mkulimaaid.utils import save_avatar
+from mkulimaaid.decorators import admin_required
 import re
 from flask import jsonify
 from sqlalchemy import func
@@ -267,11 +269,8 @@ def register():
 # Dashboard route
 @main.route('/dashboard')
 @login_required
+@admin_required
 def dashboard():
-    # Check if the user is an admin
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
 
     # Instantiate the form
     form = AdminForm()
@@ -299,6 +298,7 @@ def logout():
 
 @main.route('/farmers')
 @login_required
+@admin_required
 def farmers():
     form = FarmersForm()
     farmers_form = FarmersForm()
@@ -310,6 +310,7 @@ def farmers():
 # View Farmer details
 @main.route('/farmers/view/<int:id>', methods=['GET'])
 @login_required
+@admin_required
 def view_farmer(id):
     farmers_form = FarmersForm()
     farmer = User.query.get_or_404(id)
@@ -380,6 +381,7 @@ def view_farmer(id):
 # Delete Farmer
 @main.route('/farmers/delete/<int:farmer_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_farmer(farmer_id):
 
     farmer = User.query.get_or_404(farmer_id)
@@ -397,6 +399,7 @@ def delete_farmer(farmer_id):
 
 @main.route('/reports', methods=['GET'])
 @login_required
+@admin_required
 def list_reports():
     """List all generated reports with pagination."""
     farmers_form = FarmersForm()
@@ -482,6 +485,7 @@ def get_report_insights():
 
 @main.route('/reports/<int:report_id>/view', methods=['GET'])
 @login_required
+@admin_required
 def view_report(report_id):
     """View a detailed report with insights."""
     report = Report.query.get_or_404(report_id)
@@ -535,6 +539,7 @@ def download_report(report_id):
 
 @main.route('/reports/<int:report_id>/delete', methods=['POST'])
 @login_required
+@admin_required
 def delete_report(report_id):
     """Delete a report."""
     report = Report.query.get_or_404(report_id)
@@ -546,6 +551,7 @@ def delete_report(report_id):
 
 @main.route('/reports/<int:report_id>/post', methods=['POST'])
 @login_required
+@admin_required
 def post_to_homepage(report_id):
     """Feature or unfeature a report on the homepage."""
     report = Report.query.get_or_404(report_id)
@@ -561,6 +567,7 @@ def post_to_homepage(report_id):
 
 @main.route('/generate_report', methods=['POST'])
 @login_required
+@admin_required
 def generate_report():
     """Generate a new report dynamically based on admin input."""
     # Get custom title and description from the form
@@ -657,6 +664,25 @@ def homepage_reports():
         farmers_form=farmers_form
     )
 
+@main.route('/user_reports/<int:report_id>/view', methods=['GET'])
+@login_required
+def view_homepage_report(report_id):
+    """View a detailed report with insights."""
+    report = Report.query.get_or_404(report_id)
+    farmers_form = FarmersForm()
+
+    # Fetch insights using the helper function
+    insights = get_report_insights()
+
+    return render_template(
+        'homepage_report_view.html',
+        report=report,
+        farmers_form=farmers_form,
+        **insights,  # Pass the insights as keyword arguments
+        title=report.title,  # Use the report's title
+        description=report.description  # Use the report's description
+    )
+
 
 # Helper function to get or create settings
 def get_settings():
@@ -671,6 +697,7 @@ def get_settings():
 
 @main.route('/settings', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def settings():
     form = AdminForm()
     farmers_form = FarmersForm()
@@ -702,6 +729,7 @@ def settings():
 # Route to remove admin privileges
 @main.route('/remove_admin/<int:admin_id>', methods=['POST'])
 @login_required
+@admin_required
 def remove_admin(admin_id):
     user = User.query.get_or_404(admin_id)
 
@@ -730,6 +758,7 @@ def check_maintenance_mode():
 
 @main.route('/toggle_maintenance', methods=['POST'])
 @login_required
+@admin_required
 def toggle_maintenance():
     maintenance_mode = 'maintenance_mode' in request.form
 
@@ -751,6 +780,7 @@ def toggle_maintenance():
 
 @main.route('/update_contact_info', methods=['POST'])
 @login_required
+@admin_required
 def update_contact_info():
     contact_email = request.form.get('contact_email')
     contact_phone = request.form.get('contact_phone')
@@ -780,6 +810,7 @@ def update_contact_info():
 
 @main.route('/update_branding', methods=['POST'])
 @login_required
+@admin_required
 def update_branding():
     if not current_user.is_admin:
         flash("You do not have the required permissions to perform this action.", 'danger')
@@ -836,6 +867,7 @@ def subscribe():
 
 @main.route('/send_newsletter', methods=['POST'])
 @login_required
+@admin_required
 def send_newsletter():
     content = request.form.get('content')
     subscribers = Subscriber.query.all()
@@ -862,6 +894,7 @@ def send_newsletter():
 # Route to add a new crop disease
 @main.route("/add_disease", methods=["GET", "POST"])
 @login_required
+@admin_required
 def add_disease():
     form = DiseaseForm()
     farmers_form = FarmersForm()
@@ -907,6 +940,7 @@ def add_disease():
 # Route to edit an existing crop disease
 @main.route("/disease/edit/<int:disease_id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def edit_disease(disease_id):
     disease = Diseases.query.get_or_404(disease_id)
     form = DiseaseForm()
@@ -950,6 +984,7 @@ def edit_disease(disease_id):
 # Route to delete a disease
 @main.route("/disease/delete/<int:disease_id>", methods=["POST"])
 @login_required
+@admin_required
 def delete_disease(disease_id):
     disease = Diseases.query.get_or_404(disease_id)
     db.session.delete(disease)
@@ -961,6 +996,7 @@ def delete_disease(disease_id):
 
 @main.route('/diseases')
 @login_required
+@admin_required
 def diseases():
     page = request.args.get('page', 1, type=int)  # Get the current page number from the request
     per_page = 4  # Number of diseases per page
@@ -979,6 +1015,8 @@ def diseases():
 
 # Route to post disease to homepage
 @main.route('/post_disease/<int:disease_id>', methods=['POST'])
+@login_required
+@admin_required
 def post_disease_to_homepage(disease_id):
     disease = Diseases.query.get_or_404(disease_id)
 
@@ -992,6 +1030,8 @@ def post_disease_to_homepage(disease_id):
 
 # Route to toggle "is_trending" status
 @main.route('/toggle_trending/<int:disease_id>', methods=['POST'])
+@login_required
+@admin_required
 def toggle_trending(disease_id):
     disease = Diseases.query.get_or_404(disease_id)
 
@@ -1114,12 +1154,9 @@ def videos():
 # Route to manage videos in the dashboard
 @main.route('/dashboard/videos', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def dashboard_videos():
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     videos = Video.query.order_by(Video.date_posted.desc()).all()
     return render_template('dashboard_videos.html', videos=videos, farmers_form=farmers_form)
 
@@ -1127,12 +1164,9 @@ def dashboard_videos():
 # Route to add a new video
 @main.route('/dashboard/videos/add', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_video():
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     form = VideoForm()
     if form.validate_on_submit():
         match = re.search(r'(?:v=|/|embed/|youtu\.be/)([a-zA-Z0-9_-]{11})', form.url.data)
@@ -1161,12 +1195,9 @@ def add_video():
 # Route to edit an existing video
 @main.route('/dashboard/videos/edit/<int:video_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_video(video_id):
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     video = Video.query.get_or_404(video_id)
     form = VideoForm(obj=video)
     if form.validate_on_submit():
@@ -1190,11 +1221,8 @@ def edit_video(video_id):
 # Route to delete a video
 @main.route('/dashboard/videos/delete/<int:video_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_video(video_id):
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     video = Video.query.get_or_404(video_id)
     db.session.delete(video)
     db.session.commit()
@@ -1204,11 +1232,8 @@ def delete_video(video_id):
 
 @main.route('/dashboard/videos/post/<int:video_id>', methods=['POST'])
 @login_required
+@admin_required
 def post_video_to_homepage(video_id):
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard_videos'))
-
     video = Video.query.get_or_404(video_id)
     video.published = not video.published
     db.session.commit()
@@ -1260,11 +1285,9 @@ def add_topic_comment(topic_id):
 # Dashboard route for topics management
 @main.route('/dashboard/topics')
 @login_required
+@admin_required
 def dashboard_topics():
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard'))
     form = DeleteForm()
 
     topics = Topic.query.order_by(Topic.date_posted.desc()).all()
@@ -1274,11 +1297,8 @@ def dashboard_topics():
 # Route to add a new topic
 @main.route('/dashboard/topics/add', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_topic():
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard'))
-
     form = TopicForm()
     farmers_form = FarmersForm()
 
@@ -1308,11 +1328,8 @@ def add_topic():
 
 @main.route('/dashboard/topics/edit/<int:topic_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_topic(topic_id):
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard'))
-
     topic = Topic.query.get_or_404(topic_id)
     farmers_form = FarmersForm()
     form = TopicForm(obj=topic)
@@ -1336,11 +1353,8 @@ def edit_topic(topic_id):
 
 @main.route('/dashboard/topics/delete/<int:topic_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_topic(topic_id):
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard'))
-
     topic = Topic.query.get_or_404(topic_id)
     db.session.delete(topic)
     db.session.commit()
@@ -1349,13 +1363,21 @@ def delete_topic(topic_id):
 
 
 @main.route('/forum')
+@login_required
 def forum():
     farmers_form = FarmersForm()
-    questions = Question.query.order_by(Question.timestamp.desc()).all()
+    # Get the current page number from query parameters, default is 1
+    page = request.args.get('page', 1, type=int)
+
+    # Paginate the Question query; 5 questions per page
+    questions = Question.query.order_by(Question.timestamp.desc()).paginate(page=page, per_page=5)
+
+    # Render the template with paginated questions
     return render_template('forum.html', questions=questions, farmers_form=farmers_form)
 
 
 @main.route('/forum/question/<int:question_id>', methods=['GET', 'POST'])
+@login_required
 def view_question(question_id):
     question = Question.query.get_or_404(question_id)
     answers = Answer.query.filter_by(question_id=question_id).order_by(Answer.timestamp.desc()).all()
@@ -1415,11 +1437,8 @@ def contact():
 
 @main.route('/dashboard/messages', methods=['GET'])
 @login_required
+@admin_required
 def view_messages():
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard'))
-
     # Pagination (10 messages per page)
     page = request.args.get('page', 1, type=int)
     messages = ContactMessage.query.order_by(ContactMessage.date_sent.desc()).paginate(page=page, per_page=10)
@@ -1443,11 +1462,8 @@ def view_messages():
 
 @main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_message(message_id):
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard'))
-
     # Find the message by ID
     message = ContactMessage.query.get_or_404(message_id)
 
@@ -1493,12 +1509,9 @@ def team():
 
 @main.route('/dashboard/team', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def dashboard_team():
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     form = EmptyForm()
     members = TeamMember.query.order_by(TeamMember.date_joined.desc()).all()
     return render_template('dashboard_team.html', members=members, form=form, farmers_form=farmers_form)
@@ -1507,12 +1520,9 @@ def dashboard_team():
 # Route to add a new team member
 @main.route('/dashboard/team/add', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_member():
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     form = TeamForm()
 
     if form.validate_on_submit():
@@ -1553,12 +1563,9 @@ def add_member():
 # Route to edit an existing team member
 @main.route('/dashboard/team/edit/<int:member_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_member(member_id):
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     member = TeamMember.query.get_or_404(member_id)
     form = TeamForm(obj=member)
 
@@ -1587,11 +1594,8 @@ def edit_member(member_id):
 # Route to delete a team member
 @main.route('/dashboard/team/delete/<int:member_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_member(member_id):
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.upload'))
-
     member = TeamMember.query.get_or_404(member_id)
     db.session.delete(member)
     db.session.commit()
@@ -1602,11 +1606,8 @@ def delete_member(member_id):
 # Route to publish/unpublish a team member
 @main.route('/dashboard/team/publish/<int:member_id>', methods=['POST'])
 @login_required
+@admin_required
 def publish_member(member_id):
-    if not current_user.is_admin:
-        flash("You do not have access to this page.", 'danger')
-        return redirect(url_for('main.dashboard_team'))
-
     member = TeamMember.query.get_or_404(member_id)
     member.published = not member.published  # Toggle published status
     db.session.commit()
@@ -1620,6 +1621,8 @@ def publish_member(member_id):
 
 
 @main.route('/api/top-crop-diseases', methods=['GET'])
+@login_required
+@admin_required
 def get_top_crop_diseases():
     time_filter = request.args.get('filter', 'week')
     query = db.session.query(
@@ -1640,6 +1643,7 @@ def get_top_crop_diseases():
 
 @main.route('/api/users-joined', methods=['GET'])
 @login_required
+@admin_required
 def get_users_joined():
     time_filter = request.args.get('filter', 'week')
     query = db.session.query(
@@ -1660,6 +1664,7 @@ def get_users_joined():
 
 @main.route('/api/crop-diseases-by-location', methods=['GET'])
 @login_required
+@admin_required
 def get_crop_diseases_by_location():
     time_filter = request.args.get('filter', 'week')
     query = db.session.query(
@@ -1689,6 +1694,7 @@ def get_crop_diseases_by_location():
 
 @main.route('/api/disease-confidence', methods=['GET'])
 @login_required
+@admin_required
 def get_disease_confidence():
     # Query the IdentifiedDisease table to get disease names and their average confidence
     disease_confidences = (
@@ -1822,11 +1828,8 @@ def view_notifications():
 
 @main.route('/notifications/create', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def create_notification():
-    if not current_user.is_admin:
-        flash('You do not have access to this page.', 'danger')
-        return redirect(url_for('main.dashboard'))
-
     form = NotificationForm()
     if form.validate_on_submit():
         notification = Notification(
@@ -1928,12 +1931,9 @@ def unread_notification_count():
 
 @main.route('/dashboard/notifications', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def dashboard_notifications():
     farmers_form = FarmersForm()
-    if not current_user.is_admin:
-        flash("Access restricted to admins only.", "warning")
-        return redirect(url_for('main.dashboard'))
-
     # Pagination setup
     page = request.args.get('page', 1, type=int)
     per_page = 10  # Number of notifications per page
@@ -1955,11 +1955,8 @@ def dashboard_notifications():
 
 @main.route('/dashboard/notifications/edit/<int:notification_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_notification(notification_id):
-    if not current_user.is_admin:
-        flash("Access restricted to admins only.", "warning")
-        return redirect(url_for('main.dashboard'))
-
     notification = Notification.query.get_or_404(notification_id)
     form = NotificationForm(obj=notification)
     farmers_form = FarmersForm()
@@ -1976,11 +1973,8 @@ def edit_notification(notification_id):
 
 @main.route('/dashboard/notifications/delete/<int:notification_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_notification(notification_id):
-    if not current_user.is_admin:
-        flash("Access restricted to admins only.", "warning")
-        return redirect(url_for('main.dashboard'))
-
     notification = Notification.query.get_or_404(notification_id)
 
     # Explicitly delete UserNotification entries

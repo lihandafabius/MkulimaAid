@@ -16,7 +16,7 @@
                                 {{ report.description[:150] }}{% if report.description|length > 150 %}...{% endif %}
                             </p>
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ url_for('main.view_report', report_id=report.id) }}"
+                                <a href="{{ url_for('main.view_homepage_report', report_id=report.id) }}"
                                    class="btn btn-outline-success btn-sm">
                                     <i class="fas fa-eye"></i> View
                                 </a>
@@ -31,6 +31,11 @@
 
             {% endfor %}
         </div>
+        {% else %}
+        <div class="alert alert-warning text-center" role="alert">
+            <i class="fas fa-exclamation-circle"></i> No featured reports available at the moment.
+        </div>
+        {% endif %}
 
         <!-- Pagination Controls -->
         <div class="pagination justify-content-center mt-4">
@@ -60,10 +65,13 @@
             </a>
             {% endif %}
         </div>
-    {% else %}
-        <div class="alert alert-warning text-center" role="alert">
-            <i class="fas fa-exclamation-circle"></i> No featured reports available at the moment.
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.upload') }}"
+               class="btn btn-outline-success">
+               Back to Homepage
+            </a>
         </div>
-    {% endif %}
+
+
 </div>
 {% endblock %}
