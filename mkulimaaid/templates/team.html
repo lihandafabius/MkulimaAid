@@ -10,20 +10,20 @@
                 <img src="{{ url_for('static', filename='uploads/' + member.photo) if member.photo else url_for('static', filename='images/default-avatar.jpg') }}" class="card-img-top rounded-top" alt="{{ member.name }}">
                 <div class="card-body text-center">
                     <h5 class="card-title font-weight-bold">{{ member.name }}</h5>
-                    <p class="card-text text-primary">{{ member.role }}</p>
+                    <p class="card-text text-success fw-bold">{{ member.role }}</p>
                     <p class="card-text small text-muted">{{ member.bio }}</p>
                     <hr>
                     <p class="card-text">
                         <strong>Contact:</strong> {{ member.contact_info }}
                     </p>
                     <div class="social-icons my-3">
-                        <a href="{{ member.linkedin_url }}" target="_blank" class="text-info mx-2" title="LinkedIn">
+                        <a href="{{ member.linkedin_url }}" target="_blank" class="text-success mx-2" title="LinkedIn">
                             <i class="fab fa-linkedin fa-2x"></i>
                         </a>
-                        <a href="{{ member.twitter_url }}" target="_blank" class="text-primary mx-2" title="Twitter">
+                        <a href="{{ member.twitter_url }}" target="_blank" class="text-success mx-2" title="Twitter">
                             <i class="fab fa-twitter fa-2x"></i>
                         </a>
-                        <a href="{{ member.email }}" title="Email" class="text-danger mx-2">
+                        <a href="{{ member.email }}" title="Email" class="text-success mx-2">
                             <i class="fas fa-envelope fa-2x"></i>
                         </a>
                     </div>
@@ -68,6 +68,13 @@
                Next
             </a>
         {% endif %}
+    </div>
+        <!-- Back to Homepage Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
+        </a>
     </div>
 </div>
 {% endblock %}

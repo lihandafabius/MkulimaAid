@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Manage Topics</h1>
+    <h1 class="text-success">Manage Topics</h1>
     <a href="{{ url_for('main.add_topic') }}" class="btn btn-success mb-3">Add New Topic</a>
 
     <table class="table">
@@ -15,16 +15,16 @@
             </tr>
         </thead>
         <tbody>
-            {% for topic in topics %}
+            {% for topic in topics.items %}
             <tr>
                 <td>{{ topic.title }}</td>
                 <td>{{ 'Yes' if topic.is_trending else 'No' }}</td>
                 <td>{{ topic.author.username }}</td>
                 <td>
-                    <a href="{{ url_for('main.edit_topic', topic_id=topic.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{{ url_for('main.edit_topic', topic_id=topic.id) }}" class="btn btn-sm btn-warning"> <i class="fas fa-edit"></i> Edit</a>
 
                     <!-- Delete Button Triggering Modal -->
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ topic.id }}">Delete</button>
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ topic.id }}"> <i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
 
@@ -52,5 +52,48 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Pagination controls -->
+    <div class="pagination justify-content-center mt-4">
+        {% if topics.has_prev %}
+            <a href="{{ url_for('main.dashboard_topics', page=topics.prev_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Previous
+            </a>
+        {% endif %}
+
+        {% for page_num in topics.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == topics.page %}
+                    <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                        {{ page_num }}
+                    </span>
+                {% else %}
+                    <a href="{{ url_for('main.dashboard_topics', page=page_num) }}"
+                       style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                       onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                       {{ page_num }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <span class="mx-1">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if topics.has_next %}
+            <a href="{{ url_for('main.dashboard_topics', page=topics.next_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Next
+            </a>
+        {% endif %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.dashboard') }}"
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left "></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -76,7 +76,7 @@
 
                 <!-- Submit button -->
                 <div class="mt-3 text-center">
-                    <button type="submit" class="btn btn-success">Upload</button>
+                    <button type="submit" class="btn btn-outline-success fw-bold">Upload <i class="fas fa-upload"></i></button>
                 </div>
             </form>
 
@@ -101,7 +101,7 @@
                 <div class="mt-3 text-center">
                     <form method="POST" action="{{ url_for('main.clear_results') }}">
                         {{ form.hidden_tag() }}
-                        <button type="submit" class="btn btn-danger">Clear Results</button>
+                        <button type="submit" class="btn btn-outline-danger fw-bold">Clear Results <i class="fas fa-broom"></i> </button>
                     </form>
                 </div>
             {% endif %}
@@ -126,7 +126,7 @@
             <div class="product-info">
                 <h3 class="product-name">{{ disease.name }}</h3>
                 <p class="product-description">{{ disease.description }}</p>
-                <button class="quick-view" onclick="window.location.href='{{ url_for('main.disease_detail', disease_id=disease.id) }}'">Learn More</button>
+                <button class="quick-view" onclick="window.location.href='{{ url_for('main.disease_detail', disease_id=disease.id) }}'">Learn More <i class="fas fa-info-circle"></i> </button>
             </div>
         </div>
         {% endfor %}

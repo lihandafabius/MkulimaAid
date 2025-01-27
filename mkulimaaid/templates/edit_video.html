@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Edit Video</h2>
+    <h2 class="text-success">Edit Video</h2>
     <form action="{{ url_for('main.edit_video', video_id=video.id) }}" method="POST">
         {{ form.hidden_tag() }}
 
@@ -37,7 +37,12 @@
         </div>
 
         <button type="submit" class="btn btn-success">Save Changes</button>
-        <a href="{{ url_for('main.dashboard_videos') }}" class="btn btn-secondary">Back to Videos</a>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.dashboard_videos') }}"
+               class="btn btn-outline-success fw-bold">
+               <i class="fas fa-arrow-left "></i>Back to videos
+            </a>
+        </div>
     </form>
 </div>
 {% endblock %}

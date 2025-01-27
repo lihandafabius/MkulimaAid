@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <div class="container mt-5">
-    <h1 class="mb-4">Notification Settings</h1>
+    <h1 class="mb-4 text-success fw-bold">Notification Settings</h1>
     <form method="POST">
         {{ form.hidden_tag() }}
         <div class="form-check mb-3">
@@ -12,7 +13,13 @@
             {{ form.push_notifications(class="form-check-input") }}
             {{ form.push_notifications.label(class="form-check-label") }}
         </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="submit" class="btn btn-success fw-bold">Save Changes</button>
     </form>
+</div>
+<div class="text-center mt-4">
+    <a href="{{ url_for('main.user_settings') }}"
+       class="btn btn-outline-success fw-bold">
+       <i class="fas fa-arrow-left"></i>Back to Settings
+    </a>
 </div>
 {% endblock %}

@@ -5,7 +5,7 @@
     <!-- Forum Header -->
     <div class="d-flex justify-content-between align-items-center my-4">
         <h2 class="text-success">MkulimaAid Community Q&A Forum</h2>
-        <a href="{{ url_for('main.new_question') }}" class="btn btn-success text-white">Ask a Question</a>
+        <a href="{{ url_for('main.new_question') }}" class="btn btn-success text-white fw-bold">Ask a Question <i class="fas fa-question-circle"></i> </a>
     </div>
 
     <!-- Questions List -->
@@ -32,8 +32,8 @@
                             {% if question.content|length > 200 %}...{% endif %}
                         </p>
                         <a href="{{ url_for('main.view_question', question_id=question.id) }}"
-                           class="btn btn-outline-success btn-sm mt-2">
-                            View and Answer
+                           class="btn btn-outline-success btn-sm mt-2 fw-bold">
+                            View and Answer <i class="fas fa-reply"></i>
                         </a>
                     </div>
                 </div>
@@ -87,8 +87,8 @@
     <!-- Back to Homepage Button -->
     <div class="text-center mt-4">
         <a href="{{ url_for('main.upload') }}"
-           class="btn btn-outline-success">
-           Back to Homepage
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
         </a>
     </div>
 </div>

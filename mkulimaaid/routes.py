@@ -1157,7 +1157,8 @@ def videos():
 @admin_required
 def dashboard_videos():
     farmers_form = FarmersForm()
-    videos = Video.query.order_by(Video.date_posted.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    videos = Video.query.order_by(Video.date_posted.desc()).paginate(page=page, per_page=7)
     return render_template('dashboard_videos.html', videos=videos, farmers_form=farmers_form)
 
 
@@ -1283,14 +1284,18 @@ def add_topic_comment(topic_id):
 
 
 # Dashboard route for topics management
+from flask import request
+
+
 @main.route('/dashboard/topics')
 @login_required
 @admin_required
 def dashboard_topics():
-    farmers_form = FarmersForm()
     form = DeleteForm()
+    farmers_form = FarmersForm()
+    page = request.args.get('page', 1, type=int)  # Get the current page number from the query parameter
+    topics = Topic.query.order_by(Topic.date_posted.desc()).paginate(page=page, per_page=10)  # Paginate with 10 items per page
 
-    topics = Topic.query.order_by(Topic.date_posted.desc()).all()
     return render_template('dashboard_topics.html', topics=topics, form=form, farmers_form=farmers_form)
 
 

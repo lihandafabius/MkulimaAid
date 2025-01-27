@@ -43,7 +43,7 @@
                                 <div class="text-danger small mt-1">{{ form.comment.errors[0] }}</div>
                             {% endif %}
                         </div>
-                        <button type="submit" class="btn btn-success mt-3">Post Comment</button>
+                        <button type="submit" class="btn btn-outline-success mt-3">Post Comment <i class="fas fa-comments"></i> </button>
                     </form>
 
                     <!-- Display Comments -->
@@ -70,6 +70,12 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.topics') }}"
+           class="btn btn-outline-success">
+           <i class="fas fa-arrow-left"></i> Back to Topics <i class="fas fa-tags"></i>
+        </a>
     </div>
 </div>
 {% endblock %}
