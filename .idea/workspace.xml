@@ -6,20 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/add_video.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/add_video.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_notifications.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_notifications.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_team.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_team.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_topics.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_topics.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_videos.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard_videos.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/diseases.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/diseases.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/edit_disease.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/edit_disease.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/edit_topic.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/edit_topic.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/edit_video.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/edit_video.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/farmers.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/farmers.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/view_farmer.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/view_farmer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/edit_member.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/edit_member.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/edit_notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/edit_notification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/homepage_report_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/homepage_report_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/messages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/notifications.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/notifications.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/report_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/report_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/reports.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/reports.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +101,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkulimaaid/routes.py</url>
-          <line>1835</line>
+          <line>1842</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="text-success">Manage Team Members </h1>
-    <a href="{{ url_for('main.add_member') }}" class="btn btn-success mb-3">Add New Member <i class="fas fa-user"></i></a>
+    <a href="{{ url_for('main.add_member') }}" class="btn btn-success mb-3">Add New Member <i class="fas fa-user-plus"></i></a>
 
     <table class="table table-bordered table-striped">
         <thead>
@@ -23,14 +23,22 @@
                 <td>{{ member.contact_info }}</td>
                 <td>{{ 'Yes' if member.published else 'No' }}</td>
                 <td>
-                    <a href="{{ url_for('main.edit_member', member_id=member.id) }}" class="btn btn-sm btn-warning"> <i class="fas fa-edit"></i>Edit</a>
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ member.id }}"> <i class="fas fa-trash"></i> Delete</button>
-                    <form action="{{ url_for('main.publish_member', member_id=member.id) }}" method="POST" style="display:inline;">
-                        {{ form.hidden_tag() }}
-                        <button type="submit" class="btn btn-sm btn-secondary">
-                            {{ 'Unpublish ' if member.published else 'Publish' }}
-                        </button>
-                    </form>
+                <a href="{{ url_for('main.edit_member', member_id=member.id) }}" class="btn btn-sm btn-warning">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ member.id }}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <form action="{{ url_for('main.publish_member', member_id=member.id) }}" method="POST" style="display:inline;">
+                    {{ form.hidden_tag() }}
+                    <button type="submit" class="btn btn-sm btn-secondary">
+                        {% if member.published %}
+                            <i class="fas fa-ban"></i> Unpublish
+                        {% else %}
+                            <i class="fas fa-upload"></i> Publish
+                        {% endif %}
+                    </button>
+                </form>
                 </td>
             </tr>
 
@@ -48,8 +56,8 @@
                         <div class="modal-footer">
                             <form method="POST" action="{{ url_for('main.delete_member', member_id=member.id) }}">
                                 {{ form.hidden_tag() }}
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                                <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
                             </form>
                         </div>
                     </div>
@@ -58,5 +66,46 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="pagination justify-content-center mt-4">
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('main.dashboard_team', page=pagination.prev_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Previous
+            </a>
+        {% endif %}
+
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                    <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                        {{ page_num }}
+                    </span>
+                {% else %}
+                    <a href="{{ url_for('main.dashboard_team', page=page_num) }}"
+                       style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                       onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                       {{ page_num }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <span class="mx-1">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagination.has_next %}
+            <a href="{{ url_for('main.dashboard_team', page=pagination.next_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Next
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+        </a>
+    </div>
 </div>
 {% endblock %}

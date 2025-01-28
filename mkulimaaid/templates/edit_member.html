@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Edit Team Member</h1>
+    <h1 class="text-success fw-bold">Edit Team Member</h1>
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.edit_member', member_id=member.id) }}">
         {{ form.hidden_tag() }}
 
@@ -36,7 +36,12 @@
             {{ form.publish.label(class="form-check-label") }}
         </div>
 
-        <button type="submit" class="btn btn-success mt-3">Update Member</button>
+        <button type="submit" class="btn btn-success mt-3">Update Member <i class="fas fa-user-edit"></i></button>
     </form>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.dashboard_team') }}" class="btn btn-outline-success fw-bold">
+            <i class="fas fa-arrow-left"></i> Back to Team <i class="fas fa-users"></i>
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4 text-success">Contact Messages</h2>
+    <h2 class="text-center mb-4 text-success fw-bold">Contact Messages</h2>
 
     {% if messages.items %}
         <div class="list-group">
@@ -13,7 +13,7 @@
                             <h5 class="mb-1">{{ message.subject }}</h5>
                             <small class="text-muted">Sent by <strong>{{ message.name }}</strong> ({{ message.email }}) on {{ message.date_sent.strftime('%Y-%m-%d %H:%M') }}</small>
                         </div>
-                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ message.id }}">Delete</button>
+                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ message.id }}"> <i class="fas fa-trash"></i> Delete</button>
                     </div>
                     <p class="mt-3">{{ message.message }}</p>
                 </div>
@@ -32,8 +32,8 @@
                             <div class="modal-footer">
                                 <form method="post" action="{{ url_for('main.delete_message', message_id=message.id) }}">
                                     {{ form.hidden_tag() }}
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                                    <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -41,50 +41,51 @@
                 </div>
             {% endfor %}
         </div>
+        {% else %}
+            <p class="text-center text-muted">No messages yet.</p>
+        {% endif %}
+                <!-- Pagination Navigation -->
+        <div class="pagination justify-content-center mt-4">
+            {% if messages.has_prev %}
+            <a href="{{ url_for('main.view_messages', page=messages.prev_num) }}"
+                 style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+                 onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+                 Previous
+            </a>
+            {% endif %}
 
-        <!-- Pagination Navigation -->
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
-                {% if messages.has_prev %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.view_messages', page=messages.prev_num) }}">Previous</a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">Previous</span>
-                    </li>
-                {% endif %}
-
-                {% for page_num in messages.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
-                    {% if page_num %}
-                        {% if page_num == messages.page %}
-                            <li class="page-item active">
-                                <span class="page-link">{{ page_num }}</span>
-                            </li>
-                        {% else %}
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('main.view_messages', page=page_num) }}">{{ page_num }}</a>
-                            </li>
-                        {% endif %}
+            {% for page_num in messages.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == messages.page %}
+                      <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                          {{ page_num }}
+                      </span>
                     {% else %}
-                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <a href="{{ url_for('main.view_messages', page=page_num) }}"
+                         style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                         onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                         {{ page_num }}
+                    </a>
                     {% endif %}
-                {% endfor %}
-
-                {% if messages.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.view_messages', page=messages.next_num) }}">Next</a>
-                    </li>
                 {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">Next</span>
-                    </li>
+                <span class="mx-1">…</span>
                 {% endif %}
-            </ul>
-        </nav>
-    {% else %}
-        <p class="text-center text-muted">No messages yet.</p>
-    {% endif %}
+            {% endfor %}
+
+            {% if messages.has_next %}
+            <a href="{{ url_for('main.view_messages', page=messages.next_num) }}"
+                   style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+                   onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+                   Next
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+              <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+          </a>
+        </div>
 </div>
 
 

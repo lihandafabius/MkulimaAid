@@ -2,7 +2,7 @@
 {% block title %}Reports{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center text-success mb-4">Generated Reports</h1>
+    <h1 class="text-center text-success mb-4 fw-bold">Generated Reports</h1>
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-success text-center">
@@ -61,8 +61,8 @@
                             <div class="modal-footer">
                                 <form action="{{ url_for('main.delete_report', report_id=report.id) }}" method="POST">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                                    <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -76,18 +76,24 @@
     <!-- Pagination Controls -->
     <div class="pagination justify-content-center mt-4">
         {% if pagination.has_prev %}
-        <a href="{{ url_for('main.list_reports', page=pagination.prev_num) }}" class="btn btn-outline-success mx-1">
-            Previous
+        <a href="{{ url_for('main.list_reports', page=pagination.prev_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Previous
         </a>
         {% endif %}
 
         {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
             {% if page_num %}
                 {% if page_num == pagination.page %}
-                <span class="btn btn-success mx-1 disabled">{{ page_num }}</span>
+                    <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                        {{ page_num }}
+                    </span>
                 {% else %}
-                <a href="{{ url_for('main.list_reports', page=page_num) }}" class="btn btn-outline-success mx-1">
-                    {{ page_num }}
+                <a href="{{ url_for('main.list_reports', page=page_num) }}"
+                   style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                   onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                   {{ page_num }}
                 </a>
                 {% endif %}
             {% else %}
@@ -96,10 +102,17 @@
         {% endfor %}
 
         {% if pagination.has_next %}
-        <a href="{{ url_for('main.list_reports', page=pagination.next_num) }}" class="btn btn-outline-success mx-1">
-            Next
+        <a href="{{ url_for('main.list_reports', page=pagination.next_num) }}"
+           style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+           onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+           Next
         </a>
         {% endif %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+        </a>
     </div>
 </div>
 {% endblock %}

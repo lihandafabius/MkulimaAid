@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Edit Notification</h2>
+    <h2 class="text-success fw-bold">Edit Notification</h2>
     <form method="POST" action="{{ url_for('main.edit_notification', notification_id=notification.id) }}">
         {{ form.hidden_tag() }}
         <div class="mb-3">
@@ -13,7 +13,12 @@
             {{ form.message.label(class="form-label") }}
             {{ form.message(class="form-control") }}
         </div>
-        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+        <button type="submit" class="btn btn-success">{{ form.submit.label }}  <i class="fas fa-sync-alt"></i></button>
     </form>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('main.dashboard_notifications') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Notifications Manager <i class="fas fa-bell-slash"></i>
+      </a>
+    </div>
 </div>
 {% endblock %}

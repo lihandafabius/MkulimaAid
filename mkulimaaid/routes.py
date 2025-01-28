@@ -1456,7 +1456,7 @@ def view_messages():
     notification_form = NotificationForm()
 
     # Mark all messages as seen
-    for message in messages:
+    for message in messages.items:  # Ensure you're iterating over messages.items
         if not message.seen:
             message.seen = True
     db.session.commit()  # Save changes to the database
@@ -1464,7 +1464,14 @@ def view_messages():
     # Since all messages are now seen, the unread count should be zero
     unread_count = 0
 
-    return render_template('messages.html', messages=messages, form=form, unread_count=unread_count, farmers_form=farmers_form, notification_form=notification_form)
+    return render_template(
+        'messages.html',
+        messages=messages,
+        form=form,
+        unread_count=unread_count,
+        farmers_form=farmers_form,
+        notification_form=notification_form,
+    )
 
 
 @main.route('/dashboard/messages/delete/<int:message_id>', methods=['POST'])
@@ -1513,15 +1520,22 @@ def team():
     return render_template("team.html", members=members, farmers_form=farmers_form)
 
 
-
 @main.route('/dashboard/team', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def dashboard_team():
     farmers_form = FarmersForm()
     form = EmptyForm()
-    members = TeamMember.query.order_by(TeamMember.date_joined.desc()).all()
-    return render_template('dashboard_team.html', members=members, form=form, farmers_form=farmers_form)
+
+    # Get the current page number from the request arguments (default to 1)
+    page = request.args.get('page', 1, type=int)
+
+    # Paginate the team members query (10 members per page)
+    pagination = TeamMember.query.order_by(TeamMember.date_joined.desc()).paginate(page=page, per_page=10)
+
+    members = pagination.items  # Get the members for the current page
+
+    return render_template('dashboard_team.html', members=members, form=form, farmers_form=farmers_form, pagination=pagination)
 
 
 # Route to add a new team member
