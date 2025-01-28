@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h2 class="mt-4">Farmer Profile Overview</h2>
+<h2 class="mt-4 text-success fw-bold">Farmer Profile Overview</h2>
 
 <div class="row mt-4">
     <!-- Profile Section -->
@@ -123,6 +123,11 @@
                 </div>
             {% endif %}
         </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('main.farmers') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Farmers <i class="fas fa-users"></i>
+      </a>
     </div>
 </div>
 

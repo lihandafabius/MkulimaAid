@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="text-success">Manage Topics</h1>
-    <a href="{{ url_for('main.add_topic') }}" class="btn btn-success mb-3">Add New Topic</a>
+    <a href="{{ url_for('main.add_topic') }}" class="btn btn-success mb-3">Add New Topic <i class="fas fa-file-alt"></i> </a>
 
     <table class="table">
         <thead>
@@ -42,8 +42,8 @@
                         <div class="modal-footer">
                             <form action="{{ url_for('main.delete_topic', topic_id=topic.id) }}" method="POST">
                                 {{ form.hidden_tag() }}
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                                <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
                             </form>
                         </div>
                     </div>

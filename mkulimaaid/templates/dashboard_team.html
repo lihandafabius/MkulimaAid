@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="text-success">Manage Team Members</h1>
-    <a href="{{ url_for('main.add_member') }}" class="btn btn-success mb-3">Add New Member</a>
+    <h1 class="text-success">Manage Team Members </h1>
+    <a href="{{ url_for('main.add_member') }}" class="btn btn-success mb-3">Add New Member <i class="fas fa-user"></i></a>
 
     <table class="table table-bordered table-striped">
         <thead>
@@ -23,12 +23,12 @@
                 <td>{{ member.contact_info }}</td>
                 <td>{{ 'Yes' if member.published else 'No' }}</td>
                 <td>
-                    <a href="{{ url_for('main.edit_member', member_id=member.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ member.id }}">Delete</button>
+                    <a href="{{ url_for('main.edit_member', member_id=member.id) }}" class="btn btn-sm btn-warning"> <i class="fas fa-edit"></i>Edit</a>
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ member.id }}"> <i class="fas fa-trash"></i> Delete</button>
                     <form action="{{ url_for('main.publish_member', member_id=member.id) }}" method="POST" style="display:inline;">
                         {{ form.hidden_tag() }}
                         <button type="submit" class="btn btn-sm btn-secondary">
-                            {{ 'Unpublish' if member.published else 'Publish' }}
+                            {{ 'Unpublish ' if member.published else 'Publish' }}
                         </button>
                     </form>
                 </td>

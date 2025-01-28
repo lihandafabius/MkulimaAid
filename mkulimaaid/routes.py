@@ -303,8 +303,9 @@ def farmers():
     form = FarmersForm()
     farmers_form = FarmersForm()
     # Query all users
-    farmers = User.query.all()
-    return render_template('farmers.html', farmers=farmers, form=form, farmers_form=farmers_form)
+    page = request.args.get('page', 1, type=int)  # Get the page number from query params
+    farmers_pagination = User.query.paginate(page=page, per_page=10)
+    return render_template('farmers.html', farmers=farmers_pagination.items, form=form, farmers_form=farmers_form, pagination=farmers_pagination)
 
 
 # View Farmer details
@@ -663,6 +664,7 @@ def homepage_reports():
         pagination=pagination,  # Pass the pagination object to the template
         farmers_form=farmers_form
     )
+
 
 @main.route('/user_reports/<int:report_id>/view', methods=['GET'])
 @login_required

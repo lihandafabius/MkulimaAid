@@ -4,11 +4,11 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col">
-      <h1 class="mb-4 text-success">Manage Trending Crop Diseases</h1>
+      <h1 class="mb-4 text-success fw-bold">Manage Trending Crop Diseases</h1>
       <p class="lead">Add, edit, or delete information on trending crop diseases below.</p>
 
       <!-- Add Post Disease Button -->
-      <a href="{{ url_for('main.add_disease') }}" class="btn btn-success mb-4">Add New Disease</a>
+      <a href="{{ url_for('main.add_disease') }}" class="btn btn-success mb-4 fw-bold">Add New Disease <i class="fas fa-exclamation-triangle"></i></a>
 
       <!-- Diseases Table -->
       <div class="table-responsive">
@@ -42,13 +42,13 @@
               <td>{{ disease.preventive_measures }}</td>
               <td>{{ disease.description }}</td>
               <td class="text-center">
-                <a href="{{ url_for('main.edit_disease', disease_id=disease.id) }}" class="btn btn-sm btn-primary mb-1">Edit</a>
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ disease.id }}">Delete</button>
+                <a href="{{ url_for('main.edit_disease', disease_id=disease.id) }}" class="btn btn-sm btn-primary mb-1"> <i class="fas fa-edit"></i> Edit</a>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ disease.id }}"> <i class="fas fa-trash"></i> Delete</button>
               </td>
               <td class="text-center">
                 <form action="{{ url_for('main.post_disease_to_homepage', disease_id=disease.id) }}" method="POST">
                   {{ form.hidden_tag() }}
-                  <button type="submit" class="btn btn-sm btn-warning">Post</button>
+                  <button type="submit" class="btn btn-sm btn-warning"> <i class="fas fa-share-square"></i> Post</button>
                 </form>
               </td>
               <td class="text-center">
@@ -73,8 +73,8 @@
                   <div class="modal-footer">
                     <form action="{{ url_for('main.delete_disease', disease_id=disease.id) }}" method="POST">
                       {{ form.hidden_tag() }}
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                      <button type="submit" class="btn btn-danger">Delete</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                      <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
                     </form>
                   </div>
                 </div>
@@ -89,19 +89,23 @@
       <div class="pagination justify-content-center mt-4">
         {% if pagination.has_prev %}
         <a href="{{ url_for('main.diseases', page=pagination.prev_num) }}"
-           class="btn btn-outline-success mx-1">
-           Previous
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Previous
         </a>
         {% endif %}
 
         {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
             {% if page_num %}
                 {% if page_num == pagination.page %}
-                <span class="btn btn-success mx-1 disabled">{{ page_num }}</span>
+                  <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                      {{ page_num }}
+                  </span>
                 {% else %}
                 <a href="{{ url_for('main.diseases', page=page_num) }}"
-                   class="btn btn-outline-success mx-1">
-                   {{ page_num }}
+                     style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                     onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                     {{ page_num }}
                 </a>
                 {% endif %}
             {% else %}
@@ -111,12 +115,18 @@
 
         {% if pagination.has_next %}
         <a href="{{ url_for('main.diseases', page=pagination.next_num) }}"
-           class="btn btn-outline-success mx-1">
-           Next
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Next
         </a>
         {% endif %}
       </div>
     </div>
+  </div>
+  <div class="text-center mt-4">
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+      </a>
   </div>
 </div>
 {% endblock %}

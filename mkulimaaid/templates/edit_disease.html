@@ -94,10 +94,15 @@
 
         <!-- Submit Button -->
         <div class="form-group mt-4">
-          <button type="submit" class="btn btn-success btn-block">Update Disease</button>
+          <button type="submit" class="btn btn-success btn-block">Update Disease <i class="fas fa-sync-alt"></i> </button>
         </div>
       </form>
     </div>
+  </div>
+  <div class="text-center mt-4">
+      <a href="{{ url_for('main.diseases') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Diseases <i class="fas fa-exclamation-triangle"></i>
+      </a>
   </div>
 </div>
 {% endblock %}

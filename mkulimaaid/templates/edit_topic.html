@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Edit Topic</h1>
+    <h1 class="text-success">Edit Topic</h1>
     <form method="POST" action="{{ url_for('main.edit_topic', topic_id=topic.id) }}" enctype="multipart/form-data">
 
         {{ form.hidden_tag() }}
@@ -22,7 +22,13 @@
             {{ form.image.label(class="form-label") }}
             {{ form.image(class="form-control-file") }}
         </div>
-        <button type="submit" class="btn btn-success mt-3">{{ form.submit.label }}</button>
+        <button type="submit" class="btn btn-success mt-3">{{ form.submit.label }} <i class="fas fa-save"></i></button>
     </form>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.dashboard_topics') }}"
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left "></i> Back to Topics <i class="fas fa-file-alt"></i>
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-success">Manage Videos</h2>
-    <a href="{{ url_for('main.add_video') }}" class="btn btn-success mb-4">Add New Video</a>
+    <a href="{{ url_for('main.add_video') }}" class="btn btn-success mb-4 fw-bold">Add New Video <i class="fas fa-video"></i></a>
 
     <div class="list-group">
         {% for video in videos.items %}
@@ -52,8 +52,8 @@
                     <div class="modal-footer">
                         <form method="POST" action="{{ url_for('main.delete_video', video_id=video.id) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                            <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
                         </form>
                     </div>
                 </div>
@@ -66,18 +66,23 @@
     <div class="pagination justify-content-center mt-4">
         {% if videos.has_prev %}
             <a href="{{ url_for('main.dashboard_videos', page=videos.prev_num) }}"
-               class="btn btn-outline-success mx-1">
-               Previous
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Previous
             </a>
         {% endif %}
 
         {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
             {% if page_num %}
                 {% if page_num == videos.page %}
-                    <span class="btn btn-success mx-1 disabled">{{ page_num }}</span>
+                  <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                      {{ page_num }}
+                  </span>
                 {% else %}
-                    <a href="{{ url_for('main.dashboard_videos', page=page_num) }}" class="btn btn-outline-success mx-1">
-                        {{ page_num }}
+                    <a href="{{ url_for('main.dashboard_videos', page=page_num) }}"
+                     style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                     onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                     {{ page_num }}
                     </a>
                 {% endif %}
             {% else %}
@@ -87,8 +92,9 @@
 
         {% if videos.has_next %}
             <a href="{{ url_for('main.dashboard_videos', page=videos.next_num) }}"
-               class="btn btn-outline-success mx-1">
-               Next
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Next
             </a>
         {% endif %}
     </div>
