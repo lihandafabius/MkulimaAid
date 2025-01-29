@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="text-success">Settings</h2>
+    <h2 class="text-success fw-bold">Settings</h2>
 
     <!-- Add New Admin Section -->
     <div class="card">
@@ -17,11 +17,14 @@
                 </div>
 
                 <div class="form-group">
-                    {{ form.submit(class="btn btn-success mt-2") }}
+                    <button type="submit" class="btn btn-success mt-2">
+                        Add Admin <i class="fas fa-user-shield"></i>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
 
     <!-- View and Manage Admins Section -->
     <div class="card mt-4">
@@ -41,33 +44,17 @@
                         <td>{{ admin.email }}</td>
                         <td>
                             <!-- Remove Admin Button Triggering Modal -->
-                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeAdminModal{{ admin.id }}">
-                                Remove Admin
+                            <button class="btn btn-danger remove-admin-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#removeAdminModal"
+                                    data-admin-id="{{ admin.id }}"
+                                    data-admin-email="{{ admin.email }}">
+                                Remove Admin <i class="fas fa-trash"></i>
                             </button>
+
                         </td>
                     </tr>
 
-                    <!-- Remove Admin Confirmation Modal -->
-                    <div class="modal fade" id="removeAdminModal{{ admin.id }}" tabindex="-1" aria-labelledby="removeAdminLabel{{ admin.id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="removeAdminLabel{{ admin.id }}">Confirm Remove Admin</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure you want to remove the admin with email "<strong>{{ admin.email }}</strong>"?
-                                </div>
-                                <div class="modal-footer">
-                                    <form method="POST" action="{{ url_for('main.remove_admin', admin_id=admin.id) }}">
-                                        {{ form.hidden_tag() }}
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-danger">Remove</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     {% endfor %}
                 </tbody>
             </table>
@@ -84,21 +71,21 @@
             <form method="POST" action="{{ url_for('main.update_contact_info') }}">
                 {{ form.hidden_tag() }}
                 <div class="form-group">
-                    <label for="contact_email">Contact Email</label>
+                    <label for="contact_email"> <i class="fas fa-envelope"></i> Contact Email</label>
                     <input type="email" class="form-control" id="contact_email" name="contact_email" value="{{ g.settings.contact_email }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="contact_phone">Phone Number</label>
+                    <label for="contact_phone"> <i class="fas fa-phone"></i> Phone Number</label>
                     <input type="text" class="form-control" id="contact_phone" name="contact_phone" value="{{ g.settings.contact_phone }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="address">Physical Address</label>
+                    <label for="address"> <i class="fas fa-map-marker-alt"></i> Physical Address</label>
                     <textarea class="form-control" id="address" name="address">{{ g.settings.address }}</textarea>
                 </div>
 
-                <button type="submit" class="btn btn-success mt-2">Update Contact Info</button>
+                <button type="submit" class="btn btn-success mt-2">Update Contact Info <i class="fas fa-save"></i> </button>
             </form>
         </div>
     </div>
@@ -111,19 +98,19 @@
                 {{ form.hidden_tag() }}
 
                 <div class="form-group">
-                    <label for="site_title">Site Title</label>
+                    <label for="site_title"> <i class="fas fa-paint-brush"></i>  Site Title</label>
                     <input type="text" class="form-control" id="site_title" name="site_title" value="{{ settings.site_title }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="site_logo">Upload Site Logo</label>
+                    <label for="site_logo"><i class="fas fa-tag"></i> Upload Site Logo</label>
                     <input type="file" class="form-control-file" id="site_logo" name="site_logo">
                     {% if settings.site_logo %}
                         <img src="{{ url_for('static', filename='uploads/' + settings.site_logo) }}" alt="Site Logo" class="img-thumbnail mt-2" width="150">
                     {% endif %}
                 </div>
 
-                <button type="submit" class="btn btn-success mt-2">Update Branding</button>
+                <button type="submit" class="btn btn-success mt-2">Update Branding <i class="fas fa-save"></i> </button>
             </form>
         </div>
     </div>
@@ -140,9 +127,56 @@
                         Enable Maintenance Mode
                     </label>
                 </div>
-                <button type="submit" class="btn btn-danger mt-2">Update Maintenance Mode</button>
+                <button type="submit" class="btn btn-danger mt-2">Update Maintenance Mode <i class="fas fa-tools"></i></button>
             </form>
         </div>
     </div>
+    <!-- Remove Admin Confirmation Modal -->
+    <div class="modal fade" id="removeAdminModal" tabindex="-1" aria-labelledby="removeAdminLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removeAdminLabel">Confirm Remove Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove the admin with email "<strong id="adminEmail"></strong>"?
+                </div>
+                <div class="modal-footer">
+                    <form id="removeAdminForm" method="POST">
+                        {{ form.hidden_tag() }}
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                        <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Remove</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+      </a>
+  </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const removeAdminModal = document.getElementById("removeAdminModal");
+        const adminEmailSpan = document.getElementById("adminEmail");
+        const removeAdminForm = document.getElementById("removeAdminForm");
+
+        document.querySelectorAll(".remove-admin-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const adminId = this.getAttribute("data-admin-id");
+                const adminEmail = this.getAttribute("data-admin-email");
+
+                // Update modal content dynamically
+                adminEmailSpan.textContent = adminEmail;
+                removeAdminForm.action = `{{ url_for('main.remove_admin', admin_id=0) }}`.replace("0", adminId);
+            });
+        });
+    });
+</script>
 {% endblock %}
+
+
