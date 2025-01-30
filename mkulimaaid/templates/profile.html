@@ -19,7 +19,7 @@
                             <!-- Remove Profile Picture Button -->
                             <form method="POST" action="{{ url_for('main.remove_avatar') }}" class="mt-2">
                                 {{ form.hidden_tag() }}
-                                <button type="submit" class="btn btn-outline-danger fw-bold">Remove Profile Picture</button>
+                                <button type="submit" class="btn btn-outline-danger fw-bold">Remove Profile Picture <i class="fas fa-trash"></i></button>
                             </form>
                         {% else %}
                             <img class="rounded-circle mt-3 shadow-lg border border-3 border-secondary"
@@ -71,8 +71,8 @@
                         </div>
 
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-outline-success fw-bold px-4">Update Profile</button>
-                            <a href="{{ url_for('main.change_password') }}" class="btn btn-outline-warning fw-bold px-4">Change Password</a>
+                            <button type="submit" class="btn btn-outline-success fw-bold px-4">Update Profile <i class="fas fa-save"></i></button>
+                            <a href="{{ url_for('main.change_password') }}" class="btn btn-outline-warning fw-bold px-4">Change Password <i class="fas fa-key"></i></a>
                         </div>
                     </form>
                 </div>
@@ -97,7 +97,7 @@
                             <div class="text-danger small">{{ comment_form.comment.errors[0] }}</div>
                         {% endif %}
                     </div>
-                    <button type="submit" class="btn btn-outline-success fw-bold mt-2">Submit Comment</button>
+                    <button type="submit" class="btn btn-outline-success fw-bold mt-2">Submit Comment <i class="fas fa-comment"></i></button>
                 </form>
 
                 <!-- Display Comments -->
@@ -127,7 +127,7 @@
     <div class="text-center mt-4">
     <a href="{{ url_for('main.upload') }}"
        class="btn btn-outline-success fw-bold">
-       <i class="fas fa-arrow-left"></i>Go to Homepage
+       <i class="fas fa-arrow-left"></i> Go to Homepage <i class="fas fa-home"></i>
     </a>
 </div>
 </div>

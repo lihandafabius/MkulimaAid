@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-success fw-bold">MkulimaAid Help Center</h1>
+
+    <!-- Search Bar -->
+    <div class="input-group mb-4">
+        <input type="text" class="form-control" id="searchInput" placeholder="Search for help..." onkeyup="filterHelp()">
+        <span class="input-group-text"><i class="fas fa-search"></i></span>
+    </div>
+
+    <!-- Help Categories -->
+    <div class="row" id="helpCategories">
+        <div class="col-md-4 mb-4 help-item" data-keywords="getting started introduction" onclick="showHelp('getting-started')">
+            <div class="card shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-play-circle"></i> Getting Started</h5>
+                    <p class="card-text">Learn how to use MkulimaAid efficiently.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4 help-item" data-keywords="account login settings notification" onclick="showHelp('account-management')">
+            <div class="card shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user-cog"></i> Account Management</h5>
+                    <p class="card-text">Manage your account settings and preferences.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4 help-item" data-keywords="notifications settings preferences" onclick="showHelp('notifications')">
+            <div class="card shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-bell"></i> Notification Settings</h5>
+                    <p class="card-text">Customize your notification preferences.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4 help-item" data-keywords="crop disease detection farming" onclick="showHelp('crop-disease-detection')">
+            <div class="card shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-seedling"></i> Crop Disease Detection</h5>
+                    <p class="card-text">Identify crop diseases using MkulimaAid.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4 help-item" data-keywords="troubleshooting fix issues" onclick="showHelp('troubleshooting')">
+            <div class="card shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-tools"></i> Troubleshooting</h5>
+                    <p class="card-text">Fix common issues you may encounter.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4 help-item" data-keywords="support contact assistance" onclick="showHelp('contact-support')">
+            <div class="card shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-headset"></i> Contact Support</h5>
+                    <p class="card-text">Reach out to our support team for assistance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Content Sections -->
+    <div id="helpContent" class="mt-5">
+        <div id="getting-started" class="help-section d-none">
+            <h3>Getting Started</h3>
+            <p>Welcome to MkulimaAid! Here's how to get started:</p>
+            <ul class="list-unstyled">
+                <li>
+                    <button class="btn btn-link text-success fw-bold" onclick="toggleHelp('create-account')">
+                        How to create an account
+                    </button>
+                    <div id="create-account" class="help-detail d-none">
+                        <p>To create an account:</p>
+                        <ol>
+                            <li>Go to the MkulimaAid homepage.</li>
+                            <li>Click on "Sign Up".</li>
+                            <li>Fill in your details and submit.</li>
+                            <li>Verify your email to activate your account.</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li>
+                    <button class="btn btn-link text-success fw-bold" onclick="toggleHelp('navigate-dashboard')">
+                        Navigating the dashboard
+                    </button>
+                    <div id="navigate-dashboard" class="help-detail d-none">
+                        <p>The dashboard provides access to key features like:</p>
+                        <ul>
+                            <li>Crop disease detection</li>
+                            <li>Community Q&A</li>
+                            <li>Notifications and settings</li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li>
+                    <button class="btn btn-link text-success fw-bold" onclick="toggleHelp('basic-functionalities')">
+                        Basic site functionalities
+                    </button>
+                    <div id="basic-functionalities" class="help-detail d-none">
+                        <p>MkulimaAid helps farmers with:</p>
+                        <ul>
+                            <li>Identifying crop diseases using AI.</li>
+                            <li>Connecting with other farmers in the Q&A forum.</li>
+                            <li>Receiving notifications about trending crop diseases.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+
+        <div id="account-management" class="help-section d-none">
+            <h3>Account Management</h3>
+            <p>Manage your account settings, update your profile, and reset passwords.</p>
+            <ul class="list-unstyled">
+                <li>
+                    <button class="btn btn-link text-success fw-bold" onclick="toggleHelp('update-info')">
+                        Updating personal information
+                    </button>
+                    <div id="update-info" class="help-detail d-none">
+                        <p>To update your personal information:</p>
+                        <ol>
+                            <li>Go to your profile settings.</li>
+                            <li>Edit your name, email, or other details.</li>
+                            <li>Click "Save Changes" to update your information.</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li>
+                    <button class="btn btn-link text-success fw-bold" onclick="toggleHelp('change-password')">
+                        Changing your password
+                    </button>
+                    <div id="change-password" class="help-detail d-none">
+                        <p>To change your password:</p>
+                        <ol>
+                            <li>Go to "Account Settings".</li>
+                            <li>Enter your current password.</li>
+                            <li>Set a new password and confirm it.</li>
+                            <li>Click "Update Password" to save changes.</li>
+                        </ol>
+                    </div>
+                </li>
+
+                <li>
+                    <button class="btn btn-link text-success fw-bold" onclick="toggleHelp('delete-account')">
+                        Deleting or deactivating your account
+                    </button>
+                    <div id="delete-account" class="help-detail d-none">
+                        <p>To delete or deactivate your account:</p>
+                        <ul>
+                            <li>Visit "Account Preferences" in settings.</li>
+                            <li>Select "Deactivate" to temporarily disable or "Delete" for permanent removal.</li>
+                            <li>Confirm your choice.</li>
+                            <li>Once deleted, the account cannot be recovered.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="notifications" class="help-section d-none">
+            <h3>Notification Settings</h3>
+            <p>Learn how to customize your notification preferences.</p>
+            <ul>
+                <li>Enabling/disabling email notifications</li>
+                <li>Configuring push notifications</li>
+                <li>Setting notification preferences</li>
+            </ul>
+        </div>
+
+        <div id="crop-disease-detection" class="help-section d-none">
+            <h3>Crop Disease Detection</h3>
+            <p>Identify and manage crop diseases with our AI-powered detection system.</p>
+            <ul>
+                <li>Uploading images for analysis</li>
+                <li>Understanding disease reports</li>
+                <li>Best practices for accurate results</li>
+            </ul>
+        </div>
+
+        <div id="troubleshooting" class="help-section d-none">
+            <h3>Troubleshooting</h3>
+            <p>Find solutions to common problems and errors.</p>
+            <ul>
+                <li>Login issues</li>
+                <li>Site not loading properly</li>
+                <li>Error messages and how to fix them</li>
+            </ul>
+        </div>
+
+        <div id="contact-support" class="help-section d-none">
+            <h3>Contact Support</h3>
+            <p>Need help? Contact our support team via:</p>
+            <ul>
+                <li>Email: support@mkulimaaid.com</li>
+                <li>Phone: +123 456 7890</li>
+                <li>Live Chat (Available Mon-Fri)</li>
+            </ul>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+    function filterHelp() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let items = document.querySelectorAll('.help-item');
+
+        items.forEach(item => {
+            let keywords = item.getAttribute('data-keywords');
+            if (keywords.includes(input)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function showHelp(sectionId) {
+        document.querySelectorAll('.help-section').forEach(section => {
+            section.classList.add('d-none');
+        });
+        document.getElementById(sectionId).classList.remove('d-none');
+    }
+
+    function toggleHelp(sectionId) {
+        let content = document.getElementById(sectionId);
+        content.classList.toggle('d-none');
+    }
+
+    function toggleHelp(sectionId) {
+        let section = document.getElementById(sectionId);
+        section.classList.toggle('d-none');
+    }
+</script>
+{% endblock %}

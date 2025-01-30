@@ -645,6 +645,7 @@ def generate_report():
 
 
 @main.route('/homepage/reports', methods=['GET'])
+@login_required
 def homepage_reports():
     """List all reports marked as featured on the homepage with pagination."""
     # Get the current page from the query parameters
@@ -2012,3 +2013,10 @@ def delete_notification(notification_id):
 def user_settings():
     farmers_form = FarmersForm()
     return render_template('user_settings.html', farmers_form=farmers_form)
+
+
+@main.route('/help-center')
+@login_required
+def help_center():
+    farmers_form = FarmersForm()
+    return render_template('help_center.html', farmers_form=farmers_form, title="Help Center")

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container my-5 py-5">
-    <h2 class="text-center mb-4">Privacy Policy</h2>
+    <h2 class="text-center mb-4 text-success fw-bold">Privacy Policy</h2>
 
     <!-- Intro Section -->
     <p class="lead text-center">At MkulimaAid, we value your privacy and are dedicated to keeping your personal data secure. This policy explains what information we collect, how we use it, and your rights regarding your information.</p>
@@ -52,5 +52,11 @@
         </ul>
         <p>For any privacy concerns, reach out to us at <a href="mailto:support@mkulimaaid.com">support@mkulimaaid.com</a>.</p>
     </section>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold btn-lg">
+           <i class="fas fa-arrow-left"></i> Go to Homepage <i class="fas fa-home"></i>
+        </a>
+    </div>
 </div>
 {% endblock %}

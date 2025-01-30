@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container my-5">
-    <h1 class="display-4 text-center text-success">Frequently Asked Questions</h1>
+    <h1 class=" text-center text-success fw-bold">Frequently Asked Questions</h1>
     <p class="lead text-center mb-4">Have questions? Find answers to help you make the most of MkulimaAid.</p>
 
     <div class="accordion accordion-flush" id="faqsAccordion">
@@ -65,10 +65,107 @@
                 </div>
             </div>
         </div>
+            <!-- FAQ 5 -->
+        <div class="accordion-item border rounded mb-3 shadow-sm" style="background-color: var(--faq-bg); color: var(--faq-text);">
+            <h2 class="accordion-header" id="faqFiveHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFive" aria-expanded="false" aria-controls="faqFive">
+                    <i class="bi bi-person-check me-2 text-primary"></i> Do I need an account to use MkulimaAid?
+                </button>
+            </h2>
+            <div id="faqFive" class="accordion-collapse collapse" aria-labelledby="faqFiveHeading" data-bs-parent="#faqsAccordion">
+                <div class="accordion-body" style="background-color: var(--faq-body-bg); color: var(--faq-body-text);">
+                    Some features are accessible without an account, but creating an account lets you access personalized disease detection history, participate in forums, and receive notifications on trending crop diseases.
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ 6 -->
+        <div class="accordion-item border rounded mb-3 shadow-sm" style="background-color: var(--faq-bg); color: var(--faq-text);">
+            <h2 class="accordion-header" id="faqSixHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqSix" aria-expanded="false" aria-controls="faqSix">
+                    <i class="bi bi-lock-fill me-2 text-danger"></i> Is my data safe on MkulimaAid?
+                </button>
+            </h2>
+            <div id="faqSix" class="accordion-collapse collapse" aria-labelledby="faqSixHeading" data-bs-parent="#faqsAccordion">
+                <div class="accordion-body" style="background-color: var(--faq-body-bg); color: var(--faq-body-text);">
+                    Yes! Your personal data is encrypted and never shared without your consent. We follow best security practices to keep your information safe.
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ 7 -->
+        <div class="accordion-item border rounded mb-3 shadow-sm" style="background-color: var(--faq-bg); color: var(--faq-text);">
+            <h2 class="accordion-header" id="faqSevenHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqSeven" aria-expanded="false" aria-controls="faqSeven">
+                    <i class="bi bi-bar-chart-line-fill me-2 text-success"></i> How accurate is the crop disease detection?
+                </button>
+            </h2>
+            <div id="faqSeven" class="accordion-collapse collapse" aria-labelledby="faqSevenHeading" data-bs-parent="#faqsAccordion">
+                <div class="accordion-body" style="background-color: var(--faq-body-bg); color: var(--faq-body-text);">
+                    Our AI model is trained on a vast dataset and provides highly accurate results. However, we recommend consulting agricultural experts for confirmation.
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ 8 -->
+        <div class="accordion-item border rounded mb-3 shadow-sm" style="background-color: var(--faq-bg); color: var(--faq-text);">
+            <h2 class="accordion-header" id="faqEightHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqEight" aria-expanded="false" aria-controls="faqEight">
+                    <i class="bi bi-cash me-2 text-warning"></i> Does MkulimaAid charge for its services?
+                </button>
+            </h2>
+            <div id="faqEight" class="accordion-collapse collapse" aria-labelledby="faqEightHeading" data-bs-parent="#faqsAccordion">
+                <div class="accordion-body" style="background-color: var(--faq-body-bg); color: var(--faq-body-text);">
+                    MkulimaAid is free to use! We aim to empower farmers with knowledge. Some premium features may be introduced in the future.
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ 9 -->
+        <div class="accordion-item border rounded mb-3 shadow-sm" style="background-color: var(--faq-bg); color: var(--faq-text);">
+            <h2 class="accordion-header" id="faqNineHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqNine" aria-expanded="false" aria-controls="faqNine">
+                    <i class="bi bi-upload me-2 text-info"></i> What type of images should I upload for disease detection?
+                </button>
+            </h2>
+            <div id="faqNine" class="accordion-collapse collapse" aria-labelledby="faqNineHeading" data-bs-parent="#faqsAccordion">
+                <div class="accordion-body" style="background-color: var(--faq-body-bg); color: var(--faq-body-text);">
+                    Upload clear, close-up images of the affected plant part (leaf, stem, or fruit) in good lighting. Avoid blurry images for better accuracy.
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ 10 -->
+        <div class="accordion-item border rounded mb-3 shadow-sm" style="background-color: var(--faq-bg); color: var(--faq-text);">
+            <h2 class="accordion-header" id="faqTenHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTen" aria-expanded="false" aria-controls="faqTen">
+                    <i class="bi bi-bell-fill me-2 text-primary"></i> How can I receive updates on new crop diseases?
+                </button>
+            </h2>
+            <div id="faqTen" class="accordion-collapse collapse" aria-labelledby="faqTenHeading" data-bs-parent="#faqsAccordion">
+                <div class="accordion-body" style="background-color: var(--faq-body-bg); color: var(--faq-body-text);">
+                    MkulimaAid provides notifications on trending crop diseases. Enable notifications in your account settings to stay informed.
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ 11 -->
+        <div class="accordion-item border rounded mb-3 shadow-sm" style="background-color: var(--faq-bg); color: var(--faq-text);">
+            <h2 class="accordion-header" id="faqElevenHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqEleven" aria-expanded="false" aria-controls="faqEleven">
+                    <i class="bi bi-envelope me-2 text-success"></i> How can I contact MkulimaAid for support?
+                </button>
+            </h2>
+            <div id="faqEleven" class="accordion-collapse collapse" aria-labelledby="faqElevenHeading" data-bs-parent="#faqsAccordion">
+                <div class="accordion-body" style="background-color: var(--faq-body-bg); color: var(--faq-body-text);">
+                    Visit our <a href="{{ url_for('main.contact') }}" class="text-success fw-bold">Contact Page</a>. We’re here to help!
+                </div>
+            </div>
+        </div>
     </div>
     <div class="text-center mt-4">
         <a href="{{ url_for('main.upload') }}"
-           class="btn btn-outline-success fw-bold btn-lg">
+           class="btn btn-outline-success fw-bold">
            <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
         </a>
     </div>
