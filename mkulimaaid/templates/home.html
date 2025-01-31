@@ -52,11 +52,11 @@
     <div class="upload-section mt-5">
         <h3 class="text-center  fw-bold" style="color: {{ '#a8dba8' if is_dark_theme else '#2a7a2a' }};" >Upload an Image for Crop Disease Recognition</h3>
         <div class="col-lg">
-            <!-- File upload form -->
-            <form enctype="multipart/form-data" method="POST" action="{{ url_for('main.upload') }}">
+            <!-- File Upload Form -->
+            <form enctype="multipart/form-data" method="POST" action="{{ url_for('main.upload') }}" id="upload-form">
                 {{ form.hidden_tag() }}
 
-                <!-- File upload area with image preview -->
+                <!-- File Upload Area with Image Preview -->
                 <div class="row g-3">
                     <center>
                         <div class="image_upload">
@@ -74,10 +74,23 @@
                     </center>
                 </div>
 
-                <!-- Submit button -->
+                <!-- Submit Button -->
                 <div class="mt-3 text-center">
-                    <button type="submit" class="btn btn-outline-success fw-bold">Upload <i class="fas fa-upload"></i></button>
+                    <button type="submit" class="btn btn-outline-success fw-bold" id="upload-btn">
+                        Upload <i class="fas fa-upload"></i>
+                    </button>
                 </div>
+
+                <!-- Full-Screen Loading Animation (Initially Hidden) -->
+                <div id="loading-overlay" class="d-none">
+                    <div class="loading-container">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Analyzing...</span>
+                        </div>
+                        <p class="mt-2 text-success fw-bold">Analyzing the image, please wait...</p>
+                    </div>
+                </div>
+
             </form>
 
             <!-- Display uploaded image and Disease Recognition button -->
@@ -151,6 +164,22 @@
     });
 </script>
 
+<!-- JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("upload-form");
+        const uploadBtn = document.getElementById("upload-btn");
+        const loadingOverlay = document.getElementById("loading-overlay");
+
+        form.addEventListener("submit", function (event) {
+            // Show the full-screen loading animation
+            loadingOverlay.classList.remove("d-none");
+
+            // Disable the submit button to prevent multiple submissions
+            uploadBtn.disabled = true;
+        });
+    });
+</script>
 
 
 

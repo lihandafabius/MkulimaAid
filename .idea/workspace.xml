@@ -5,14 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mkulimaaid/templates/help_center.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkulimaaid/static/js/submit_disease.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/uploads/images.jfif" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/uploads/images.jfif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/change_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/change_password.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/faqs.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/faqs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/privacy_policy.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/privacy_policy.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/help_center.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/help_center.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
