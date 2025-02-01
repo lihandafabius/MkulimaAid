@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const timeFilterLinks = document.querySelectorAll('.dropdown-menu a[data-filter]');
 
   // Function to fetch and render the data in an interactive table
-  function loadCropDiseasesByLocation(filter = "month") {
+  function loadCropDiseasesByLocation(filter = "all") {
     fetch(`/api/crop-diseases-by-location?filter=${filter}`)
       .then((response) => response.json())
       .then((data) => {
@@ -81,5 +81,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Initial load with default filter (month)
-  loadCropDiseasesByLocation("month");
+  loadCropDiseasesByLocation("all");
 });

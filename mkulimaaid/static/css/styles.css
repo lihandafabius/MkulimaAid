@@ -972,7 +972,7 @@ th {
 
 
 body.light-theme {
-    background-color: #e8f5e9;
+    background-color: #fcfafa;
     color: #000000 !important;
 }
 
@@ -992,6 +992,11 @@ body.dark-theme {
     justify-content: center;
     align-items: center;
     z-index: 9999; /* Ensures it appears on top */
+    animation: fadeOut 1.5s ease-out 3s forwards; /* 2s delay before fade out */
+}
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
 }
 
 .loading-container {

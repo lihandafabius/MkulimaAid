@@ -1646,7 +1646,7 @@ def publish_member(member_id):
 @login_required
 @admin_required
 def get_top_crop_diseases():
-    time_filter = request.args.get('filter', 'week')
+    time_filter = request.args.get('filter', 'all')  # Default is 'all'
     query = db.session.query(
         IdentifiedDisease.disease_name,
         db.func.count(IdentifiedDisease.id).label('count')
@@ -1658,6 +1658,7 @@ def get_top_crop_diseases():
     elif time_filter == 'month':
         start_date = datetime.utcnow() - timedelta(days=30)
         query = query.filter(IdentifiedDisease.date_identified >= start_date)
+    # If "all", don't filter by date (show all records)
 
     data = [{'name': disease.disease_name, 'count': disease.count} for disease in query.order_by(db.desc('count')).limit(10)]
     return jsonify(data)
@@ -1667,7 +1668,7 @@ def get_top_crop_diseases():
 @login_required
 @admin_required
 def get_users_joined():
-    time_filter = request.args.get('filter', 'week')
+    time_filter = request.args.get('filter', 'all')  # Default is 'all'
     query = db.session.query(
         db.func.date(User.date_joined).label('date'),
         db.func.count(User.id).label('count')
@@ -1677,8 +1678,9 @@ def get_users_joined():
         start_date = datetime.utcnow() - timedelta(days=7)
         query = query.filter(User.date_joined >= start_date)
     elif time_filter == 'month':
-        start_date = datetime.utcnow() - timedelta(days=90)
+        start_date = datetime.utcnow() - timedelta(days=30)
         query = query.filter(User.date_joined >= start_date)
+    # If "all", don't filter by date (show all records)
 
     data = [{'date': str(result.date), 'count': result.count} for result in query.order_by('date')]
     return jsonify(data)
@@ -1688,7 +1690,7 @@ def get_users_joined():
 @login_required
 @admin_required
 def get_crop_diseases_by_location():
-    time_filter = request.args.get('filter', 'week')
+    time_filter = request.args.get('filter', 'all')
     query = db.session.query(
         Farmer.location,
         IdentifiedDisease.disease_name,
