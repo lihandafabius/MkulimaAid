@@ -186,6 +186,7 @@ border: 3px solid #f8f9fa;
 .dropdown-item {
 padding: 10px 20px;
 font-size: 1rem;
+z-index: 1050;
 }
 
 .dropdown-item:hover {
@@ -423,6 +424,7 @@ body.dark-theme {
     position: relative; /* Ensure proper placement */
     left: 50%; /* Center the navbar */
     transform: translateX(-50%); /* Center adjustment */
+    z-index: 1000;
 }
 
 .navbar .container-fluid {
@@ -623,13 +625,29 @@ body.dark-theme {
     justify-content: center;
     align-items: center;
     text-align: center;
+    padding: 10px;
 }
 
 /* Styling for the text */
 #typing-text {
     font-size: 2em;
     font-weight: bold;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: normal; /* Allow wrapping */
+    word-wrap: break-word; /* Ensure long words break */
+    max-width: 90%; /* Prevent overflow */
+}
+
+/* Adjust font size for smaller screens */
+@media screen and (max-width: 768px) {
+    #typing-text {
+        font-size: 1.5em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #typing-text {
+        font-size: 1.2em;
+    }
 }
 
 
@@ -971,15 +989,23 @@ th {
 
 
 
+/* Light Theme */
 body.light-theme {
-    background-color: #fcfafa;
-    color: #000000 !important;
+    --feature-bg: #fcfafa;  /* ✅ Updated Light Theme Background */
+    --feature-bg-hover: #eaeaea;
+    --feature-text: #333;
+    --icon-color: #007bff;
+    --faq-body-bg: #fcfafa;  /* ✅ Light Theme Background */
+    --faq-body-text: #000000;
+    --card-bg: #fcfafa; /* ✅ Team card background */
+    --card-border: #e0e0e0;
 }
 
+/* Dark Theme - Uses Default Bootstrap Dark Mode */
 body.dark-theme {
-    background-color: #263238; /* Dark Blue-Gray */
-    color: #eceff1 !important; /* Off-White */
+    /* No need to manually set variables, Bootstrap’s default dark theme applies */
 }
+
 
 #loading-overlay {
     position: fixed;
