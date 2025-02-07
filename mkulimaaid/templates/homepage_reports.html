@@ -40,18 +40,24 @@
         <!-- Pagination Controls -->
         <div class="pagination justify-content-center mt-4">
             {% if pagination.has_prev %}
-            <a href="{{ url_for('main.homepage_reports', page=pagination.prev_num) }}" class="btn btn-outline-success mx-1">
-                Previous
+            <a href="{{ url_for('main.homepage_reports', page=pagination.prev_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Previous
             </a>
             {% endif %}
 
             {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                 {% if page_num %}
                     {% if page_num == pagination.page %}
-                    <span class="btn btn-success mx-1 disabled">{{ page_num }}</span>
-                    {% else %}
-                    <a href="{{ url_for('main.homepage_reports', page=page_num) }}" class="btn btn-outline-success mx-1">
+                    <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
                         {{ page_num }}
+                    </span>
+                    {% else %}
+                    <a href="{{ url_for('main.homepage_reports', page=page_num) }}"
+                       style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                       onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                       {{ page_num }}
                     </a>
                     {% endif %}
                 {% else %}
@@ -60,8 +66,10 @@
             {% endfor %}
 
             {% if pagination.has_next %}
-            <a href="{{ url_for('main.homepage_reports', page=pagination.next_num) }}" class="btn btn-outline-success mx-1">
-                Next
+            <a href="{{ url_for('main.homepage_reports', page=pagination.next_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Next
             </a>
             {% endif %}
         </div>
