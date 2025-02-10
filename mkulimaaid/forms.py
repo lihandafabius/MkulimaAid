@@ -9,6 +9,7 @@ from config import Config
 from flask_login import current_user
 from mkulimaaid import bcrypt
 from flask_ckeditor import CKEditorField
+from flask_wtf.recaptcha import RecaptchaField
 
 
 class UploadForm(FlaskForm):
@@ -20,7 +21,9 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email(message="Please enter a valid email address.")])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
+    recaptcha = RecaptchaField()
     submit = SubmitField('Login')
+
 
 class RegistrationForm(FlaskForm):
     fullname = StringField('Full Name', validators=[
