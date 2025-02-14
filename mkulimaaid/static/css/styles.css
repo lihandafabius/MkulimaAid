@@ -216,6 +216,27 @@ background-color: #f1f1f1;
     opacity: 0; /* Fade out */
 }
 
+/* Success Alert */
+#alert-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+/* Warning Alert */
+#alert-message.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+/* Danger Alert */
+#alert-message.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
 
 .carousel-cell {
     width: 300px;  /* Set the width for each carousel cell */

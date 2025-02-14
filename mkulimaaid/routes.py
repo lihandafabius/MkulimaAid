@@ -571,38 +571,51 @@ def post_to_homepage(report_id):
 @admin_required
 def generate_report():
     """Generate a new report dynamically based on admin input."""
-    # Get custom title and description from the form
+
+    # Get custom title, description, and time filter from the form
     title = request.form.get('title', f"Report {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}")
     description = request.form.get('description', "An auto-generated report summarizing key platform insights.")
+    time_filter = request.form.get('time_filter', 'all_time')
 
-    # Fetch data for the report
+    # Define the date range for filtering
+    now = datetime.utcnow()
+    if time_filter == "last_week":
+        start_date = now - timedelta(weeks=1)
+    elif time_filter == "last_month":
+        start_date = now - timedelta(days=30)
+    elif time_filter == "last_year":
+        start_date = now - timedelta(days=365)
+    else:
+        start_date = None  # No filter applied
+
+    # Apply time filtering to database queries
+    query_filter = IdentifiedDisease.date_identified >= start_date if start_date else True
     top_diseases = db.session.query(
         IdentifiedDisease.disease_name,
         db.func.count(IdentifiedDisease.id).label('count')
-    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(5).all()
+    ).filter(query_filter).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(5).all()
 
     # User-focused insights
     popular_crops = db.session.query(
         Farmer.crop_types, db.func.count(Farmer.id).label('count')
-    ).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
+    ).filter(query_filter).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
 
     regional_disease_distribution = db.session.query(
         Farmer.location, db.func.count(IdentifiedDisease.id).label('count')
-    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).group_by(Farmer.location).all()
+    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).filter(query_filter).group_by(Farmer.location).all()
 
     top_questions = db.session.query(
         Question.title, db.func.count(Answer.id).label('answers_count')
-    ).join(Answer, Question.id == Answer.question_id).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
+    ).join(Answer, Question.id == Answer.question_id).filter(query_filter).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
 
     most_active_users = db.session.query(
         User.username, db.func.count(Question.id + Answer.id).label('activity_count')
-    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id  == User.id).group_by(
+    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id == User.id).filter(query_filter).group_by(
         User.username).order_by(db.desc('activity_count')).limit(5).all()
 
     avg_answers_per_question = db.session.query(
         db.func.avg(db.func.count(Answer.id)).over()
     ).scalar()
-
 
     farmers_form = FarmersForm()
 

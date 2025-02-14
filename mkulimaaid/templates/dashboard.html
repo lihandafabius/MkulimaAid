@@ -253,7 +253,7 @@
                 <i class="fas fa-file-alt"></i> Generate Report
             </button>
         </div>
-                  <!-- Generate Report Modal -->
+         <!-- Generate Report Modal -->
         <div class="modal fade" id="generateReportModal" tabindex="-1" aria-labelledby="generateReportModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -272,6 +272,15 @@
                                 <label for="description" class="form-label">Report Description</label>
                                 <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter report description" required></textarea>
                             </div>
+                            <div class="mb-3">
+                                <label for="time_filter" class="form-label">Time Filter</label>
+                                <select class="form-control" id="time_filter" name="time_filter" required>
+                                    <option value="all_time">All Time</option>
+                                    <option value="last_week">Last Week</option>
+                                    <option value="last_month">Last Month</option>
+                                    <option value="last_year">Last Year</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -281,6 +290,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="dropdown">
           <button id="timeFilterLabel" type="button" class="btn btn-sm btn-outline-success dropdown-toggle" data-bs-toggle="dropdown">
@@ -331,4 +341,21 @@
         </div>
 
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const timeFilterLinks = document.querySelectorAll(".time-filter");
+        const timeFilterInput = document.getElementById("timeFilterInput");
+        const timeFilterLabel = document.getElementById("timeFilterLabel");
+
+        timeFilterLinks.forEach(link => {
+            link.addEventListener("click", function (event) {
+                event.preventDefault();
+                const selectedFilter = this.getAttribute("data-filter");
+                timeFilterInput.value = selectedFilter;
+                timeFilterLabel.innerHTML = `<i class="bi bi-calendar3"></i> ${this.textContent}`;
+            });
+        });
+    });
+</script>
 {% endblock %}
