@@ -28,6 +28,8 @@ class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+
 class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     site_title = db.Column(db.String(100), nullable=False, default="MkulimaAid")

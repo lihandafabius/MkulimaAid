@@ -51,28 +51,28 @@ def load_settings():
 @main.before_request
 def check_session_timeout():
     if current_user.is_authenticated:
-        # Retrieve 'last_active' timestamp
-        last_active_str = session.get('last_active')
+        # Set inactivity timeout duration (e.g., 15 minutes)
+        session_timeout_minutes = 30
 
-        # Ensure 'last_active' exists and is a valid string before processing
-        if isinstance(last_active_str, str):
+        last_active_str = session.get("last_active")
+
+        if last_active_str:
             try:
-                last_active = datetime.fromisoformat(last_active_str)  # Convert from string
+                last_active = datetime.fromisoformat(last_active_str)
             except ValueError:
-                # Handle cases where the string is not in the correct ISO format
-                last_active = datetime.now()
+                last_active = datetime.now()  # Fallback if format is incorrect
 
             # Calculate time elapsed since last activity
             time_elapsed = datetime.now() - last_active
 
-            if time_elapsed > current_app.permanent_session_lifetime:
+            if time_elapsed > timedelta(minutes=session_timeout_minutes):
                 logout_user()
                 session.clear()
-                flash("Your session has expired. Please log in again.", "warning")
-                return redirect(url_for('main.login'))
+                flash("Your session has expired due to inactivity. Please log in again.", "warning")
+                return redirect(url_for("main.login"))
 
-        # Update 'last_active' timestamp as an ISO format string
-        session['last_active'] = datetime.now().isoformat()
+        # Update last active timestamp for active users
+        session["last_active"] = datetime.now().isoformat()
 
 
 def update_trending_status():
@@ -224,7 +224,7 @@ def disease_detail(disease_id):
     return render_template('disease_detail.html', disease=disease, farmers_form=farmers_form)
 
 
-# Login route
+# Login route with timeout protection
 @main.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -232,17 +232,34 @@ def login():
         return redirect(url_for('main.upload'))
 
     form = LoginForm()
+
+    # Set session expiration time for login (e.g., 5 minutes)
+    login_timeout_minutes = 5
+
+    if "login_start_time" not in session:
+        session["login_start_time"] = datetime.now().isoformat()
+
+    login_start_time = datetime.fromisoformat(session["login_start_time"])
+    time_elapsed = datetime.now() - login_start_time
+
+    if time_elapsed > timedelta(minutes=login_timeout_minutes):
+        session.pop("login_start_time", None)  # Clear the session key
+        flash("Login session expired. Please refresh and try again.", "warning")
+        return redirect(url_for("main.login"))
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
-            session['last_active'] = datetime.now()
-            flash('Login successful!', 'success')
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main.upload'))
+            session.pop("login_start_time", None)  # Remove login timer on success
+            session["last_active"] = datetime.now().isoformat()
+            flash("Login successful!", "success")
+            next_page = request.args.get("next")
+            return redirect(next_page) if next_page else redirect(url_for("main.upload"))
         else:
-            flash('Invalid credentials, please try again.', 'danger')
-    return render_template('login.html', form=form)
+            flash("Invalid credentials, please try again.", "danger")
+
+    return render_template("login.html", form=form)
 
 
 # Register route
@@ -432,48 +449,81 @@ def calculate_avg_answers_per_question():
     return total_answers / total_questions
 
 
-def get_report_insights():
-    """Fetch insights for the report."""
-    # Fetch data for the report
+def get_report_insights(time_filter=None):
+    """Fetch insights for the report with optional time filtering."""
+    now = datetime.utcnow()
+    start_date = None
+
+    if time_filter == "this_week":
+        start_date = now - timedelta(days=now.weekday())  # Start of the week (Monday)
+    elif time_filter == "this_month":
+        start_date = now.replace(day=1)  # Start of the month
+    elif time_filter == "this_year":
+        start_date = now.replace(month=1, day=1)  # Start of the year
+
+    # Apply the correct filter
+    query_filter = []
+    if start_date:
+        query_filter.append(IdentifiedDisease.date_identified >= start_date)
+
+    # Top 5 Identified Diseases
     top_diseases = db.session.query(
         IdentifiedDisease.disease_name,
-        db.func.count(IdentifiedDisease.id).label('count')
-    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(5).all()
+        func.count(IdentifiedDisease.id).label('count')
+    ).filter(*query_filter).group_by(IdentifiedDisease.disease_name).order_by(func.count(IdentifiedDisease.id).desc()).limit(5).all()
 
-    # Average detection confidence for diseases
+    # Average Confidence of Disease Predictions
     avg_confidence = db.session.query(
         IdentifiedDisease.disease_name,
-        db.func.avg(IdentifiedDisease.confidence).label('avg_confidence')
-    ).group_by(IdentifiedDisease.disease_name).order_by(db.desc('avg_confidence')).limit(5).all()
+        func.avg(IdentifiedDisease.confidence).label('avg_confidence')
+    ).filter(*query_filter).group_by(IdentifiedDisease.disease_name).order_by(func.avg(IdentifiedDisease.confidence).desc()).limit(5).all()
 
-    # Forum insights
+    # Count active questions and answers (no filtering needed here)
     active_questions = Question.query.count()
     active_answers = Answer.query.count()
 
+    # Most Popular Crops based on farmers' reports
     popular_crops = db.session.query(
-        Farmer.crop_types, db.func.count(Farmer.id).label('count')
-    ).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
+        Farmer.crop_types, func.count(Farmer.id).label('count')
+    ).join(User, Farmer.user_id == User.id) \
+        .join(IdentifiedDisease, User.id == IdentifiedDisease.user_id) \
+        .filter(*query_filter) \
+        .group_by(Farmer.crop_types).order_by(func.count(Farmer.id).desc()).limit(5).all()
 
+    # Disease distribution by region
     regional_disease_distribution = db.session.query(
-        Farmer.location, db.func.count(IdentifiedDisease.id).label('count')
-    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).group_by(Farmer.location).all()
+        Farmer.location, func.count(IdentifiedDisease.id).label('count')
+    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).filter(*query_filter).group_by(Farmer.location).all()
+
+    # Top 5 most answered questions
+    question_filter = []
+    if start_date:
+        question_filter.append(Question.timestamp >= start_date)
 
     top_questions = db.session.query(
-        Question.title, db.func.count(Answer.id).label('answers_count')
-    ).join(Answer, Question.id == Answer.question_id).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
+        Question.title, func.count(Answer.id).label('answers_count')
+    ).join(Answer, Question.id == Answer.question_id).filter(*question_filter).group_by(Question.id).order_by(func.count(Answer.id).desc()).limit(5).all()
+
+    # Most active users based on posted questions & answers
+    user_filter = []
+    if start_date:
+        user_filter.append(Question.timestamp >= start_date)
+        user_filter.append(Answer.timestamp >= start_date)
 
     most_active_users = db.session.query(
-        User.username, db.func.count(Question.id + Answer.id).label('activity_count')
-    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id == User.id).group_by(
-        User.username).order_by(db.desc('activity_count')).limit(5).all()
+        User.username, func.count(Question.id + Answer.id).label('activity_count')
+    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id == User.id) \
+        .filter(*user_filter) \
+        .group_by(User.username).order_by(func.count(Question.id + Answer.id).desc()).limit(5).all()
 
+    # Average number of answers per question
     avg_answers_per_question = db.session.query(
-        db.func.avg(db.func.count(Answer.id)).over()
+        func.avg(func.count(Answer.id)).over()
     ).scalar() or 0
 
     return {
         "top_diseases": top_diseases,
-        "active_questions":active_questions,
+        "active_questions": active_questions,
         "active_answers": active_answers,
         "avg_confidence": avg_confidence,
         "popular_crops": popular_crops,
@@ -492,16 +542,16 @@ def view_report(report_id):
     report = Report.query.get_or_404(report_id)
     farmers_form = FarmersForm()
 
-    # Fetch insights using the helper function
-    insights = get_report_insights()
+    time_filter = request.args.get('time_filter', 'all_time')
+    insights = get_report_insights(time_filter)
 
     return render_template(
         'report_view.html',
         report=report,
         farmers_form=farmers_form,
-        **insights,  # Pass the insights as keyword arguments
-        title=report.title,  # Use the report's title
-        description=report.description  # Use the report's description
+        **insights,
+        title=report.title,
+        description=report.description
     )
 
 
@@ -577,45 +627,8 @@ def generate_report():
     description = request.form.get('description', "An auto-generated report summarizing key platform insights.")
     time_filter = request.form.get('time_filter', 'all_time')
 
-    # Define the date range for filtering
-    now = datetime.utcnow()
-    if time_filter == "last_week":
-        start_date = now - timedelta(weeks=1)
-    elif time_filter == "last_month":
-        start_date = now - timedelta(days=30)
-    elif time_filter == "last_year":
-        start_date = now - timedelta(days=365)
-    else:
-        start_date = None  # No filter applied
-
-    # Apply time filtering to database queries
-    query_filter = IdentifiedDisease.date_identified >= start_date if start_date else True
-    top_diseases = db.session.query(
-        IdentifiedDisease.disease_name,
-        db.func.count(IdentifiedDisease.id).label('count')
-    ).filter(query_filter).group_by(IdentifiedDisease.disease_name).order_by(db.desc('count')).limit(5).all()
-
-    # User-focused insights
-    popular_crops = db.session.query(
-        Farmer.crop_types, db.func.count(Farmer.id).label('count')
-    ).filter(query_filter).group_by(Farmer.crop_types).order_by(db.desc('count')).limit(5).all()
-
-    regional_disease_distribution = db.session.query(
-        Farmer.location, db.func.count(IdentifiedDisease.id).label('count')
-    ).join(IdentifiedDisease, Farmer.user_id == IdentifiedDisease.user_id).filter(query_filter).group_by(Farmer.location).all()
-
-    top_questions = db.session.query(
-        Question.title, db.func.count(Answer.id).label('answers_count')
-    ).join(Answer, Question.id == Answer.question_id).filter(query_filter).group_by(Question.id).order_by(db.desc('answers_count')).limit(5).all()
-
-    most_active_users = db.session.query(
-        User.username, db.func.count(Question.id + Answer.id).label('activity_count')
-    ).outerjoin(Question, Question.author_id == User.id).outerjoin(Answer, Answer.author_id == User.id).filter(query_filter).group_by(
-        User.username).order_by(db.desc('activity_count')).limit(5).all()
-
-    avg_answers_per_question = db.session.query(
-        db.func.avg(db.func.count(Answer.id)).over()
-    ).scalar()
+    # Fetch insights using the helper function
+    insights = get_report_insights(time_filter)
 
     farmers_form = FarmersForm()
 
@@ -624,12 +637,12 @@ def generate_report():
         'report_template.html',
         title=title,
         description=description,
-        top_diseases=top_diseases,
-        popular_crops=popular_crops,
-        regional_disease_distribution=regional_disease_distribution,
-        top_questions=top_questions,
-        most_active_users=most_active_users,
-        avg_answers_per_question=avg_answers_per_question,
+        top_diseases=insights["top_diseases"],
+        popular_crops=insights["popular_crops"],
+        regional_disease_distribution=insights["regional_disease_distribution"],
+        top_questions=insights["top_questions"],
+        most_active_users=insights["most_active_users"],
+        avg_answers_per_question=insights["avg_answers_per_question"],
         datetime=datetime,
         farmers_form=farmers_form
     )
@@ -1715,7 +1728,7 @@ def get_crop_diseases_by_location():
         start_date = datetime.utcnow() - timedelta(days=7)
         query = query.filter(IdentifiedDisease.date_identified >= start_date)
     elif time_filter == 'month':
-        start_date = datetime.utcnow() - timedelta(days=90)
+        start_date = datetime.utcnow() - timedelta(days=30)
         query = query.filter(IdentifiedDisease.date_identified >= start_date)
 
     data = {}
