@@ -7,11 +7,8 @@
     <list default="true" id="57de4b95-4a56-4a17-b80d-3f14dc2929cc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/site.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/static/uploads/images.jfif" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/static/uploads/images.jfif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/notification_settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/notification_settings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkulimaaid/templates/user_settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/mkulimaaid/templates/user_settings.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
