@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4 text-success fw-bold">Notifications Manager</h1>
+
+  <!-- Subscriber Notification Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h3 class="mb-3 text-success">Notify Subscribers About Trending Crop Diseases</h3>
+      <p class="text-muted">Send updates to your subscribers whenever new trending crop diseases are added.</p>
+      <form method="POST" action="{{ url_for('main.send_newsletter') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group mb-3">
+          <label for="newsletter_content" class="form-label fw-semibold">Message to Subscribers</label>
+          <textarea
+            class="form-control ckeditor"
+            id="newsletter_content"
+            name="content"
+            rows="5"
+            placeholder="Write your email notification message here..."
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-outline-danger btn-lg">Send Email Notification <i class="fas fa-envelope"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Notification Button -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="text-success fw-bold">Push Notifications</h3>
+    <button class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#createNotificationModal">
+      Create Push Notification <i class="fas fa-bell"></i>
+    </button>
+  </div>
+
+  <!-- Notifications Table -->
+  <table class="table table-striped table-hover">
+    <thead class="table-success">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Message</th>
+        <th>Sent Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for notification in notifications %}
+      <tr>
+        <td>{{ notification.id }}</td>
+        <td>{{ notification.title }}</td>
+        <td>{{ notification.message }}</td>
+        <td>{{ notification.date_sent.strftime('%b %d, %Y %H:%M') }}</td>
+        <td>
+          <a href="{{ url_for('main.edit_notification', notification_id=notification.id) }}" class="btn btn-sm btn-warning"> <i class="fas fa-edit"></i> Edit </a>
+          <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ notification.id }}">
+             <i class="fas fa-trash"></i> Delete
+          </button>
+        </td>
+      </tr>
+
+      <!-- Delete Notification Modal -->
+      <div class="modal fade" id="deleteModal{{ notification.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ notification.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel{{ notification.id }}">  <i class="fas fa-trash"></i> Confirm Delete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this notification: "{{ notification.title }}"?
+            </div>
+            <div class="modal-footer">
+              <form method="POST" action="{{ url_for('main.delete_notification', notification_id=notification.id) }}">
+                {{ form.hidden_tag() }}
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">  <i class="fas fa-ban"></i> Cancel</button>
+                <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Create Notification Modal -->
+  <div class="modal fade" id="createNotificationModal" tabindex="-1" aria-labelledby="createNotificationLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createNotificationLabel">Create Notification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="{{ url_for('main.create_notification') }}">
+            {{ notification_form.hidden_tag() }}
+            <div class="mb-3">
+              {{ notification_form.title.label(class="form-label") }}
+              {{ notification_form.title(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ notification_form.message.label(class="form-label") }}
+              {{ notification_form.message(class="form-control", rows=5) }}
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-success">Send Notification <i class="fas fa-bell"> </i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination justify-content-center mt-4">
+    {% if pagination.has_prev %}
+    <a href="{{ url_for('main.dashboard_notifications', page=pagination.prev_num) }}"
+         style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+         onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+         Previous
+    </a>
+    {% endif %}
+
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if page_num %}
+            {% if page_num == pagination.page %}
+              <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                  {{ page_num }}
+              </span>
+            {% else %}
+            <a href="{{ url_for('main.dashboard_notifications', page=page_num) }}"
+                 style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                 onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                 {{ page_num }}
+            </a>
+            {% endif %}
+        {% else %}
+        <span class="mx-1">…</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+    <a href="{{ url_for('main.dashboard_notifications', page=pagination.next_num) }}"
+           style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+           onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+           Next
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="text-center mt-4">
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+      </a>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5 py-5">
+    <h2 class="text-center mb-4 text-success fw-bold">Privacy Policy</h2>
+
+    <!-- Intro Section -->
+    <p class="lead text-center">At MkulimaAid, we value your privacy and are dedicated to keeping your personal data secure. This policy explains what information we collect, how we use it, and your rights regarding your information.</p>
+
+    <!-- Data Collection Section -->
+    <section class="my-4">
+        <h4>1. Information We Collect</h4>
+        <p>To provide you with the best possible experience, we collect several types of information:</p>
+        <ul>
+            <li><strong>Personal Information:</strong> Details like your name, email, and contact information to personalize your experience and manage your account securely.</li>
+            <li><strong>Usage Data:</strong> Insights from your interactions with the site, including search queries, clicked articles, and forum activities, help us continuously improve our services.</li>
+            <li><strong>Device and Connection Data:</strong> Technical information, such as IP address, device type, browser type, and settings, ensures compatibility and optimizes performance.</li>
+        </ul>
+    </section>
+
+    <!-- Data Usage Section -->
+    <section class="my-4">
+        <h4>2. How We Use Your Information</h4>
+        <p>We use your data in the following ways:</p>
+        <ul>
+            <li><strong>Providing Core Features:</strong> Data is essential for features like disease detection, personalized notifications, and community support.</li>
+            <li><strong>Improving the User Experience:</strong> We analyze site activity to enhance usability and ensure the platform addresses your needs.</li>
+            <li><strong>Security and Compliance:</strong> Information helps us detect, prevent, and address technical issues and potential security risks.</li>
+        </ul>
+    </section>
+
+    <!-- Data Sharing Section -->
+    <section class="my-4">
+        <h4>3. Data Sharing and Disclosure</h4>
+        <p>Your privacy is paramount, and we do not sell or share your data with third parties. However, we may share information to comply with legal requirements or protect MkulimaAid’s rights and property. Our trusted service providers assist us with essential tasks like site maintenance and analytics, but they adhere to strict data protection agreements.</p>
+    </section>
+
+    <!-- Security Section -->
+    <section class="my-4">
+        <h4>4. Data Security</h4>
+        <p>Your security is our priority. We implement various safeguards, including encryption, secure access protocols, and regular vulnerability assessments. Your data is accessible only to authorized personnel and is stored in a secure environment.</p>
+    </section>
+
+    <!-- Rights Section -->
+    <section class="my-4">
+        <h4>5. Your Rights and Choices</h4>
+        <p>We respect your rights over your personal data. You can:</p>
+        <ul>
+            <li><strong>Access and Update:</strong> Review and update your profile information at any time.</li>
+            <li><strong>Data Portability:</strong> Request a copy of your data in a commonly used format.</li>
+            <li><strong>Data Deletion:</strong> Request the deletion of your personal data by contacting our support team.</li>
+        </ul>
+        <p>For any privacy concerns, reach out to us at <a href="mailto:support@mkulimaaid.com">support@mkulimaaid.com</a>.</p>
+    </section>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold btn-lg">
+           <i class="fas fa-arrow-left"></i> Go to Homepage <i class="fas fa-home"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

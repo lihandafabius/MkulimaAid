@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <!-- Forum Header -->
+    <div class="d-flex justify-content-between align-items-center my-4">
+        <h2 class="text-success">MkulimaAid Community Q&A Forum</h2>
+        <a href="{{ url_for('main.new_question') }}" class="btn btn-success text-white fw-bold">Ask a Question <i class="fas fa-question-circle"></i> </a>
+    </div>
+
+    <!-- Questions List -->
+    <div class="row">
+        {% for question in questions.items %}
+        <div class="col-md-12">
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body d-flex">
+                    <!-- User Avatar -->
+                    <img class="rounded-circle me-3"
+                         src="{{ url_for('static', filename='uploads/' + question.author.avatar) if question.author.avatar else url_for('static', filename='images/default.png') }}"
+                         alt="User Avatar" width="50" height="50">
+                    <div>
+                        <h5>
+                            <a href="{{ url_for('main.view_question', question_id=question.id) }}" class="text-body">
+                                {{ question.title }}
+                            </a>
+                        </h5>
+                        <p class="text-muted mb-1">
+                            Asked by {{ question.author.username }} on {{ question.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                        </p>
+                        <p>
+                            {{ question.content[:200] }}
+                            {% if question.content|length > 200 %}...{% endif %}
+                        </p>
+                        <a href="{{ url_for('main.view_question', question_id=question.id) }}"
+                           class="btn btn-outline-success btn-sm mt-2 fw-bold">
+                            View and Answer <i class="fas fa-reply"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted">No questions have been asked yet. Be the first to ask!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination justify-content-center mt-4">
+        {% if questions.has_prev %}
+        <a href="{{ url_for('main.forum', page=questions.prev_num) }}"
+           style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+           onmouseover="this.style.backgroundColor='#256625';"
+           onmouseout="this.style.backgroundColor='#2a7a2a';">
+           Previous
+        </a>
+        {% endif %}
+
+        {% for page_num in questions.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if page_num %}
+            {% if page_num == questions.page %}
+            <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                {{ page_num }}
+            </span>
+            {% else %}
+            <a href="{{ url_for('main.forum', page=page_num) }}"
+               style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';"
+               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+               {{ page_num }}
+            </a>
+            {% endif %}
+        {% else %}
+        <span class="mx-1">…</span>
+        {% endif %}
+        {% endfor %}
+
+        {% if questions.has_next %}
+        <a href="{{ url_for('main.forum', page=questions.next_num) }}"
+           style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+           onmouseover="this.style.backgroundColor='#256625';"
+           onmouseout="this.style.backgroundColor='#2a7a2a';">
+           Next
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Back to Homepage Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

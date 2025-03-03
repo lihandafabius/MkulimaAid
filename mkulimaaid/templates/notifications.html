@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-success mb-4 fw-bold">Notifications</h2>
+
+    <!-- Filters and Search Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="btn-group" role="group" aria-label="Notification filters">
+            <!-- Filters with links to apply filters -->
+            <a href="{{ url_for('main.view_notifications', filter='all') }}"
+               class="btn btn-outline-success {% if filter_type == 'all' %}active{% endif %}">All</a>
+            <a href="{{ url_for('main.view_notifications', filter='active') }}"
+               class="btn btn-outline-success {% if filter_type == 'active' %}active{% endif %}">Active</a>
+            <a href="{{ url_for('main.view_notifications', filter='archived') }}"
+               class="btn btn-outline-success {% if filter_type == 'archived' %}active{% endif %}">Archived</a>
+        </div>
+            <form method="GET" action="{{ url_for('main.view_notifications') }}" class="input-group" style="max-width: 300px;">
+                <input type="hidden" name="filter" value="{{ filter_type }}">
+                <input type="text" name="query" class="form-control" placeholder="Search notifications"
+                       value="{{ search_query }}">
+                <button class="btn btn-success" type="submit">Search</button>
+            </form>
+
+    </div>
+
+    <!-- Notifications List -->
+    <div class="list-group" id="notifications-list">
+        {% if notifications %}
+            {% for notification, user_notification in notifications %}
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">{{ notification.title }}</h5>
+                    <p class="mb-1">{{ notification.message }}</p>
+                    <small class="text-muted">Sent on {{ notification.date_sent.strftime('%b %d, %Y') }}</small>
+                </div>
+                <div>
+                    {% if user_notification.is_archived %}
+                    <form method="POST" action="{{ url_for('main.unarchive_notification', notification_id=notification.id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-outline-warning btn-sm" type="submit">Undo Archive</button>
+                    </form>
+                    {% else %}
+                    <form method="POST" action="{{ url_for('main.archive_notification', notification_id=notification.id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-outline-secondary btn-sm" type="submit">Archive</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info text-center">
+                No notifications available for this filter.
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- Pagination Controls -->
+<div class="pagination justify-content-center mt-4">
+    {% if pagination.has_prev %}
+    <a href="{{ url_for('main.view_notifications', page=pagination.prev_num, filter=filter_type, query=search_query) }}"
+       style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+       onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+       Previous
+    </a>
+    {% endif %}
+
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if page_num %}
+            {% if page_num == pagination.page %}
+            <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                {{ page_num }}
+            </span>
+            {% else %}
+            <a href="{{ url_for('main.view_notifications', page=page_num, filter=filter_type, query=search_query) }}"
+               style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+               {{ page_num }}
+            </a>
+            {% endif %}
+        {% else %}
+        <span class="mx-1">…</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+    <a href="{{ url_for('main.view_notifications', page=pagination.next_num, filter=filter_type, query=search_query) }}"
+       style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+       onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+       Next
+    </a>
+    {% endif %}
+</div>
+<!-- Scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.btn-group .btn');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

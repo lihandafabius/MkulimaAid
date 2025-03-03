@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h1 class="text-success">Farmers</h1>
+      <p>Manage Farmer's information and interactions.</p>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Farmer's Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Admin Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for farmer in farmers %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ farmer.fullname }}</td>
+            <td>{{ farmer.email }}</td>
+            <td>{{ farmer.phone }}</td>
+            <td>{{ 'Yes' if farmer.is_admin else 'No' }}</td>
+            <td>
+              <a href="{{ url_for('main.view_farmer', id=farmer.id) }}" class="btn btn-sm btn-primary"> <i class="fas fa-chart-line"></i> View Interactions</a>
+              <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ farmer.id }}"> <i class="fas fa-trash"></i> Delete</button>
+            </td>
+          </tr>
+
+          <!-- Delete Confirmation Modal -->
+          <div class="modal fade" id="deleteModal{{ farmer.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ farmer.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteModalLabel{{ farmer.id }}">Confirm Delete</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete {{ farmer.fullname }} ({{ farmer.username }})?
+                </div>
+                <div class="modal-footer">
+                  <form method="post" action="{{ url_for('main.delete_farmer', farmer_id=farmer.id) }}">
+                    {{ form.hidden_tag() }}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                    <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+    <!-- Pagination controls -->
+  <div class="pagination justify-content-center mt-4">
+      {% if pagination.has_prev %}
+          <a href="{{ url_for('main.farmers', page=pagination.prev_num) }}"
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Previous
+          </a>
+      {% endif %}
+
+      {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+          {% if page_num %}
+              {% if page_num == pagination.page %}
+                  <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                      {{ page_num }}
+                  </span>
+              {% else %}
+                  <a href="{{ url_for('main.farmers', page=page_num) }}"
+                     style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                     onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                     {{ page_num }}
+                  </a>
+              {% endif %}
+          {% else %}
+              <span class="mx-1">…</span>
+          {% endif %}
+      {% endfor %}
+
+      {% if pagination.has_next %}
+          <a href="{{ url_for('main.farmers', page=pagination.next_num) }}"
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Next
+          </a>
+      {% endif %}
+  </div>
+  <div class="text-center mt-4">
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+      </a>
+  </div>
+</div>
+{% endblock %}

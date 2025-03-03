@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-success">Manage Videos</h2>
+    <a href="{{ url_for('main.add_video') }}" class="btn btn-success mb-4 fw-bold">Add New Video <i class="fas fa-video"></i></a>
+
+    <div class="list-group">
+        {% for video in videos.items %}
+        <div class="list-group-item p-4">
+            <div class="row align-items-center">
+                <!-- Video details section -->
+                <div class="col-md-8">
+                    <h5 class="mb-1">{{ video.title }}</h5>
+                    <p class="mb-2">{{ video.description }}</p>
+                    <small class="text-muted">Posted on {{ video.date_posted.strftime('%b %d, %Y') }}</small>
+                </div>
+
+                <!-- Button actions section -->
+                <div class="col-md-4 d-flex justify-content-end align-items-center">
+                    <div class="btn-group-vertical">
+                        <!-- Publish/Unpublish button -->
+                        <form action="{{ url_for('main.post_video_to_homepage', video_id=video.id) }}" method="POST" class="mb-2">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            {% if video.published %}
+                                <button type="submit" class="btn btn-outline-danger"> <i class="fas fa-ban"></i> Unpublish from Homepage</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-outline-success"> <i class="fas fa-upload"></i> Publish to Homepage</button>
+                            {% endif %}
+                        </form>
+
+                        <!-- Edit button -->
+                        <a href="{{ url_for('main.edit_video', video_id=video.id) }}" class="btn btn-outline-secondary mb-2"> <i class="fas fa-edit"></i> Edit</a>
+
+                        <!-- Delete button -->
+                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ video.id }}"> <i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal{{ video.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ video.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{{ video.id }}">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete the video titled "<strong>{{ video.title }}</strong>"?
+                    </div>
+                    <div class="modal-footer">
+                        <form method="POST" action="{{ url_for('main.delete_video', video_id=video.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="fas fa-ban"></i> Cancel</button>
+                            <button type="submit" class="btn btn-danger"> <i class="fas fa-trash"></i> Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination justify-content-center mt-4">
+        {% if videos.has_prev %}
+            <a href="{{ url_for('main.dashboard_videos', page=videos.prev_num) }}"
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Previous
+            </a>
+        {% endif %}
+
+        {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == videos.page %}
+                  <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                      {{ page_num }}
+                  </span>
+                {% else %}
+                    <a href="{{ url_for('main.dashboard_videos', page=page_num) }}"
+                     style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                     onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                     {{ page_num }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <span class="mx-2">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if videos.has_next %}
+            <a href="{{ url_for('main.dashboard_videos', page=videos.next_num) }}"
+             style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+             onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+             Next
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-success fw-bold">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard <i class="fas fa-tachometer-alt"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

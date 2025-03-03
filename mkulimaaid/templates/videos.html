@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center fw-bold mb-4 text-success">Crop Disease Video Library</h2>
+    <p class="text-center text-muted mb-5">Watch these informative videos to learn more about identifying and managing crop diseases.</p>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for video in videos.items %}
+        <div class="col">
+            <div class="card shadow-sm h-100">
+                <div class="ratio ratio-16x9">
+                    <iframe src="{{ video.embed_url }}" title="{{ video.title }}" allowfullscreen></iframe>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold">{{ video.title }}</h5>
+                    <p class="card-text text-truncate" style="max-height: 4em;">{{ video.description }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    {% if video.date_posted %}
+                        <small class="text-muted">Published on {{ video.date_posted.strftime('%b %d, %Y') }}</small>
+                    {% else %}
+                        <small class="text-muted">Publication date not available</small>
+                    {% endif %}
+                    <a href="{{ video.url }}" target="_blank" class="btn btn-outline-danger btn-sm">Watch on YouTube <i class="fab fa-youtube"></i> </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination justify-content-center mt-4">
+        {% if videos.has_prev %}
+            <a href="{{ url_for('main.videos', page=videos.prev_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Previous
+            </a>
+        {% endif %}
+
+        {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == videos.page %}
+                    <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                        {{ page_num }}
+                    </span>
+                {% else %}
+                    <a href="{{ url_for('main.videos', page=page_num) }}"
+                       style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                       onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                       {{ page_num }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <span class="mx-1">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if videos.has_next %}
+            <a href="{{ url_for('main.videos', page=videos.next_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Next
+            </a>
+        {% endif %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
+        </a>
+    </div>
+
+
+
+</div>
+{% endblock %}

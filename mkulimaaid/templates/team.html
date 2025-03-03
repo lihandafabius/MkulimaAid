@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center display-4 text-success mb-5">Meet Our Dedicated Team</h1>
+    <div class="row">
+        {% for member in members.items %}
+        <div class="col-md-4 mb-5 d-flex align-items-stretch">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <img src="{{ url_for('static', filename='uploads/' + member.photo) if member.photo else url_for('static', filename='images/default-avatar.jpg') }}" class="card-img-top rounded-top" alt="{{ member.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title font-weight-bold">{{ member.name }}</h5>
+                    <p class="card-text text-success fw-bold">{{ member.role }}</p>
+                    <p class="card-text small text-muted">{{ member.bio }}</p>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Contact:</strong> {{ member.contact_info }}
+                    </p>
+                    <div class="social-icons my-3">
+                        <a href="{{ member.linkedin_url }}" target="_blank" class="text-success mx-2" title="LinkedIn">
+                            <i class="fab fa-linkedin fa-2x"></i>
+                        </a>
+                        <a href="{{ member.twitter_url }}" target="_blank" class="text-success mx-2" title="Twitter">
+                            <i class="fab fa-twitter fa-2x"></i>
+                        </a>
+                        <a href="{{ member.email }}" title="Email" class="text-success mx-2">
+                            <i class="fas fa-envelope fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination justify-content-center mt-4">
+        {% if members.has_prev %}
+            <a href="{{ url_for('main.team', page=members.prev_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Previous
+            </a>
+        {% endif %}
+
+        {% for page_num in members.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == members.page %}
+                    <span style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px;">
+                        {{ page_num }}
+                    </span>
+                {% else %}
+                    <a href="{{ url_for('main.team', page=page_num) }}"
+                       style="background-color: transparent; color: #2a7a2a; padding: 8px 16px; margin: 0 4px; border: 1px solid #2a7a2a; border-radius: 4px; text-decoration: none;"
+                       onmouseover="this.style.backgroundColor='#2a7a2a'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2a7a2a';">
+                       {{ page_num }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <span class="mx-1">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if members.has_next %}
+            <a href="{{ url_for('main.team', page=members.next_num) }}"
+               style="background-color: #2a7a2a; color: white; padding: 8px 16px; margin: 0 4px; border-radius: 4px; text-decoration: none;"
+               onmouseover="this.style.backgroundColor='#256625';" onmouseout="this.style.backgroundColor='#2a7a2a';">
+               Next
+            </a>
+        {% endif %}
+    </div>
+        <!-- Back to Homepage Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold">
+           <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

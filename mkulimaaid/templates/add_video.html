@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-success">Add New Video</h2>
+    <form action="{{ url_for('main.add_video') }}" method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <label for="title">Video Title</label>
+            {{ form.title(class="form-control") }}
+            {% if form.title.errors %}
+                <small class="text-danger">{{ form.title.errors[0] }}</small>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            {{ form.description(class="form-control") }}
+            {% if form.description.errors %}
+                <small class="text-danger">{{ form.description.errors[0] }}</small>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="url">YouTube URL</label>
+            {{ form.url(class="form-control") }}
+            {% if form.url.errors %}
+                <small class="text-danger">{{ form.url.errors[0] }}</small>
+            {% endif %}
+        </div>
+
+        <!-- Publish to Homepage Checkbox -->
+        <div class="form-check mb-3">
+            {{ form.published(class="form-check-input") }}
+            <label class="form-check-label" for="published">Publish to Homepage</label>
+        </div>
+
+        <button type="submit" class="btn btn-success fw-bold">Add Video <i class="fas fa-video"></i><i class="fas fa-plus ms-1"></i></button>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.dashboard_videos') }}"
+               class="btn btn-outline-success fw-bold">
+               <i class="fas fa-arrow-left "></i> Back to videos <i class="fas fa-play-circle"></i>
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

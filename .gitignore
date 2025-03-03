@@ -1,0 +1,47 @@
+# Ignore Python bytecode and cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore environment variables and credentials
+.env
+*.secret
+config.py
+
+# Ignore virtual environments
+venv/
+.env/
+
+# Ignore logs and debug files
+logs/
+*.log
+
+# Ignore database and migrations
+instance/
+*.sqlite3
+*.db
+migrations/
+
+# Ignore uploaded media files
+static/uploads/
+
+# Ignore compiled and generated files
+*.egg-info/
+dist/
+build/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# Ignore Flask session and cache files
+flask_session/
+cache/
