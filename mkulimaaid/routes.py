@@ -883,7 +883,7 @@ def subscribe():
     if email:
         # Check if already subscribed
         if Subscriber.query.filter_by(email=email).first():
-            flash('You are already subscribed.', 'info')
+            flash('You are already subscribed.', 'danger')
         else:
             subscriber = Subscriber(email=email)
             db.session.add(subscriber)
