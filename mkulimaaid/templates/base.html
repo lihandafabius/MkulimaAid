@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ g.settings.site_title or "MkulimaAid" }}</title>
+    <script src="//cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+
+
+    {{ ckeditor.config() }}
+  </head>
+  <body class="light-theme">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div id="alert-message" class="alert alert-message {{ category }}" role="alert">
+          {% if category == "success" %}
+            <i class="fas fa-check-circle"></i> <!-- Success icon -->
+          {% elif category == "warning" %}
+            <i class="fas fa-exclamation-triangle"></i> <!-- Warning icon -->
+          {% elif category == "danger" %}
+            <i class="fas fa-times-circle"></i> <!-- Error icon -->
+          {% endif %}
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+      <div class="container">
+      <nav class="navbar navbar-expand-lg bg-green navbar-dark py-3 ">
+        <div class="container-fluid">
+          <!-- Branding with Logo and Site Title -->
+          <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.upload') }}">
+            <img src="{{ url_for('static', filename='images/' + g.settings.site_logo) if g.settings.site_logo else url_for('static', filename='logo.png') }}" alt="Site Logo" class="site-logo me-2" style="height: 50px;" />
+            <span class="site-title text-white">{{ g.settings.site_title or "MkulimaAid" }}</span>
+          </a>
+
+          <!-- Toggler for Mobile View -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Navbar Links -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{{ url_for('main.upload') }}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="/team">Team</a>
+              </li>
+              <li>
+                <a class="nav-link text-white" href="/topics">Topics</a>
+              </li>
+              <li>
+                <a class="nav-link text-white" href="/videos">Video Library</a>
+              </li>
+              <li>
+                  <a class="nav-link text-white" href="/forum">QA</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{{ url_for('main.homepage_reports') }}">Reports</a></li>
+                  <li><a class="dropdown-item" href="/donate">Donate</a></li>
+                  <li><a class="dropdown-item" href="/faqs">FAQs</a></li>
+                    <!-- Submit Farm Info Button -->
+                  <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#farmInfoModal">
+                        Submit Farm Info
+                      </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
+            <!-- Additional Links and Profile Section -->
+                <div class="d-flex align-items-center">
+                    <!-- Notifications Icon, About and Contact Links -->
+                    <ul class="nav">
+                        <!-- Notifications Icon -->
+                        <li>
+                            <a href="/notifications" class="nav-link text-white position-relative">
+                                <i class="bi bi-bell"></i> <!-- Bootstrap icon for notifications -->
+                                <span class="badge bg-danger" style="position: absolute; top: -5px; right: -1px; display: none;">0</span>
+                            </a>
+                        </li>
+
+                        <li><a href="/about" class="nav-link text-white">About</a></li>
+                        <li><a href="/contact" class="nav-link text-white">Contact</a></li>
+                    </ul>
+                </div>
+
+              <!-- Profile Dropdown -->
+              <div class="dropdown">
+                <a href="#" class="d-block text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="{{ url_for('static', filename='uploads/' + current_user.avatar) if current_user.avatar else url_for('static', filename='images/default.png') }}" alt="Profile" width="40" height="40" class="rounded-circle border border-light">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                      <li>
+                        <a class="dropdown-item fw-bold text-danger" href="/dashboard">
+                          <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                      </li>
+                    {% endif %}
+                    <li>
+                      <a class="dropdown-item text-success fw-bold" href="/profile">
+                        <i class="bi bi-person"></i> Profile
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item text-primary fw-bold" href="/user_settings">
+                        <i class="bi bi-gear"></i> Settings
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item text-secondary fw-bold" href="/help-center">
+                        <i class="bi bi-question-circle"></i> Help Center
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item text-danger fw-bold" href="/logout">
+                        <i class="bi bi-box-arrow-right"></i> Log Out
+                      </a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <!-- Theme Toggle Button -->
+    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
+            <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
+                <use href="#circle-half"></use>
+            </svg>
+            <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="#sun-fill"></use>
+                    </svg>
+                    Light
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="#moon-stars-fill"></use>
+                    </svg>
+                    Dark
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="#circle-half"></use>
+                    </svg>
+                    Auto
+                </button>
+            </li>
+        </ul>
+    </div>
+
+            <!-- Page content will be injected here -->
+      <div class="container">{% block content %}{% endblock %}</div>
+      <div class="container">
+        <footer class="footer py-5">
+            <div class="row">
+                <div class="col-6 col-md-2 mb-3">
+                    <h5 class="footer-title">MkulimaAid</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a href="/about" class="footer-link">About</a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="/donate" class="footer-link">Donate</a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-md-2 mb-3">
+                    <h5 class="footer-title">For Farmers</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a href="/faqs" class="footer-link">FAQs</a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('main.videos') }}" class="footer-link">Video Library</a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="#" class="footer-link">Reports</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-md-2 mb-3">
+                    <h5 class="footer-title">Contact Us</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a href="mailto:{{ g.settings.contact_email }}" class="footer-link">
+                                <i class="bi bi-envelope-fill me-2"></i>Email: {{ g.settings.contact_email }}
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="tel:{{ g.settings.contact_phone }}" class="footer-link">
+                                <i class="bi bi-telephone-fill me-2"></i>Phone: {{ g.settings.contact_phone }}
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <span class="footer-link">
+                                <i class="bi bi-geo-alt-fill me-2"></i>Address: {{ g.settings.address }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-5 offset-md-1 mb-3">
+                    <form method="POST" action="{{ url_for('main.subscribe') }}">
+                        {% if form %}
+                            {{ form.hidden_tag() }}
+                        {% endif %}
+                        <h5 class="footer-title">Subscribe to Our Newsletter</h5>
+                        <p class="footer-subtext">Stay updated with the latest trends on crop diseases.</p>
+                        <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                            <input
+                                id="newsletter1"
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="Email address"
+                                required
+                            />
+                            <button class="btn btn-success" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row mt-4 text-center">
+                <div class="col">
+                    <a href="#" class="social-link me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-link me-3"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="social-link me-3"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+                <p class="footer-rights">&copy; 2025 MkulimaAid, Inc. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Farm Info Modal -->
+    <div class="modal fade" id="farmInfoModal" tabindex="-1" aria-labelledby="farmInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="farmInfoModalLabel">Submit Your Farm Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('main.submit_farm_info') }}">
+                        {{ farmers_form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ farmers_form.location.label(class="form-label") }}
+                            {{ farmers_form.location(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.farm_size.label(class="form-label") }}
+                            {{ farmers_form.farm_size(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.crop_types.label(class="form-label") }}
+                            {{ farmers_form.crop_types(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.description.label(class="form-label") }}
+                            {{ farmers_form.description(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ farmers_form.contact_info.label(class="form-label") }}
+                            {{ farmers_form.contact_info(class="form-control") }}
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Submit <i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Trigger the modal -->
+    <script>
+        // Show modal on page load
+        $(document).ready(function () {
+            $('#farmInfoModal').modal('show');
+        });
+    </script>
+
+
+
+
+    <!-- Enhanced Icons for Dark/Light Theme -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+      <!-- Sun Icon with Rays -->
+      <symbol id="sun-fill" viewBox="0 0 16 16">
+        <path
+          d="M8 12.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zM8 1a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 1zm0 12a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13zm7-5a.75.75 0 0 1 .75.75h1.5a.75.75 0 0 1 0-1.5h-1.5A.75.75 0 0 1 15 8zM1 8a.75.75 0 0 1 .75.75H3a.75.75 0 0 1 0-1.5H1.75A.75.75 0 0 1 1 8zm10.657-5.657a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 1 1-1.06 1.06l-1.06-1.06a.75.75 0 0 1 0-1.06zM3.282 11.718a.75.75 0 0 1 0 1.06l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.06-1.06a.75.75 0 0 1 1.06 0zm9.436 0a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 1 1-1.06 1.06l-1.06-1.06a.75.75 0 0 1 0-1.06zM3.282 3.282a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 1 1-1.06 1.06L3.282 4.343a.75.75 0 0 1 0-1.06z"
+        ></path>
+      </symbol>
+
+      <!-- Crescent Moon with Stars -->
+      <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+        <path
+          d="M7.5 0a.75.75 0 0 1 .75.75V2a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 7.5 0zm3.854 3.646a.5.5 0 0 1 0 .708L10.707 5l1.647 1.646a.5.5 0 0 1-.708.708L10 5.707 8.354 7.354a.5.5 0 1 1-.708-.708L9.293 5 7.646 3.354a.5.5 0 0 1 .708-.708L10 4.293l1.354-1.355a.5.5 0 0 1 .708 0zM5.2 3.497c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 7.344 16C2.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.438A7.208 7.208 0 0 0 5.2 3.497z"
+        ></path>
+      </symbol>
+
+      <!-- Improved Circle Half for Balance -->
+      <symbol id="circle-half" viewBox="0 0 16 16">
+        <path
+          d="M8 15.5A7.5 7.5 0 1 0 8 .5v15zM8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"
+        ></path>
+      </symbol>
+
+      <!-- Enhanced Checkmark -->
+      <symbol id="check2" viewBox="0 0 16 16">
+        <path
+          d="M14.854 3.646a.5.5 0 0 1 0 .708l-8 8a.5.5 0 0 1-.708 0l-4-4a.5.5 0 1 1 .708-.708L6 11.293l7.646-7.647a.5.5 0 0 1 .708 0z"
+        ></path>
+      </symbol>
+    </svg>
+
+
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"
+      ></script>
+      <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+      <script src="//cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+      <script src="{{ url_for('static', filename='js/show_users.js') }}"></script>
+      <script>
+          CKEDITOR.replace('newsletter_content');
+      </script>
+      <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="{{ url_for('static', filename='js/show_Top_identified.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/show_users.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/donut.js') }}"></script>
+      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+      <script src="{{ url_for('static', filename='js/notification.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/submit_disease.js') }}"></script>
+      <!-- Block for page-specific scripts -->
+      {% block scripts %}{% endblock %}
+
+
+    </div>
+  </body>
+</html>

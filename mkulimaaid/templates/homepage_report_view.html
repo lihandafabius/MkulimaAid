@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}View Report{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-success mb-4">{{ report.title }}</h1>
+    <p class="text-muted text-center">{{ report.description or "No description provided." }}</p>
+    <hr>
+    <div class="row mb-4">
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Forum Insights</h5>
+                    <p>Active Questions: <strong>{{ active_questions }}</strong></p>
+                    <p>Active Answers: <strong>{{ active_answers }}</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h3 class="text-center text-primary mb-4">Top Identified Diseases</h3>
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-success text-center">
+                        <tr>
+                            <th>Disease</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for disease in top_diseases %}
+                        <tr>
+                            <td>{{ disease[0] }}</td>
+                            <td>{{ disease[1] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-success text-center">
+                        <tr>
+                            <th>Disease</th>
+                            <th>Average Confidence (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for confidence in avg_confidence %}
+                        <tr>
+                            <td>{{ confidence[0] }}</td>
+                            <td>{{ confidence[1] | round(2) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-center text-primary mb-4">Most Active Users</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Username</th>
+                    <th>Activity Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in most_active_users %}
+                <tr>
+                    <td>{{ user[0] }}</td>
+                    <td>{{ user[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="text-center text-primary mb-4">Popular Crops</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Crop Type</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crop in popular_crops %}
+                <tr>
+                    <td>{{ crop[0] }}</td>
+                    <td>{{ crop[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="text-center text-primary mb-4">Regional Disease Distribution</h3>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>Region</th>
+                    <th>Disease Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for region in regional_disease_distribution %}
+                <tr>
+                    <td>{{ region[0] }}</td>
+                    <td>{{ region[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('main.download_report', report_id=report.id) }}" class="btn btn-warning fw-bold">
+            <i class="fas fa-download"></i> Download Report
+        </a>
+        <a href="{{ url_for('main.homepage_reports') }}" class="btn btn-outline-success fw-bold">
+            <i class="fas fa-arrow-left"></i> Back to Reports <i class="fas fa-file-alt"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

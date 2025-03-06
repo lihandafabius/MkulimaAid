@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mt-4 text-success fw-bold">Farmer Profile Overview</h2>
+
+<div class="row mt-4">
+    <!-- Profile Section -->
+    <div class="col-lg-4">
+    <div class="farmer-info card shadow-sm border-success">
+        <div class="card-body">
+           <div class="text-center">
+            {% if farmer.avatar %}
+                <img class="rounded-circle mt-3 shadow-lg border border-3 border-success"
+                     width="150px" height="150px"
+                     src="{{ url_for('static', filename='uploads/' + farmer.avatar) }}"
+                     alt="Profile Picture">
+            {% else %}
+                <img class="rounded-circle mt-3 shadow-lg border border-3 border-secondary"
+                     width="150px" height="150px"
+                     src="{{ url_for('static', filename='images/default.png') }}"
+                     alt="Default Avatar">
+            {% endif %}
+            <h4 class="mt-3">{{ farmer.fullname }}</h4>
+        </div>
+        <hr>
+        <div>
+            <strong>Farm Location:</strong>
+                {{ farmer_details.location if farmer_details.location else "The farmer has not provided this data." }}
+            </p>
+            <p>
+                <strong>Farm Size:</strong>
+                {{ farmer_details.farm_size ~ " acres" if farmer_details.farm_size else "The farmer has not provided this data." }}
+            </p>
+            <p>
+                <strong>Crop Types:</strong>
+                {{ farmer_details.crop_types if farmer_details.crop_types else "The farmer has not provided this data." }}
+            </p>
+            <p>
+                <strong>Contact Info:</strong>
+                {{ farmer_details.contact_info if farmer_details.contact_info else "The farmer has not provided this data." }}
+            </p>
+            <p>
+                <strong>Joined:</strong>
+                {{ farmer.date_joined.strftime('%B %d, %Y') if farmer.date_joined else "The farmer has not provided this data." }}
+            </p>
+            {% if farmer_details.description %}
+                <p><strong>About:</strong> {{ farmer_details.description }}</p>
+            {% else %}
+                <p><strong>About:</strong> The farmer has not provided this data.</p>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Statistics Section -->
+    <div class="col-lg-8">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm stats-card">
+                    <div class="card-body text-center">
+                        <h5>Total Questions Asked</h5>
+                        <h3 class="text-primary">{{ total_questions }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm stats-card">
+                    <div class="card-body text-center">
+                        <h5>Total Answers Given</h5>
+                        <h3 class="text-success">{{ total_answers }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm stats-card">
+                    <div class="card-body text-center">
+                        <h5>Total Comments</h5>
+                        <h3 class="text-warning">{{ total_comments }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm stats-card">
+                    <div class="card-body text-center">
+                        <h5>Total Messages Sent</h5>
+                        <h3 class="text-danger">{{ total_messages }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="row">
+            {% if topics_values %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm stats-card">
+                        <div class="card-body">
+                            <h5>Topics Posted</h5>
+                            <canvas id="topicsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if questions_values and answers_values %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm stats-card">
+                        <div class="card-body">
+                            <h5>Questions & Answers Over Time</h5>
+                            <canvas id="questionsAnswersChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if messages_values %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm stats-card">
+                        <div class="card-body">
+                            <h5>Messages Sent Over Time</h5>
+                            <canvas id="messagesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('main.farmers') }}" class="btn btn-outline-success fw-bold">
+          <i class="fas fa-arrow-left"></i> Back to Farmers <i class="fas fa-users"></i>
+      </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Prepare data for Questions & Answers chart
+    const questionsAnswersData = {
+        labels: {{ questions_labels | tojson }},
+        datasets: [
+            {
+                label: 'Questions',
+                data: {{ questions_values | tojson }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+            },
+            {
+                label: 'Answers',
+                data: {{ answers_values | tojson }},
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+            }
+        ]
+    };
+
+    if (questionsAnswersData.labels.length) {
+        new Chart(document.getElementById('questionsAnswersChart').getContext('2d'), {
+            type: 'line',
+            data: questionsAnswersData,
+            options: { responsive: true }
+        });
+    }
+
+    // Prepare data for Messages chart
+    const messagesData = {
+        labels: {{ messages_labels | tojson }},
+        datasets: [{
+            label: 'Messages',
+            data: {{ messages_values | tojson }},
+            backgroundColor: 'rgba(255, 206, 86, 0.5)',
+            borderColor: 'rgba(255, 206, 86, 1)',
+            borderWidth: 1,
+        }]
+    };
+
+    if (messagesData.labels.length) {
+        new Chart(document.getElementById('messagesChart').getContext('2d'), {
+            type: 'line',
+            data: messagesData,
+            options: { responsive: true }
+        });
+    }
+
+    // Prepare data for Topics chart
+// Prepare data for Topics chart with different colors and sorted labels
+const topicsData = {
+    labels: {{ topics_labels | tojson }},
+    datasets: [{
+        label: 'Interactions',
+        data: {{ topics_values | tojson }},
+        backgroundColor: generateRandomColors({{ topics_labels | length }}),
+        borderColor: 'rgba(0, 0, 0, 0.1)', // Slight border for visibility
+        borderWidth: 1,
+    }]
+};
+
+// Sort labels and values in descending order based on interactions (optional)
+const sortedLabels = [...topicsData.labels].sort((a, b) => {
+    const aIndex = topicsData.labels.indexOf(a);
+    const bIndex = topicsData.labels.indexOf(b);
+    return topicsData.datasets[0].data[bIndex] - topicsData.datasets[0].data[aIndex];
+});
+
+const sortedData = sortedLabels.map(label => {
+    const index = topicsData.labels.indexOf(label);
+    return topicsData.datasets[0].data[index];
+});
+
+topicsData.labels = sortedLabels;
+topicsData.datasets[0].data = sortedData;
+
+if (topicsData.labels.length) {
+    new Chart(document.getElementById('topicsChart').getContext('2d'), {
+        type: 'pie',
+        data: topicsData,
+        options: { responsive: true }
+    });
+}
+
+// Function to generate random colors for each segment
+function generateRandomColors(count) {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+        const color = 'rgba(' +
+            Math.floor(Math.random() * 256) + ',' +
+            Math.floor(Math.random() * 256) + ',' +
+            Math.floor(Math.random() * 256) + ',0.5)';
+        colors.push(color);
+    }
+    return colors;
+}
+</script>
+
+{% endblock %}

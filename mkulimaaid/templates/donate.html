@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center">
+        <h1 class="display-4 text-success fw-bold">Support MkulimaAid</h1>
+        <p class="lead">Your generosity helps us empower farmers with essential tools and resources for healthier crops and sustainable agriculture.</p>
+    </div>
+
+    <!-- Donation Options Section -->
+    <div class="row text-center mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">One-Time Donation</h5>
+                    <p>Make a one-time contribution to support our mission of transforming agriculture for smallholder farmers. </p>
+                    <a href="#" class="btn btn-outline-primary fw-bold">Donate Now <i class="fas fa-donate"></i> </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Support</h5>
+                    <p>Become a monthly supporter and help us maintain consistent support for farmers year-round nationally and globally.</p>
+                    <a href="#" class="btn btn-outline-success fw-bold">Become a Supporter <i class="fas fa-hands-helping"></i> </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">In-Kind Donations</h5>
+                    <p>Support MkulimaAid with equipment, technology, or resources that directly benefit our work with farmers and agriculture enthusiasts.</p>
+                    <a href="#" class="btn btn-outline-info fw-bold"> Learn More <i class="fas fa-info-circle"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donation Impact Section -->
+    <div class="mt-5">
+        <h2 class="text-center">Why Your Support Matters</h2>
+        <p class="text-center lead">Every donation makes a direct impact on farmers by providing tools, resources, and support that they need to succeed.</p>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h3 class="text-primary">Crop Disease Education</h3>
+                <p>Your donation helps expand our educational materials and enhance disease detection accuracy for better yields.</p>
+            </div>
+            <div class="col-md-4">
+                <h3 class="text-success">Farmer Outreach</h3>
+                <p>We reach more farmers in remote areas, helping them access modern agricultural techniques and expert advice.</p>
+            </div>
+            <div class="col-md-4">
+                <h3 class="text-danger">Continuous Innovation</h3>
+                <p>With your help, we invest in innovative solutions that make MkulimaAid more efficient and beneficial to farmers.</p>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.upload') }}"
+           class="btn btn-outline-success fw-bold btn-lg">
+           <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
+        </a>
+    </div>
+
+</div>
+{% endblock %}
