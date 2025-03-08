@@ -1023,8 +1023,17 @@ body.light-theme {
 }
 
 /* Dark Theme - Uses Default Bootstrap Dark Mode */
+
+/* Dark Theme - Enhanced Dark Blue Background */
 body.dark-theme {
-    /* No need to manually set variables, Bootstrap’s default dark theme applies */
+    --feature-bg: #0d1117;  /* ✅ Darker Blue Theme Background */
+    --feature-bg-hover: #161b22; /* Slightly lighter for hover effects */
+    --feature-text: #c9d1d9;
+    --icon-color: #58a6ff;
+    --faq-body-bg: #0d1117;
+    --faq-body-text: #e6edf3;
+    --card-bg: #161b22; /* Darker blue background for cards */
+    --card-border: #30363d;
 }
 
 
