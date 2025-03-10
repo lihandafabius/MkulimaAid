@@ -74,12 +74,7 @@
                 <label class="form-check-label" for="rememberMe">Remember me</label>
             </div>
 
-            <div class="mb-3">
-                {{ form.recaptcha }}
-                {% if form.recaptcha.errors %}
-                    <div class="text-danger small">{{ form.recaptcha.errors[0] }}</div>
-                {% endif %}
-            </div>
+
 
             <button class="btn btn-success fw-bold w-100 py-2" type="submit">Sign in</button>
             <p class="mt-5 mb-3 text-body-primary">© 2025</p>
