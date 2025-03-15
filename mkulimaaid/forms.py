@@ -255,3 +255,10 @@ class NotificationSettingsForm(FlaskForm):
     submit = SubmitField('Save Settings')
 
 
+class SMSForm(FlaskForm):
+    sms_message = TextAreaField(
+        'SMS Message',
+        validators=[DataRequired(), Length(min=5, max=160)],  # SMS should be short
+        render_kw={"placeholder": "Write your SMS here..."}
+    )
+    submit = SubmitField('Send SMS')

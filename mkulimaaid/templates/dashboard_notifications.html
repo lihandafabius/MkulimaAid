@@ -26,6 +26,24 @@
     </div>
   </div>
 
+    <!-- SMS Notification Section -->
+  <div class="card shadow-sm mb-4 mt-2">
+    <div class="card-body">
+      <h3 class="mb-3 text-success">Send SMS Notification</h3>
+      <p class="text-muted">Notify farmers about trending crop diseases via SMS.</p>
+      <form method="POST" action="{{ url_for('main.send_sms_notification') }}">
+          {{ sms_form.hidden_tag() }}
+          <div class="form-group">
+              <label for="sms_message">Message</label>
+              {{ sms_form.sms_message(class="form-control") }}
+          </div>
+          <button type="submit" class="btn btn-success">{{ sms_form.submit.label }}</button>
+      </form>
+
+    </div>
+  </div>
+
+
   <!-- Create Notification Button -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 class="text-success fw-bold">Push Notifications</h3>

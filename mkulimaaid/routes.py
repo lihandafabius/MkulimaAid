@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from mkulimaaid.forms import (UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm,
                               ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm,
                               QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm,
-                              NotificationSettingsForm)
+                              NotificationSettingsForm, SMSForm)
 from config import Config
 from PIL import Image
 import torch
@@ -26,6 +26,7 @@ import re
 from flask import jsonify
 from sqlalchemy import func
 from weasyprint import HTML
+from twilio.rest import Client
 
 
 main = Blueprint('main', __name__)
@@ -1983,10 +1984,12 @@ def unread_notification_count():
 @login_required
 @admin_required
 def dashboard_notifications():
+    print("Dashboard notifications route is being executed")  # Debugging
     farmers_form = FarmersForm()
-    # Pagination setup
+    sms_form = SMSForm()
+
     page = request.args.get('page', 1, type=int)
-    per_page = 10  # Number of notifications per page
+    per_page = 10
     pagination = Notification.query.order_by(Notification.date_sent.desc()).paginate(page=page, per_page=per_page)
     notifications = pagination.items
 
@@ -1999,7 +2002,8 @@ def dashboard_notifications():
         notification_form=notification_form,
         farmers_form=farmers_form,
         form=form,
-        pagination=pagination
+        pagination=pagination,
+        sms_form=sms_form  # Ensure this is passed
     )
 
 
@@ -2019,6 +2023,53 @@ def edit_notification(notification_id):
         return redirect(url_for('main.dashboard_notifications'))
 
     return render_template('edit_notification.html', form=form, notification=notification, farmers_form=farmers_form)
+
+
+@main.route('/send-sms', methods=['POST'])
+@login_required
+@admin_required
+def send_sms_notification():
+    form = SMSForm()
+    if form.validate_on_submit():
+        message_body = form.sms_message.data
+
+        # Twilio credentials (ensure they are set as environment variables)
+        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+        twilio_number = os.getenv('TWILIO_PHONE_NUMBER')
+
+        if not all([account_sid, auth_token, twilio_number]):
+            flash('SMS service is not properly configured.', 'danger')
+            return redirect(url_for('main.dashboard_notifications'))
+
+        client = Client(account_sid, auth_token)
+
+        # Fetch phone numbers from User table
+        users = User.query.filter(User.phone.isnot(None)).all()
+        sent_count = 0
+        failed_count = 0
+
+        for user in users:
+            if user.phone:  # Ensure phone number exists
+                try:
+                    client.messages.create(
+                        body=message_body,
+                        from_=twilio_number,
+                        to=user.phone
+                    )
+                    sent_count += 1
+                except Exception as e:
+                    failed_count += 1
+                    flash(f"Failed to send SMS to {user.phone}: {str(e)}", 'danger')
+
+        flash(f'SMS notifications sent successfully to {sent_count} users!', 'success')
+        if failed_count > 0:
+            flash(f'Failed to send {failed_count} messages. Check the logs for details.', 'warning')
+
+        return redirect(url_for('main.dashboard_notifications'))
+
+    flash('Failed to send SMS. Please check the form.', 'danger')
+    return redirect(url_for('main.dashboard_notifications'))
 
 
 @main.route('/dashboard/notifications/delete/<int:notification_id>', methods=['POST'])
