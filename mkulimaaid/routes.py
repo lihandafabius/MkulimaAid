@@ -225,12 +225,11 @@ def disease_detail(disease_id):
     return render_template('disease_detail.html', disease=disease, farmers_form=farmers_form)
 
 
-# Login route with timeout protection
 @main.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        flash('You are already logged in!', 'info')
-        return redirect(url_for('main.upload'))
+        flash("You are already logged in!", "info")
+        return redirect(url_for("main.upload"))
 
     form = LoginForm()
 
@@ -251,9 +250,13 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user)
+            remember_me = request.form.get("rememberMe") == "on"  # Check if 'Remember Me' is selected
+            login_user(user, remember=remember_me)  # Pass the remember flag
+
             session.pop("login_start_time", None)  # Remove login timer on success
             session["last_active"] = datetime.now().isoformat()
+            session["remember_me"] = remember_me  # Store 'Remember Me' choice in session
+
             flash("Login successful!", "success")
             next_page = request.args.get("next")
             return redirect(next_page) if next_page else redirect(url_for("main.upload"))
@@ -309,9 +312,15 @@ def dashboard():
 @main.route("/logout")
 @login_required
 def logout():
-    logout_user()
-    flash('You have been logged out.', 'success')
-    return redirect(url_for('main.login'))
+    # Clear session data related to login
+    session.pop("remember_me", None)  # Remove remember_me from session
+    session.pop("last_active", None)  # Remove last activity tracking
+    session.pop("login_start_time", None)  # Remove login timeout tracking
+
+    logout_user()  # Logout the user
+    flash("You have been logged out.", "success")
+
+    return redirect(url_for("main.login"))
 
 
 @main.route('/farmers')
