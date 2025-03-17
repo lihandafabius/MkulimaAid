@@ -293,8 +293,8 @@
                     <form method="POST" action="{{ url_for('main.submit_farm_info') }}">
                         {{ farmers_form.hidden_tag() }}
                         <div class="mb-3">
-                            {{ farmers_form.location.label(class="form-label") }}
-                            {{ farmers_form.location(class="form-control") }}
+                            <label for="location" class="form-label">Region</label>
+                            {{ farmers_form.location(class="form-select") }}
                         </div>
                         <div class="mb-3">
                             {{ farmers_form.farm_size.label(class="form-label") }}
