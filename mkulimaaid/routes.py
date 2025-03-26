@@ -14,7 +14,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from mkulimaaid.models import (User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question,
                                Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification,
                                UserNotificationSetting, UserNotification, Report)
-from mkulimaaid import db, bcrypt, login_manager
+from mkulimaaid import db, bcrypt, login_manager, mail
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import bleach
@@ -27,6 +27,7 @@ from flask import jsonify
 from sqlalchemy import func
 from weasyprint import HTML
 from twilio.rest import Client
+from flask_mail import Message
 
 
 main = Blueprint('main', __name__)
@@ -911,21 +912,22 @@ def send_newsletter():
     content = request.form.get('content')
     subscribers = Subscriber.query.all()
 
+    if not subscribers:
+        flash('No subscribers found!', 'warning')
+        return redirect(url_for('main.dashboard_notifications'))
+
     for subscriber in subscribers:
-        message = Mail(
-            from_email='your-email@example.com',
-            to_emails=subscriber.email,
-            subject='New Trending Crop Disease Detected!',
-            plain_text_content=content
+        msg = Message(
+            subject="New Trending Crop Disease Detected!",
+            recipients=[subscriber.email],
+            body=content
         )
         try:
-            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-            response = sg.send(message)
-            print(response.status_code)
+            mail.send(msg)
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error sending email to {subscriber.email}: {e}")
 
-    flash('Notification sent to subscribers successfully!', 'success')
+    flash('Newsletter sent to all subscribers successfully!', 'success')
     return redirect(url_for('main.dashboard_notifications'))
 
 

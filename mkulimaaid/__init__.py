@@ -6,6 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_ckeditor import CKEditor  # Import CKEditor
+from flask_mail import Mail
 
 # Initialize extensions
 csrf = CSRFProtect()
@@ -14,6 +15,8 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 migrate = Migrate()
 ckeditor = CKEditor()  # Initialize CKEditor
+mail = Mail()  # Initialize Flask-Mail globally
+
 
 def create_app():
     app = Flask(__name__)
@@ -27,6 +30,7 @@ def create_app():
     login_manager.login_message = "Please log in to access MkulimaAid."
     migrate.init_app(app, db)
     ckeditor.init_app(app)  # Initialize CKEditor with the app
+    mail.init_app(app)  # Initialize Flask-Mail with the app
 
     # Configure CKEditor file uploader endpoint
     app.config['CKEDITOR_FILE_UPLOADER'] = 'main.upload'  # Set the correct endpoint
