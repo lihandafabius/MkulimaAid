@@ -920,7 +920,7 @@ def send_newsletter():
         msg = Message(
             subject="New Trending Crop Disease Detected!",
             recipients=[subscriber.email],
-            body=content
+            html=content
         )
         try:
             mail.send(msg)

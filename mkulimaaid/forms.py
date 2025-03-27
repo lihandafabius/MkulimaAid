@@ -121,6 +121,7 @@ class ProfileForm(FlaskForm):
             if user:
                 raise ValidationError('That email is already in use. Please choose a different one.')
 
+
 # Password change form
 class ChangePasswordForm(FlaskForm):
     current_password = PasswordField('Current Password', validators=[DataRequired()])
