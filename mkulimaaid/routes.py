@@ -23,7 +23,7 @@ from collections import Counter
 from mkulimaaid.utils import save_avatar
 from mkulimaaid.decorators import admin_required
 import re
-from flask import jsonify
+from flask import jsonify, url_for
 from sqlalchemy import func
 from weasyprint import HTML
 from twilio.rest import Client
@@ -905,6 +905,8 @@ def subscribe():
     return redirect(url_for('main.upload'))
 
 
+
+
 @main.route('/send_newsletter', methods=['POST'])
 @login_required
 @admin_required
@@ -916,11 +918,29 @@ def send_newsletter():
         flash('No subscribers found!', 'warning')
         return redirect(url_for('main.dashboard_notifications'))
 
+    # Generate absolute URL for logo
+    logo_url = url_for('static', filename='images/logo.png', _external=True)
+
+    # Email HTML Content with Better Styling
+    email_content = f"""
+    <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; color: #333;">
+        <div style="text-align: center;">
+            <img src="{logo_url}" alt="MkulimaAid Logo" width="120" style="margin-bottom: 10px;"><br>
+        </div>
+        <div style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
+            {content}
+        </div>
+        <p style="text-align: center; font-size: 12px; color: #777; margin-top: 10px;">
+            &copy; 2025 MkulimaAid. All rights reserved.
+        </p>
+    </div>
+    """
+
     for subscriber in subscribers:
         msg = Message(
             subject="New Trending Crop Disease Detected!",
             recipients=[subscriber.email],
-            html=content
+            html=email_content
         )
         try:
             mail.send(msg)
