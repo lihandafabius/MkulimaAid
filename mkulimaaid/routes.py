@@ -104,8 +104,17 @@ def update_trending_status():
     db.session.commit()
 
 
-# Home page and file upload handling
-@main.route('/', methods=['GET', 'POST'])
+# Home page
+@main.route('/')
+def home():
+    farmers_form = FarmersForm()
+    return render_template('about.html', farmers_form=farmers_form)  # Directly show About page as the landing page
+
+
+
+
+# file upload handling
+@main.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     form = UploadForm()
@@ -166,7 +175,6 @@ def upload():
         trending_identified_diseases=trending_identified_diseases,
         farmers_form=farmers_form
     )
-
 
 # Serve the uploaded files
 @main.route('/uploads/<filename>')

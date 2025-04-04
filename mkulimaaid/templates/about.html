@@ -14,42 +14,57 @@
             <div class="col-lg-6">
                 <img src="{{ url_for('static', filename='images/pic3.avif') }}" alt="Farming" class="img-fluid rounded shadow">
             </div>
-            <div class="col-lg-6">
-                <h2 class="display-6">Our Mission</h2>
-                <p>
-                    At MkulimaAid, we’re transforming agricultural practices by equipping farmers with the tools they need for sustainable crop health management.
-                    With advanced technology and community support, MkulimaAid simplifies disease detection and offers actionable advice to improve crop yield and quality.
-                </p>
+        <div class="col-lg-6">
+            <h2 class="display-6 text-success">Our Mission</h2>
+            <p>
+                At <strong>MkulimaAid</strong>, we believe that every farmer deserves access to cutting-edge technology and reliable information
+                to ensure a thriving agricultural future. Our mission is to empower farmers with <strong>AI-driven disease detection</strong>,
+                expert advice, and a supportive community to combat crop challenges effectively.
+            </p>
+            <p>
+                By combining <strong>machine learning</strong> with <strong>agricultural expertise</strong>, MkulimaAid helps farmers detect diseases
+                early, take preventive action, and maximize crop productivity. Together, we’re building a future where farmers are equipped with the
+                knowledge and tools needed for sustainable and profitable farming.
+            </p>
+        </div>
+
+        </div>
+
+
+        <!-- Why MkulimaAid Section -->
+        <div class="row my-5">
+            <div class="col text-center">
+                <h2 class="display-6 text-success">Why Choose MkulimaAid?</h2>
+                <p>We are dedicated to revolutionizing agriculture with cutting-edge technology and community-driven solutions.</p>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="feature-box p-4 rounded shadow">
+                    <i class="bi bi-lightbulb display-4 feature-icon text-success"></i>
+                    <h4>Smart AI-Powered Insights</h4>
+                    <p>Our advanced AI technology provides fast and accurate crop disease detection.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box p-4 rounded shadow">
+                    <i class="bi bi-people display-4 feature-icon text-success"></i>
+                    <h4>Community & Expert Support</h4>
+                    <p>Connect with fellow farmers and agriculture experts to exchange knowledge.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box p-4 rounded shadow">
+                    <i class="bi bi-tree display-4 feature-icon text-success"></i>
+                    <h4>Sustainable Farming</h4>
+                    <p>We promote eco-friendly solutions to protect crops and improve long-term productivity.</p>
+                </div>
             </div>
         </div>
 
-        <!-- Core Features Section -->
-        <div class="row text-center my-5">
-            <div class="col-md-4">
-                <div class="feature-box p-4 rounded">
-                    <i class="bi bi-camera2 display-4 feature-icon"></i>
-                    <h4>Image-Based Disease Detection</h4>
-                    <p>Take a picture, upload it, and instantly identify crop diseases with recommended treatments.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-box p-4 rounded">
-                    <i class="bi bi-chat-dots display-4 feature-icon"></i>
-                    <h4>Community Q&A Forum</h4>
-                    <p>Connect with other farmers, exchange advice, and share best practices for crop management.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-box p-4 rounded">
-                    <i class="bi bi-shield-lock display-4 feature-icon"></i>
-                    <h4>Secure and Personalized</h4>
-                    <p>Our secure authentication ensures that your data and profile are kept safe and private.</p>
-                </div>
-            </div>
-        </div>
 
         <!-- Our Story Section -->
-        <div class="row mb-5">
+        <div class="row mb-5, mt-4">
             <div class="col-lg-12 text-center">
                 <h2 class="display-6">Our Story</h2>
                 <p>
@@ -85,11 +100,14 @@
         <!-- Call to Action Section -->
         <div class="row text-center my-5">
             <div class="col">
-                <h2 class="display-6">Join Our Community</h2>
-                <p>Become a part of the MkulimaAid family. Share, learn, and grow with us as we work together towards a brighter future in agriculture.</p>
-                <a href="{{ url_for('main.register') }}" class="btn btn-outline-success btn-lg mt-3 fw-bold">Get Started <i class="fas fa-rocket"></i></a>
+                <h2 class="display-6 text-success">Join the MkulimaAid Revolution</h2>
+                <p>Be part of a growing community of farmers, experts, and innovators working towards a healthier and more productive future in agriculture.</p>
+                <a href="{{ url_for('main.register') }}" class="btn btn-success btn-lg mt-3 fw-bold">
+                    Get Started <i class="fas fa-seedling"></i>
+                </a>
             </div>
         </div>
+
     </div>
 </section>
 {% endblock %}
