@@ -176,6 +176,7 @@ def upload():
         farmers_form=farmers_form
     )
 
+
 # Serve the uploaded files
 @main.route('/uploads/<filename>')
 def uploaded_file(filename):
@@ -913,8 +914,6 @@ def subscribe():
     return redirect(url_for('main.upload'))
 
 
-
-
 @main.route('/send_newsletter', methods=['POST'])
 @login_required
 @admin_required
@@ -1491,6 +1490,7 @@ def about():
 
 
 @main.route("/contact", methods=["GET", "POST"])
+@login_required
 def contact():
     form = ContactForm()
     farmers_form = FarmersForm()
