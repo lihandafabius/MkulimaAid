@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+
 class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +23,6 @@ class User(UserMixin, db.Model):  # Use db.Model for SQLAlchemy models
     # Relationship with ContactMessages
     contact_messages = db.relationship('ContactMessage', backref='user', lazy=True)
 
-
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
@@ -38,7 +38,6 @@ class Settings(db.Model):
     contact_phone = db.Column(db.String(20), nullable=False, default="123-456-7890")
     address = db.Column(db.Text, nullable=True, default="123 Main St, City, Country")
     maintenance_mode = db.Column(db.Boolean, default=False)
-
 
     @staticmethod
     def get_settings():
@@ -87,7 +86,6 @@ class Comments(db.Model):
     user = db.relationship('User', backref=db.backref('comments', lazy=True))
 
 
-
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -130,7 +128,6 @@ class TopicComment(db.Model):
     author = db.relationship('User', backref=db.backref('topic_comments', lazy=True), foreign_keys=[author_id])
 
 
-
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
@@ -143,6 +140,7 @@ class Question(db.Model):
 
     def __repr__(self):
         return f'<Question {self.title}>'
+
 
 class Answer(db.Model):
     __tablename__ = 'answers'
@@ -159,7 +157,6 @@ class Answer(db.Model):
         return f'<Answer by {self.author.username}>'
 
 
-
 class ContactMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -169,7 +166,6 @@ class ContactMessage(db.Model):
     date_sent = db.Column(db.DateTime, default=datetime.utcnow)
     seen = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to User
-
 
     def __repr__(self):
         return f"ContactMessage('{self.name}', '{self.email}', '{self.subject}')"

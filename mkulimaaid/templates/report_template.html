@@ -62,13 +62,13 @@
         <p>Generated on: {{ datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') }}</p>
     </header>
 
-    <section class="section">
-        <h2>Forum Insights</h2>
-        <ul class="list">
-            <li><strong>Active Questions:</strong> {{ active_questions }}</li>
-            <li><strong>Active Answers:</strong> {{ active_answers }}</li>
-        </ul>
-    </section>
+<!--    <section class="section">-->
+<!--        <h2>Forum Insights</h2>-->
+<!--        <ul class="list">-->
+<!--            <li><strong>Active Questions:</strong> {{ active_questions }}</li>-->
+<!--            <li><strong>Active Answers:</strong> {{ active_answers }}</li>-->
+<!--        </ul>-->
+<!--    </section>-->
 
     <section class="section">
         <h2>Top Diseases</h2>
@@ -150,24 +150,24 @@
         </table>
     </section>
 
-    <section class="section">
-        <h2>Most Active Users</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Activity Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for username, activity_count in most_active_users %}
-                <tr>
-                    <td>{{ username }}</td>
-                    <td>{{ activity_count }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </section>
+<!--    <section class="section">-->
+<!--        <h2>Most Active Users</h2>-->
+<!--        <table class="table">-->
+<!--            <thead>-->
+<!--                <tr>-->
+<!--                    <th>Username</th>-->
+<!--                    <th>Activity Count</th>-->
+<!--                </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--                {% for username, activity_count in most_active_users %}-->
+<!--                <tr>-->
+<!--                    <td>{{ username }}</td>-->
+<!--                    <td>{{ activity_count }}</td>-->
+<!--                </tr>-->
+<!--                {% endfor %}-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </section>-->
 </body>
 </html>

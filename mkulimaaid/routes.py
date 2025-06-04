@@ -111,8 +111,6 @@ def home():
     return render_template('about.html', farmers_form=farmers_form)  # Directly show About page as the landing page
 
 
-
-
 # file upload handling
 @main.route('/upload', methods=['GET', 'POST'])
 @login_required
