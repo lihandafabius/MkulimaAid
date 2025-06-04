@@ -1,12 +1,13 @@
-from flask import Flask
+from flask import Flask, request, session
 from flask_migrate import Migrate
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask_ckeditor import CKEditor  # Import CKEditor
+from flask_ckeditor import CKEditor
 from flask_mail import Mail
+from flask_babel import Babel, _  # Import Babel
 
 # Initialize extensions
 csrf = CSRFProtect()
@@ -14,33 +15,41 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 migrate = Migrate()
-ckeditor = CKEditor()  # Initialize CKEditor
-mail = Mail()  # Initialize Flask-Mail globally
+ckeditor = CKEditor()
+mail = Mail()
+babel = Babel()  # Initialize Babel
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Initialize extensions with the app
+    # Initialize extensions
     csrf.init_app(app)
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_message = "Please log in to access MkulimaAid."
     migrate.init_app(app, db)
-    ckeditor.init_app(app)  # Initialize CKEditor with the app
-    mail.init_app(app)  # Initialize Flask-Mail with the app
+    ckeditor.init_app(app)
+    mail.init_app(app)
+    babel.init_app(app)  # Initialize Babel with app
 
-    # Configure CKEditor file uploader endpoint
-    app.config['CKEDITOR_FILE_UPLOADER'] = 'main.upload'  # Set the correct endpoint
-
-    # Set the login view
+    # Login configuration
     login_manager.login_view = 'main.login'
+    login_manager.login_message = _("Please log in to access MkulimaAid.")  # Translatable
     login_manager.login_message_category = 'info'
 
-    # Import and register blueprints after initialization
+    # CKEditor file uploader endpoint
+    app.config['CKEDITOR_FILE_UPLOADER'] = 'main.upload'
+
+    # Blueprint registration
     from mkulimaaid.routes import main
     app.register_blueprint(main)
 
     return app
+
+
+# Locale selection logic
+@babel.localeselector
+def get_locale():
+    return session.get('lang') or request.accept_languages.best_match(Config.LANGUAGES)
