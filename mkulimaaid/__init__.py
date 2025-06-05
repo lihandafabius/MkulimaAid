@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_ckeditor import CKEditor
 from flask_mail import Mail
-from flask_babel import Babel, _  # Import Babel
+from flask_babel import Babel, _
 
 # Initialize extensions
 csrf = CSRFProtect()
@@ -17,8 +17,9 @@ login_manager = LoginManager()
 migrate = Migrate()
 ckeditor = CKEditor()
 mail = Mail()
-babel = Babel()  # Initialize Babel
 
+def get_locale():
+    return session.get('lang') or request.accept_languages.best_match(Config.LANGUAGES)
 
 def create_app():
     app = Flask(__name__)
@@ -32,7 +33,9 @@ def create_app():
     migrate.init_app(app, db)
     ckeditor.init_app(app)
     mail.init_app(app)
-    babel.init_app(app)  # Initialize Babel with app
+
+    # Initialize Babel with the locale selector
+    babel = Babel(app, locale_selector=get_locale)
 
     # Login configuration
     login_manager.login_view = 'main.login'
@@ -47,9 +50,3 @@ def create_app():
     app.register_blueprint(main)
 
     return app
-
-
-# Locale selection logic
-@babel.localeselector
-def get_locale():
-    return session.get('lang') or request.accept_languages.best_match(Config.LANGUAGES)
