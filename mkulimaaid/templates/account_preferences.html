@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-success mb-4">Account Preferences</h2>
+    <form method="POST" action="{{ url_for('main.account_preferences') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group mb-4">
+            <label for="language">Select Language</label>
+            {{ form.language(class="form-control") }}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">Save Preferences</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('main.farmers') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Settings
+        </a>
+    </div>
+</div>
+{% endblock %}

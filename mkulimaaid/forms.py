@@ -302,6 +302,13 @@ class NotificationForm(FlaskForm):
     submit = SubmitField('Update')
 
 
+class LanguagePreferenceForm(FlaskForm):
+    language = SelectField(
+        'Language',
+        choices=[(lang, name) for lang, name in Config.LANGUAGES.items()],
+        validators=[DataRequired()]
+    )
+    submit = SubmitField('Save Preferences')
 class NotificationSettingsForm(FlaskForm):
     email_notifications = BooleanField('Enable Email Notifications')
     push_notifications = BooleanField('Enable Push Notifications')

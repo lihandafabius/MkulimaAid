@@ -18,8 +18,10 @@ migrate = Migrate()
 ckeditor = CKEditor()
 mail = Mail()
 
+
 def get_locale():
     return session.get('lang') or request.accept_languages.best_match(Config.LANGUAGES)
+
 
 def create_app():
     app = Flask(__name__)

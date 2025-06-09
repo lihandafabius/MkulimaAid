@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from mkulimaaid.forms import (UploadForm, LoginForm, RegistrationForm, AdminForm, DiseaseForm, ProfileForm,
                               ChangePasswordForm, CommentForm, VideoForm, TopicForm, DeleteForm, AnswerForm,
                               QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm,
-                              NotificationSettingsForm, SMSForm)
+                              NotificationSettingsForm, SMSForm, LanguagePreferenceForm)
 from config import Config
 from PIL import Image
 import torch
@@ -2136,3 +2136,31 @@ def user_settings():
 def help_center():
     farmers_form = FarmersForm()
     return render_template('help_center.html', farmers_form=farmers_form, title="Help Center")
+
+
+@main.route('/account/preferences', methods=['GET', 'POST'])
+@login_required
+def account_preferences():
+    form = LanguagePreferenceForm()
+    farmers_form = FarmersForm()
+    if form.validate_on_submit():
+        selected_lang = form.language.data
+        session['lang'] = selected_lang
+        flash('Language preference updated successfully.', 'success')
+        return redirect(url_for('main.account_preferences'))
+
+    # Pre-select current language if available
+    form.language.data = session.get('lang', 'en')
+
+    return render_template('account_preferences.html', form=form, farmers_form=farmers_form)
+
+
+@main.route('/set_language', methods=['POST'])
+@login_required
+def set_language():
+    lang = request.form.get('lang')
+    if lang:
+        session['lang'] = lang
+    return redirect(request.referrer or url_for('main.index'))
+
+
