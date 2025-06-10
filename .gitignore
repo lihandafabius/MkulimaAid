@@ -45,3 +45,6 @@ Thumbs.db
 # Ignore Flask session and cache files
 flask_session/
 cache/
+
+# Ignore babel file
+.cfg

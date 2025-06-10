@@ -309,6 +309,8 @@ class LanguagePreferenceForm(FlaskForm):
         validators=[DataRequired()]
     )
     submit = SubmitField('Save Preferences')
+
+
 class NotificationSettingsForm(FlaskForm):
     email_notifications = BooleanField('Enable Email Notifications')
     push_notifications = BooleanField('Enable Push Notifications')

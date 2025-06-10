@@ -2155,12 +2155,5 @@ def account_preferences():
     return render_template('account_preferences.html', form=form, farmers_form=farmers_form)
 
 
-@main.route('/set_language', methods=['POST'])
-@login_required
-def set_language():
-    lang = request.form.get('lang')
-    if lang:
-        session['lang'] = lang
-    return redirect(request.referrer or url_for('main.index'))
 
 
