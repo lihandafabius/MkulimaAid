@@ -20,7 +20,9 @@ mail = Mail()
 
 
 def get_locale():
-    return session.get('lang') or request.accept_languages.best_match(Config.LANGUAGES)
+    lang = session.get('lang') or request.accept_languages.best_match(Config.LANGUAGES)
+    print(f"[DEBUG] Locale selected: {lang}")
+    return lang
 
 
 def create_app():

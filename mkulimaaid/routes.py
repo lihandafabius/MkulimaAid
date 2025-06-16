@@ -28,7 +28,7 @@ from sqlalchemy import func
 from weasyprint import HTML
 from twilio.rest import Client
 from flask_mail import Message
-
+from flask_babel import _
 
 main = Blueprint('main', __name__)
 
@@ -2146,13 +2146,15 @@ def account_preferences():
     if form.validate_on_submit():
         selected_lang = form.language.data
         session['lang'] = selected_lang
-        flash('Language preference updated successfully.', 'success')
+        flash(_('Language preference updated successfully.'), 'success')
         return redirect(url_for('main.account_preferences'))
 
     # Pre-select current language if available
     form.language.data = session.get('lang', 'en')
 
     return render_template('account_preferences.html', form=form, farmers_form=farmers_form)
+
+
 
 
 
