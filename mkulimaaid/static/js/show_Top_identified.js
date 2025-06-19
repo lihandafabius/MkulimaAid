@@ -8,12 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Fetch and render the crop diseases data
   function loadCropData(filter = 'all') {
-    console.log(`Fetching crop data for filter: ${filter}`);
     fetch(`/api/top-crop-diseases?filter=${filter}`)
       .then(response => response.json())
       .then(data => {
-        console.log(`Crop data received for ${filter}:`, data);
-
         const labels = data.map(item => item.name);
         const counts = data.map(item => item.count);
 
@@ -30,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
               label: 'Number of Detections',
               data: counts,
               backgroundColor: 'rgba(75, 192, 75, 0.2)',
-              borderColor: 'rgba(54, 162, 235, 1)',
+              borderColor: 'rgba(34, 139, 34, 1)',
               borderWidth: 1
             }]
           },
@@ -49,12 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Fetch and render the users joined data
   function loadUserData(filter = 'all') {
-    console.log(`Fetching user data for filter: ${filter}`);
     fetch(`/api/users-joined?filter=${filter}`)
       .then(response => response.json())
       .then(data => {
-        console.log(`User data received for ${filter}:`, data);
-
         const labels = data.map(item => item.date);
         const counts = data.map(item => item.count);
 
@@ -72,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
               data: counts,
               fill: true,
               backgroundColor: 'rgba(75, 192, 75, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              borderColor: 'rgba(34, 139, 34, 1)',
               borderWidth: 2,
               tension: 0.4
             }]
@@ -99,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       const filter = event.target.getAttribute('data-filter');
       if (filter) {
-        console.log(`Applying filter: ${filter}`);
         loadCropData(filter);
         loadUserData(filter);
         timeFilterLabel.innerText = event.target.textContent;

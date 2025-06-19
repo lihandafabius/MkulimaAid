@@ -1,63 +1,71 @@
 document.addEventListener("DOMContentLoaded", () => {
   const chartContainer = document.getElementById("diseaseConfidenceChart");
 
-  // Function to fetch disease confidence data and render a donut chart
+  // Fallback if the chart container is a <canvas>
+  const ctx = chartContainer.getContext ? chartContainer.getContext("2d") : null;
+
+  function generateGreenShades(count) {
+    const shades = [];
+    for (let i = 0; i < count; i++) {
+      const greenValue = 150 + (i * (105 / count)); // 150–255 range
+      shades.push(`rgba(75, ${Math.floor(greenValue)}, 75, 0.7)`);
+    }
+    return shades;
+  }
+
   function loadDiseaseConfidenceChart() {
     fetch('/api/disease-confidence')
       .then(response => response.json())
       .then(data => {
-        // Extract data for the chart
         const labels = data.map(item => item.disease_name);
         const values = data.map(item => item.avg_confidence);
+        const colors = generateGreenShades(labels.length);
 
-        // Use a predefined color palette for consistency
-        const colors = [
-          "#4CAF50", "#FF9800", "#03A9F4", "#E91E63", "#9C27B0",
-          "#FF5722", "#009688", "#795548", "#607D8B", "#CDDC39"
-        ];
+        if (!ctx) {
+          console.error("Chart context not found. Ensure #diseaseConfidenceChart is a <canvas> element.");
+          return;
+        }
 
-        // Prepare chart data
-        const chartData = {
-          labels: labels,
-          datasets: [{
-            data: values,
-            backgroundColor: colors.slice(0, labels.length),
-            borderWidth: 1
-          }]
-        };
-
-        // Render the donut chart
-        new Chart(chartContainer, {
-          type: 'doughnut',
-          data: chartData,
+        new Chart(ctx, {
+          type: 'polarArea',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Average Confidence (%)',
+              data: values,
+              backgroundColor: colors,
+              borderColor: '#ffffff',
+              borderWidth: 1
+            }]
+          },
           options: {
             responsive: true,
             plugins: {
               legend: {
-                display: false // Hide default legend to keep UI clean
+                position: 'right',
+                labels: {
+                  color: '#2e7d32'
+                }
               },
               tooltip: {
                 callbacks: {
-                  label: (tooltipItem) => {
-                    const percentage = tooltipItem.raw;
-                    return `${tooltipItem.label}: ${percentage.toFixed(2)}%`;
-                  }
-                }
-              },
-              datalabels: {
-                color: '#fff', // White labels for better contrast
-                anchor: 'center',
-                align: 'center',
-                formatter: (value) => `${value.toFixed(1)}%`,
-                font: {
-                  size: 13,
-                  weight: 'bold'
+                  label: (ctx) => `${ctx.label}: ${ctx.raw.toFixed(2)}%`
                 }
               }
             },
-            cutout: '65%', // Adjust the hole size for better aesthetics
-            layout: {
-              padding: 10
+            scales: {
+              r: {
+                angleLines: { display: true },
+                suggestedMin: 0,
+                suggestedMax: 100,
+                ticks: {
+                  callback: val => `${val}%`,
+                  color: '#1b5e20'
+                },
+                grid: {
+                  color: '#e0f2f1'
+                }
+              }
             }
           }
         });
@@ -65,6 +73,5 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(error => console.error("Error fetching disease confidence data:", error));
   }
 
-  // Load the chart
   loadDiseaseConfidenceChart();
 });
