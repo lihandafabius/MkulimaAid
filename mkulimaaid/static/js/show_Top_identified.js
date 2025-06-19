@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
             datasets: [{
               label: 'Number of Detections',
               data: counts,
-              backgroundColor: 'rgba(54, 162, 235, 0.6)',
+              backgroundColor: 'rgba(75, 192, 75, 0.2)',
               borderColor: 'rgba(54, 162, 235, 1)',
               borderWidth: 1
             }]
