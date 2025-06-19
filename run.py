@@ -1,4 +1,4 @@
-from mkulimaaid import create_app, db  # Import db
+from mkulimaaid import create_app, db
 from flask_wtf import CSRFProtect
 
 # Initialize CSRF protection
@@ -11,7 +11,6 @@ csrf.init_app(app)
 
 # Create database tables
 with app.app_context():
-    db.create_all()  # This creates the database tables
+    db.create_all()
 
-if __name__ == '__main__':
-    app.run(debug=False)
+
