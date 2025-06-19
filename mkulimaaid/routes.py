@@ -54,7 +54,7 @@ def load_settings():
 def check_session_timeout():
     if current_user.is_authenticated:
         # Set inactivity timeout duration (e.g., 15 minutes)
-        session_timeout_minutes = 30
+        session_timeout_minutes = 60
 
         last_active_str = session.get("last_active")
 
