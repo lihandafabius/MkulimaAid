@@ -304,7 +304,7 @@ class NotificationForm(FlaskForm):
 
 class LanguagePreferenceForm(FlaskForm):
     language = SelectField(
-        'Language',
+        'Select Language',
         choices=[(lang, name) for lang, name in Config.LANGUAGES.items()],
         validators=[DataRequired()]
     )

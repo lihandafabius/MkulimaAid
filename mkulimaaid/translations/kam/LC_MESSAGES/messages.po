@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-10 22:35+0300\n"
+"POT-Creation-Date: 2025-06-23 16:02+0300\n"
 "PO-Revision-Date: 2025-06-10 22:13+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: kam\n"
@@ -18,7 +18,161 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.15.0\n"
 
-#: mkulimaaid/__init__.py:44
+#: mkulimaaid/__init__.py:46
 msgid "Please log in to access MkulimaAid."
+msgstr ""
+
+#: mkulimaaid/routes.py:2189
+msgid "Language preference updated successfully."
+msgstr ""
+
+#: mkulimaaid/templates/home.html:16
+msgid ""
+"Not sure how to recognize diseases affecting your crops? Our tool can "
+"help! Just follow these simple steps to get started."
+msgstr ""
+
+#: mkulimaaid/templates/home.html:22
+msgid "Step 1: Take a Clear Photo"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:24
+msgid ""
+"Capture a close-up, clear image of the affected crop area. Ensure it "
+"shows visible symptoms."
+msgstr ""
+
+#: mkulimaaid/templates/home.html:29
+msgid "Step 2: Upload the Image"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:31
+msgid ""
+"Use the upload form below to add your photo. Click on the cloud icon to "
+"select your image file."
+msgstr ""
+
+#: mkulimaaid/templates/home.html:36
+msgid "Step 3: Analyze"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:38
+msgid ""
+"Sit back and wait for the system to identify possible diseases affecting "
+"your crops."
+msgstr ""
+
+#: mkulimaaid/templates/home.html:44
+msgid ""
+"Start by uploading a photo below and let MkulimaAid assist you in keeping"
+" your crops healthy!"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:52
+msgid "Upload an Image for Crop Disease Recognition"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:65
+msgid "Browse File to Upload(click here)"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:76
+msgid "Upload"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:83
+msgid "Analyzing..."
+msgstr ""
+
+#: mkulimaaid/templates/home.html:85
+msgid "Analyzing the image, please wait..."
+msgstr ""
+
+#: mkulimaaid/templates/home.html:92
+msgid "Uploaded Image:"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:165
+msgid "Clear Results"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:175
+msgid "Trending Crop Diseases"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:186
+msgid "Learn More"
+msgstr ""
+
+#: mkulimaaid/templates/home.html:197
+msgid "Welcome to MkulimaAid's Crop Disease Recognition!"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:5
+msgid "User Settings"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:13
+msgid "Account Settings"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:16
+msgid "Manage your account details and Language preferences."
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:19
+msgid "Manage Account"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:30
+msgid "Security & Privacy"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:33
+msgid "Update your password, two-factor authentication, and privacy settings."
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:36
+msgid "Manage Security"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:47
+msgid "Notification Settings"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:50
+msgid "Control how you receive notifications and updates."
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:53
+msgid "Manage Notifications"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:64
+msgid "Display Preferences"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:67
+msgid "Customize the theme and appearance of the system."
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:70
+msgid "Customize Display"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:81
+msgid "Help & Support"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:84
+msgid "Need assistance? Visit our Help Center or contact support."
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:87
+msgid "Go to Help Center"
+msgstr ""
+
+#: mkulimaaid/templates/user_settings.html:97
+msgid "Back to Homepage"
 msgstr ""
 
