@@ -9,8 +9,11 @@ app = create_app()
 # Register CSRF protection with the app
 csrf.init_app(app)
 
-# Create database tables
-with app.app_context():
-    db.create_all()
+if __name__ == "__main__":
+    # Create database tables and run the app
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
+
 
 

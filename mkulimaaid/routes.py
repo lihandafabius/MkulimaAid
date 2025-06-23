@@ -29,7 +29,9 @@ from weasyprint import HTML
 from twilio.rest import Client
 from flask_mail import Message
 from flask_babel import _
-
+import base64
+import requests
+import mimetypes
 main = Blueprint('main', __name__)
 
 
@@ -92,15 +94,7 @@ def update_trending_status():
         IdentifiedDisease.query.filter_by(disease_name=disease_name).update({
             IdentifiedDisease.is_trending: is_trending
         })
-    #
-    # # Update trending status for Diseases
-    # diseases = Diseases.query.all()
-    # for disease in diseases:
-    #     # Check if the disease appears more than 10 times in IdentifiedDisease
-    #     count_in_identified = IdentifiedDisease.query.filter_by(disease_name=disease.name).count()
-    #     disease.is_trending = count_in_identified > 10
 
-    # Commit changes to the database
     db.session.commit()
 
 
@@ -111,16 +105,16 @@ def home():
     return render_template('about.html', farmers_form=farmers_form)  # Directly show About page as the landing page
 
 
-# file upload handling
 @main.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     form = UploadForm()
     image_filename = None
     prediction = None
+    disease_info = None
+    crop_info = None
     farmers_form = FarmersForm()
 
-    # Fetch trending diseases
     trending_identified_diseases = IdentifiedDisease.query.filter_by(is_trending=True).all()
     trending_diseases = Diseases.query.filter_by(is_trending=True).all()
 
@@ -128,47 +122,93 @@ def upload():
         if form.image.data and allowed_file(form.image.data.filename):
             filename = secure_filename(form.image.data.filename)
             file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
-
-            # Save uploaded image to the uploads folder
             form.image.data.save(file_path)
 
             try:
-                # Process the image and make a prediction
-                image = Image.open(file_path).convert("RGB")
-                inputs = Config.disease_processor(images=image, return_tensors="pt")
+                # Encode image to base64 with correct MIME prefix
+                mime_type = mimetypes.guess_type(file_path)[0] or "image/jpeg"
+                with open(file_path, "rb") as img_file:
+                    base64_string = base64.b64encode(img_file.read()).decode('utf-8')
+                    base64_img = f"data:{mime_type};base64,{base64_string}"
 
-                with torch.no_grad():
-                    outputs = Config.disease_model(**inputs)
+                headers = {
+                    'Api-Key': Config.KINDWISE_API_KEY,
+                    'Content-Type': 'application/json'
+                }
+                payload = {
+                    "images": [base64_img],
+                    "similar_images": True
+                }
 
-                predicted_label_idx = torch.argmax(outputs.logits, dim=-1).item()
-                predicted_class = Config.disease_model.config.id2label[predicted_label_idx]
-                prediction = predicted_class
-
-                image_filename = filename
-
-                # Save the identified disease
-                identified_disease = IdentifiedDisease(
-                    user_id=current_user.id,
-                    disease_name=prediction,
-                    image_filename=filename,
-                    confidence=float(outputs.logits[0][predicted_label_idx].item())
+                response = requests.post(
+                    "https://crop.kindwise.com/api/v1/identification",
+                    headers=headers,
+                    json=payload
                 )
-                db.session.add(identified_disease)
-                db.session.commit()
 
-                # Update trending diseases
-                update_trending_status()
+                if response.status_code == 401:
+                    flash("API Authentication failed. Check your API Key.", "danger")
+                    return redirect(url_for('main.upload'))
 
+                if response.status_code not in [200, 201]:
+                    flash(f"API error (Code: {response.status_code}). Try again later.", "danger")
+                    return redirect(url_for('main.upload'))
+
+                data = response.json()
+                suggestions = data.get("result", {}).get("disease", {}).get("suggestions", [])
+
+                if suggestions:
+                    best_match = suggestions[0]
+                    prediction = best_match.get("name")
+
+                    disease_info = {
+                        "name": best_match.get("name"),
+                        "scientific_name": best_match.get("scientific_name"),
+                        "probability": best_match.get("probability"),
+                        "eppo_status": best_match.get("details", {}).get("eppo_regulation_status", {}),
+                        "entity_id": best_match.get("details", {}).get("entity_id", ""),
+                        "similar_images": best_match.get("similar_images", [])
+                    }
+
+                    crop_suggestions = data.get("result", {}).get("crop", {}).get("suggestions", [])
+                    if crop_suggestions:
+                        crop_info = {
+                            "name": crop_suggestions[0].get("name"),
+                            "scientific_name": crop_suggestions[0].get("scientific_name"),
+                            "similar_images": crop_suggestions[0].get("similar_images", [])
+                        }
+
+                    image_filename = filename
+
+                    identified_disease = IdentifiedDisease(
+                        user_id=current_user.id,
+                        disease_name=prediction,
+                        image_filename=filename,
+                        confidence=best_match.get("probability", 1.0)
+                    )
+                    db.session.add(identified_disease)
+                    db.session.commit()
+
+                    update_trending_status()
+                else:
+                    flash("No specific disease recognized. Try another image.", "warning")
+
+            except requests.exceptions.RequestException as e:
+                print(f"Network error: {e}")
+                flash("Network error. Please check your internet connection.", "danger")
             except Exception as e:
-                flash(f"Error processing the image: {e}", 'danger')
+                print(f"Unexpected error: {e}")
+                flash("An error occurred during identification.", "danger")
         else:
-            flash("Invalid file type. Please upload a valid image (jpg, jpeg, png, jfif).", 'warning')
+            flash("Invalid file type. Please upload a valid image.", "warning")
 
     return render_template(
         'home.html',
         form=form,
         image_filename=image_filename,
         prediction=prediction,
+        disease_info=disease_info,
+        crop_info=crop_info,
         diseases=trending_diseases,
         trending_identified_diseases=trending_identified_diseases,
         farmers_form=farmers_form

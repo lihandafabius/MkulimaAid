@@ -93,11 +93,69 @@
                     <img src="{{ url_for('main.uploaded_file', filename=image_filename) }}" alt="Uploaded Image" class="img-thumbnail prediction-image">
                 </div>
             {% endif %}
+            {% if disease_info %}
+            <div class="card shadow p-4 mt-4">
+                <h4 class="text-success fw-bold">Disease Information</h4>
+                <p><strong>Name:</strong> {{ disease_info.name }}</p>
+                <p><strong>Scientific Name:</strong> {{ disease_info.scientific_name }}</p>
+                <p><strong>Probability:</strong> {{ (disease_info.probability * 100) | round(2) }}%</p>
 
-            {% if prediction %}
-                <div class="prediction-result mt-4 text-center">
-                    <h4>{{ _("Detected Crop Disease:") }} {{ prediction }}</h4>
+                {% if disease_info.symptoms %}
+                <p><strong>Symptoms:</strong> {{ disease_info.symptoms }}</p>
+                {% endif %}
+
+                {% if disease_info.treatment %}
+                    {% if disease_info.treatment.biological %}
+                    <p><strong>Biological Control:</strong> {{ disease_info.treatment.biological }}</p>
+                    {% endif %}
+                    {% if disease_info.treatment.chemical %}
+                    <p><strong>Chemical Control:</strong> {{ disease_info.treatment.chemical }}</p>
+                    {% endif %}
+                    {% if disease_info.treatment.prevention %}
+                    <p><strong>Prevention:</strong> {{ disease_info.treatment.prevention }}</p>
+                    {% endif %}
+                {% endif %}
+
+                {% if disease_info.description %}
+                <p><strong>Description:</strong> {{ disease_info.description }}</p>
+                {% endif %}
+
+                {% if disease_info.eppo_status %}
+                <div>
+                    <strong>EPPO Regulation Status:</strong>
+                    <ul>
+                    {% for country, status in disease_info.eppo_status.items() %}
+                        <li>{{ country }}: {{ status }}</li>
+                    {% endfor %}
+                    </ul>
                 </div>
+                {% endif %}
+
+                {% if disease_info.similar_images %}
+                <div>
+                    <strong>Similar Images:</strong>
+                    <div class="d-flex flex-wrap gap-3 mt-2">
+                        {% for img in disease_info.similar_images %}
+                        <div class="card" style="width: 12rem;">
+                            <img src="{{ img.url_small or img.url }}" class="card-img-top" alt="Similar image">
+                            <div class="card-body p-2">
+                                <small><strong>Source:</strong> {{ img.citation }}</small><br>
+                                <small><strong>License:</strong> <a href="{{ img.license_url }}" target="_blank">{{ img.license_name }}</a></small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if crop_info %}
+            <div class="card shadow p-4 mt-4">
+                <h4 class="text-primary fw-bold">Crop Information</h4>
+                <p><strong>Name:</strong> {{ crop_info.name }}</p>
+                <p><strong>Scientific Name:</strong> {{ crop_info.scientific_name }}</p>
+            </div>
             {% endif %}
 
             {% if image_filename or prediction %}
