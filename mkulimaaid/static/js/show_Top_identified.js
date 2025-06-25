@@ -34,10 +34,25 @@ document.addEventListener("DOMContentLoaded", () => {
           options: {
             responsive: true,
             scales: {
-              y: { beginAtZero: true, title: { display: true, text: 'Detections' } },
-              x: { title: { display: true, text: 'Crop Diseases' } }
+              y: {
+                beginAtZero: true,
+                title: { display: true, text: 'Detections' }
+              },
+              x: {
+                title: { display: true, text: 'Crop Diseases' }
+              }
             },
-            plugins: { legend: { display: true, position: 'top' } }
+            plugins: {
+              legend: { display: true, position: 'top' },
+              tooltip: {
+                backgroundColor: 'rgba(75, 192, 75, 0.9)',
+                titleColor: '#ffffff',
+                bodyColor: '#ffffff',
+                callbacks: {
+                  label: ctx => `${ctx.raw} Detections`
+                }
+              }
+            }
           }
         });
       })
@@ -74,12 +89,24 @@ document.addEventListener("DOMContentLoaded", () => {
           options: {
             responsive: true,
             scales: {
-              y: { beginAtZero: true, title: { display: true, text: 'Number of Users' } },
-              x: { title: { display: true, text: 'Date' } }
+              y: {
+                beginAtZero: true,
+                title: { display: true, text: 'Number of Users' }
+              },
+              x: {
+                title: { display: true, text: 'Date' }
+              }
             },
             plugins: {
               legend: { display: true, position: 'top' },
-              tooltip: { callbacks: { label: ctx => `${ctx.raw} Users` } }
+              tooltip: {
+                backgroundColor: 'rgba(75, 192, 75, 0.9)',
+                titleColor: '#ffffff',
+                bodyColor: '#ffffff',
+                callbacks: {
+                  label: ctx => `${ctx.raw} Users`
+                }
+              }
             }
           }
         });
