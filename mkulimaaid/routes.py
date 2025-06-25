@@ -8,8 +8,6 @@ from mkulimaaid.forms import (UploadForm, LoginForm, RegistrationForm, AdminForm
                               QuestionForm, ContactForm, EmptyForm, TeamForm, FarmersForm, NotificationForm,
                               NotificationSettingsForm, SMSForm, LanguagePreferenceForm)
 from config import Config
-from PIL import Image
-import torch
 from flask_login import login_user, login_required, current_user, logout_user
 from mkulimaaid.models import (User, Subscriber, Settings, Diseases, Comments, Video, TopicComment, Topic, Question,
                                Answer, ContactMessage, TeamMember, IdentifiedDisease, Farmer, Notification,
@@ -229,40 +227,40 @@ def clear_results():
 
 
 # Predict route
-@main.route('/predict', methods=['POST'])
-def predict():
-    model = request.form.get('model')
-    image_filename = request.form.get('image_filename')
-
-    if model == 'disease' and image_filename:
-        file_path = os.path.join(Config.UPLOAD_FOLDER, image_filename)
-
-        try:
-            # Open the uploaded image and convert it to RGB
-            image = Image.open(file_path).convert("RGB")
-
-            # Prepare the image for the model
-            inputs = Config.disease_processor(images=image, return_tensors="pt")
-
-            # Make prediction using the model
-            with torch.no_grad():
-                outputs = Config.disease_model(**inputs)
-
-            # Get the predicted class index
-            predicted_label_idx = torch.argmax(outputs.logits, dim=-1).item()
-
-            # Map the predicted class index to its corresponding label
-            predicted_class = Config.disease_model.config.id2label[predicted_label_idx]
-            prediction = predicted_class
-
-            return redirect(url_for('main.upload', prediction=prediction, image_filename=image_filename))
-
-        except Exception as e:
-            flash(f"Error processing the image: {e}", 'danger')
-    else:
-        flash('Please select a valid model and upload an image.', 'warning')
-
-    return redirect(url_for('main.upload'))
+# @main.route('/predict', methods=['POST'])
+# def predict():
+#     model = request.form.get('model')
+#     image_filename = request.form.get('image_filename')
+#
+#     if model == 'disease' and image_filename:
+#         file_path = os.path.join(Config.UPLOAD_FOLDER, image_filename)
+#
+#         try:
+#             # Open the uploaded image and convert it to RGB
+#             image = Image.open(file_path).convert("RGB")
+#
+#             # Prepare the image for the model
+#             inputs = Config.disease_processor(images=image, return_tensors="pt")
+#
+#             # Make prediction using the model
+#             with torch.no_grad():
+#                 outputs = Config.disease_model(**inputs)
+#
+#             # Get the predicted class index
+#             predicted_label_idx = torch.argmax(outputs.logits, dim=-1).item()
+#
+#             # Map the predicted class index to its corresponding label
+#             predicted_class = Config.disease_model.config.id2label[predicted_label_idx]
+#             prediction = predicted_class
+#
+#             return redirect(url_for('main.upload', prediction=prediction, image_filename=image_filename))
+#
+#         except Exception as e:
+#             flash(f"Error processing the image: {e}", 'danger')
+#     else:
+#         flash('Please select a valid model and upload an image.', 'warning')
+#
+#     return redirect(url_for('main.upload'))
 
 
 @main.route('/disease/<int:disease_id>')
