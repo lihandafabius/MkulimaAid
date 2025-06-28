@@ -17,11 +17,6 @@ venv/
 logs/
 *.log
 
-# Ignore database and migrations
-instance/
-*.sqlite3
-*.db
-migrations/
 
 # Ignore uploaded media files
 static/uploads/
