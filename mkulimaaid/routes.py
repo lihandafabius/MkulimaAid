@@ -2059,7 +2059,6 @@ def edit_notification(notification_id):
     return render_template('edit_notification.html', form=form, notification=notification, farmers_form=farmers_form)
 
 
-
 @main.route('/dashboard/notifications/delete/<int:notification_id>', methods=['POST'])
 @login_required
 @admin_required
