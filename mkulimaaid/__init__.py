@@ -17,9 +17,6 @@ migrate = Migrate()
 ckeditor = CKEditor()
 mail = Mail()
 
-
-
-
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -33,7 +30,6 @@ def create_app():
     ckeditor.init_app(app)
     mail.init_app(app)
 
-
     # Login configuration
     login_manager.login_view = 'main.login'
     login_manager.login_message = ("Please log in to access MkulimaAid.")
@@ -45,5 +41,14 @@ def create_app():
     # Blueprint registration
     from mkulimaaid.routes import main
     app.register_blueprint(main)
+
+    # ✅ Automatically create tables and insert default Settings row
+    with app.app_context():
+        db.create_all()
+        from mkulimaaid.models import Settings
+        if not Settings.query.first():
+            default_settings = Settings()
+            db.session.add(default_settings)
+            db.session.commit()
 
     return app
