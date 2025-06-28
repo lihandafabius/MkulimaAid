@@ -302,25 +302,9 @@ class NotificationForm(FlaskForm):
     submit = SubmitField('Update')
 
 
-class LanguagePreferenceForm(FlaskForm):
-    language = SelectField(
-        'Select Language',
-        choices=[(lang, name) for lang, name in Config.LANGUAGES.items()],
-        validators=[DataRequired()]
-    )
-    submit = SubmitField('Save Preferences')
-
-
 class NotificationSettingsForm(FlaskForm):
     email_notifications = BooleanField('Enable Email Notifications')
     push_notifications = BooleanField('Enable Push Notifications')
     submit = SubmitField('Save Settings')
 
 
-class SMSForm(FlaskForm):
-    sms_message = TextAreaField(
-        'SMS Message',
-        validators=[DataRequired(), Length(min=5, max=160)],  # SMS should be short
-        render_kw={"placeholder": "Write your SMS here..."}
-    )
-    submit = SubmitField('Send SMS')

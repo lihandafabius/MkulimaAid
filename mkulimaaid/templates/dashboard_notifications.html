@@ -26,22 +26,25 @@
     </div>
   </div>
 
-    <!-- SMS Notification Section -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h3 class="mb-3 text-success">Send SMS Notification</h3>
-      <p class="text-muted">Notify farmers about trending crop diseases via SMS.</p>
-      <form method="POST" action="{{ url_for('main.send_sms_notification') }}">
-          {{ sms_form.hidden_tag() }}
-          <div class="form-group">
-              <label for="sms_message">Message</label>
-              {{ sms_form.sms_message(class="form-control") }}
-          </div>
-          <button type="submit" class="btn btn-success mt-3">{{ sms_form.submit.label }}</button>
-      </form>
+<!-- SMS Notification Section -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h3 class="mb-3 text-success">Send SMS Notification</h3>
+    <p class="text-muted">Notify farmers about trending crop diseases via SMS.</p>
 
-    </div>
+    <!-- Disabled form (non-functional) -->
+    <form method="POST" action="#" onsubmit="return false;">
+        <div class="form-group">
+            <label for="sms_message">Message</label>
+            <textarea id="sms_message" class="form-control" placeholder="Feature coming soon..." disabled></textarea>
+        </div>
+        <button type="submit" class="btn btn-success mt-3" disabled>Send SMS</button>
+    </form>
+
+    <small class="text-muted fst-italic d-block mt-2">This feature is not yet available.</small>
   </div>
+</div>
+
 
 
   <!-- Create Notification Button -->

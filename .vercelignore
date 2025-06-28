@@ -1,0 +1,15 @@
+# Ignore virtual environment
+.venv/
+venv/
+
+# Ignore local development files
+.vscode/
+__pycache__/
+*.pyc
+
+# Ignore build artifacts and caches
+.next/
+*.cache
+node_modules/
+public/
+app/

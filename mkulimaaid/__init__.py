@@ -7,7 +7,6 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_ckeditor import CKEditor
 from flask_mail import Mail
-from flask_babel import Babel, _
 
 # Initialize extensions
 csrf = CSRFProtect()
@@ -19,10 +18,6 @@ ckeditor = CKEditor()
 mail = Mail()
 
 
-def get_locale():
-    lang = session.get('lang') or request.accept_languages.best_match(Config.LANGUAGES)
-    print(f"[DEBUG] Locale selected: {lang}")
-    return lang
 
 
 def create_app():
@@ -38,12 +33,10 @@ def create_app():
     ckeditor.init_app(app)
     mail.init_app(app)
 
-    # Initialize Babel (MUST be after app creation)
-    babel = Babel(app, locale_selector=get_locale)
 
     # Login configuration
     login_manager.login_view = 'main.login'
-    login_manager.login_message = _("Please log in to access MkulimaAid.")
+    login_manager.login_message = ("Please log in to access MkulimaAid.")
     login_manager.login_message_category = 'info'
 
     # CKEditor file uploader endpoint

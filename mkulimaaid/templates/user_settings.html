@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4 text-success text-center">{{ _('User Settings') }}</h1>
+    <h1 class="mb-4 text-success text-center">User Settings</h1>
 
     <div class="row">
         <!-- Account Settings -->
@@ -10,13 +10,13 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="fas fa-user-cog text-success"></i> {{ _('Account Settings') }}
+                        <i class="fas fa-user-cog text-success"></i> Account Settings
                     </h5>
                     <p class="card-text">
-                        {{ _('Manage your account details and Language preferences.') }}
+                        Manage your account details and Language preferences.
                     </p>
-                    <a href="{{ url_for('main.account_preferences') }}" class="btn btn-outline-success">
-                        {{ _('Manage Account') }} <i class="fas fa-arrow-right"></i>
+                    <a href="#" class="btn btn-outline-success">
+                        Manage Account <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -27,13 +27,13 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="fas fa-lock text-success"></i> {{ _('Security & Privacy') }}
+                        <i class="fas fa-lock text-success"></i> Security & Privacy
                     </h5>
                     <p class="card-text">
-                        {{ _('Update your password, two-factor authentication, and privacy settings.') }}
+                        Update your password, two-factor authentication, and privacy settings.
                     </p>
                     <a href="#" class="btn btn-outline-success">
-                        {{ _('Manage Security') }} <i class="fas fa-shield-alt"></i>
+                        Manage Security <i class="fas fa-shield-alt"></i>
                     </a>
                 </div>
             </div>
@@ -44,13 +44,13 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="fas fa-bell text-success"></i> {{ _('Notification Settings') }}
+                        <i class="fas fa-bell text-success"></i> Notification Settings
                     </h5>
                     <p class="card-text">
-                        {{ _('Control how you receive notifications and updates.') }}
+                        Control how you receive notifications and updates.
                     </p>
                     <a href="{{ url_for('main.notification_settings') }}" class="btn btn-outline-success">
-                        {{ _('Manage Notifications') }} <i class="fas fa-envelope-open"></i>
+                        Manage Notifications <i class="fas fa-envelope-open"></i>
                     </a>
                 </div>
             </div>
@@ -61,13 +61,13 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="fas fa-paint-brush text-success"></i> {{ _('Display Preferences') }}
+                        <i class="fas fa-paint-brush text-success"></i> Display Preferences
                     </h5>
                     <p class="card-text">
-                        {{ _('Customize the theme and appearance of the system.') }}
+                        Customize the theme and appearance of the system.
                     </p>
                     <a href="#" class="btn btn-outline-success">
-                        {{ _('Customize Display') }} <i class="fas fa-palette"></i>
+                        Customize Display <i class="fas fa-palette"></i>
                     </a>
                 </div>
             </div>
@@ -78,13 +78,13 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body text-center">
                     <h5 class="card-title">
-                        <i class="fas fa-question-circle text-success"></i> {{ _('Help & Support') }}
+                        <i class="fas fa-question-circle text-success"></i> Help & Support
                     </h5>
                     <p class="card-text">
-                        {{ _('Need assistance? Visit our Help Center or contact support.') }}
+                        Need assistance? Visit our Help Center or contact support.
                     </p>
                     <a href="{{ url_for('main.help_center') }}" class="btn btn-success">
-                        {{ _('Go to Help Center') }}
+                        Go to Help Center
                     </a>
                 </div>
             </div>
@@ -94,7 +94,7 @@
     <!-- Back Button -->
     <div class="text-center mt-4">
         <a href="{{ url_for('main.upload') }}" class="btn btn-outline-success fw-bold">
-            <i class="fas fa-arrow-left"></i> {{ _('Back to Homepage') }} <i class="fas fa-home"></i>
+            <i class="fas fa-arrow-left"></i> Back to Homepage <i class="fas fa-home"></i>
         </a>
     </div>
 </div>
